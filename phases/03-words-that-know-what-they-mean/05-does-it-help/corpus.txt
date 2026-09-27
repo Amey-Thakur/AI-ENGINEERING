@@ -1,0 +1,217 @@
+the deploy failed on staging before it reached production
+we rolled back the release after the error rate climbed
+the build passed on the pipeline but failed on staging
+every release goes to staging first and production second
+the rollback took two minutes and the error rate settled
+a failed deploy leaves the previous version running
+the pipeline builds the image and pushes it to staging
+production traffic moved to the new version at noon
+the release was held because the build was red
+we deploy on tuesday and never on friday
+the staging environment mirrors production closely enough
+a bad release is cheaper to roll back than to fix forward
+the build number is stamped into the image
+the deploy script waits for the health check to pass
+production was serving the old version for an hour
+we cut a release branch every second tuesday
+the pipeline runs the tests before it builds the image
+staging caught the error that production would have shown
+the version in production is behind the version on staging
+rolling forward is faster when the build is already green
+the deploy queue held three releases behind one failure
+every image is tagged with the build that produced it
+the release notes list the version and the changes
+staging and production share the same deploy script
+a green build does not guarantee a clean deploy
+the server ran out of memory and restarted itself
+disk usage on the node crossed the threshold overnight
+we added two nodes to the cluster to spread the load
+the server restarted cleanly and the load dropped
+memory on the node was exhausted by a single query
+the cluster lost a node and rebalanced within a minute
+cpu on the server sat at ninety percent for an hour
+each node in the cluster holds a copy of the index
+the load balancer stopped sending traffic to the sick node
+restarting the server cleared the memory but not the cause
+disk filled because the logs were never rotated
+the cluster scales by adding nodes rather than by growing one
+memory pressure showed up as slow responses first
+the node was drained before it was restarted
+cpu and memory both climbed when the traffic arrived
+a server with no disk left cannot write its own logs
+the cluster tolerates one node failing and not two
+traffic to the server doubled during the incident
+the node rejoined the cluster after the restart
+load spread evenly once the third node was added
+the query scanned the whole table because the index was missing
+adding an index took the query from seconds to milliseconds
+the migration added a column and backfilled it in batches
+the database restored from the backup taken overnight
+a slow query holds a connection open for the whole scan
+the schema changed and the migration ran on every row
+the backup completed but nobody checked that it restores
+the index on that table is larger than the table itself
+the query planner ignored the index after the migration
+each row in the table carries a timestamp and an identifier
+the database grew faster than the disk it sits on
+migrations run before the deploy and never after it
+the connection pool was exhausted by long running queries
+restoring the backup takes longer than taking it
+the table had no index on the column the query filtered
+the schema is documented in the same repository as the code
+a missing index turns a fast query into a table scan
+the database connection dropped and the query retried
+backups are useless until a restore has been rehearsed
+the migration locked the table for longer than expected
+the meeting starts at ten and runs for half an hour
+the agenda was sent the evening before the meeting
+we moved the call from monday to tuesday
+the standup is fifteen minutes and covers blockers only
+nobody read the agenda before the meeting started
+the call ran over because the agenda had six items
+we meet on monday to plan and on friday to review
+the calendar shows the meeting in the wrong timezone
+a meeting without an agenda becomes a status update
+the standup happens at the same time every morning
+the call was recorded for the people who could not attend
+friday afternoon is a poor time for a long meeting
+the agenda lists the decision each item needs
+we cancelled the meeting and sent a written update
+the calendar invite went to the wrong group
+half the meeting was spent reading the document
+monday meetings set the week and friday meetings close it
+the call moved an hour later to suit the other timezone
+a fifteen minute standup costs more than it looks
+the meeting produced three decisions and one owner each
+the customer reported the issue through a ticket
+the ticket was closed without a reply to the customer
+support escalated the issue after the second report
+the customer account was locked after too many attempts
+we replied to the ticket within the hour
+the issue affected four hundred accounts for twenty minutes
+the customer asked for a refund and received it
+the ticket queue grew while the incident was open
+support saw the issue before the monitoring did
+the account was restored and the customer was told
+a customer report is often the first sign of an incident
+the refund was processed and the account credited
+tickets about the same issue were merged into one
+the customer email bounced because the address was stale
+support wrote the reply and engineering wrote the cause
+the issue was closed once the customer confirmed it
+four customers reported the same error within a minute
+the account settings were reset at the customer request
+the ticket recorded what broke and what fixed it
+the test suite takes twelve minutes to run
+a flaky test fails once in every twenty runs
+coverage dropped when the new module arrived untested
+the failure was real and the test was right to catch it
+we quarantine flaky tests rather than delete them
+the suite runs on every push and blocks the merge
+a test that never fails is not testing anything
+the assertion compared the wrong two values
+coverage tells you what ran and not what was checked
+the bug was found by a test written after the incident
+running the suite locally takes longer than on the pipeline
+the flaky test passed on retry and hid a real race
+every bug fixed gets a test that would have caught it
+the failure message named the file and the line
+the suite was split so the slow tests run separately
+a test suite nobody trusts is a suite nobody reads
+the bug survived review and died in testing
+coverage rose and the number of bugs did not fall
+the test failed on windows and passed everywhere else
+assertions should say what was expected and what arrived
+the logs showed the error but nobody was watching
+monitoring fired an alert nine minutes after the incident
+the alert was noisy and had been muted last month
+the dashboard showed the error rate climbing steadily
+the incident lasted twenty minutes and affected four hundred users
+the postmortem named the cause and three contributing factors
+alerts that fire constantly are alerts nobody reads
+the dashboard is the first place to look during an incident
+logs were rotated away before anyone read them
+the incident started at noon and was closed by half past
+monitoring watches the error rate and the response time
+the postmortem is written within two days of the incident
+the alert threshold was set when traffic was half this
+nobody was watching the dashboard at the time
+the logs named the failing node and the failing query
+an incident with no postmortem repeats itself
+the error rate returned to normal after the rollback
+monitoring missed the incident because the check was too shallow
+the dashboard and the logs disagreed for ten minutes
+the postmortem was blameless and specific
+the documentation lives in the same repository as the code
+nobody updated the documentation when the schema changed
+the wiki has three pages describing the same process
+documentation that is not read is documentation that is wrong
+the readme explains how to run the tests locally
+a comment explains why and the code explains what
+the documentation was written for a version we no longer run
+the runbook told the on call engineer exactly what to do
+stale documentation is worse than no documentation
+the readme is the first thing a new engineer reads
+we document decisions and not just conclusions
+the wiki page was last edited two years ago
+the runbook was followed and the incident was shorter
+a document nobody owns becomes a document nobody trusts
+the code review caught the missing index
+review comments should be about the code and not the author
+the change was approved by two reviewers on monday
+a small pull request gets a better review than a large one
+the reviewer asked why and the answer was in a comment
+review found the bug that the tests did not
+the pull request sat open for three days
+merging without review is cheaper until it is not
+the reviewer suggested a simpler approach and it was taken
+large changes hide their bugs in the noise
+the branch was merged after the pipeline passed
+review is a conversation and not an inspection
+the change touched the schema and the migration together
+approving a change means accepting responsibility for it
+the pull request described the problem before the solution
+the api returned a timeout and the client retried twice
+each request carries an identifier through every service
+the endpoint accepts a token and returns a response
+the client retried immediately and made the load worse
+a retry without a delay turns one failure into many
+the api version is part of the path
+the service called three others to answer one request
+the timeout was set longer than the client was willing to wait
+the response arrived after the client had given up
+rate limits protect the service from its own clients
+the endpoint returned an error the client did not expect
+every service logs the request identifier it received
+the token expired in the middle of the request
+the api contract changed and the old clients broke
+a request that crosses four services fails four ways
+the password was reset and the account unlocked
+the vault holds the credentials the service reads at startup
+nobody should know the admin password by heart
+the token was committed to the repository by accident
+credentials in the vault are rotated every ninety days
+the password policy pushed people towards weaker passwords
+access to production requires a second factor
+the secret was rotated and the old one revoked
+a leaked token is an incident until proven otherwise
+permissions were copied from another account and were too broad
+the key was scoped to one service and one action
+the audit log recorded who read which secret
+the account had permissions nobody had reviewed in a year
+revoking a credential is faster than working out what it touched
+the model was trained on data collected last year
+the training data and the live data drifted apart
+accuracy on the held back set was lower than on training
+the model was confident and wrong on the new cases
+we measured before and after rather than arguing about it
+a baseline that takes one line beats a model that takes a month
+the feature was the signal and the model was the plumbing
+the evaluation set was too small to tell the two apart
+the model learned the accident in the data and not the pattern
+more data helped and more layers did not
+the error analysis named three causes with different fixes
+the score improved and the product did not
+the training set was balanced and the live traffic was not
+we shipped the simpler model because we could explain it
+the experiment was rerun with three seeds before it was believed
