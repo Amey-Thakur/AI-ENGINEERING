@@ -1,5 +1,11 @@
 # 3. Your first program
 
+> **A program is a text file.**
+>
+> That is the entire secret, and it is deliberately unglamorous. Everything
+> else in this course, every model and every agent, is that same fact with
+> more lines in the file.
+
 **You will:** write a file, make the computer run it, break it on purpose, and read the error properly.
 
 **You need:** [lesson 2](../02-files-and-paths/).
@@ -48,6 +54,20 @@ Four ideas are in those two lines.
 **An f-string** is a string with holes in it. The `f` before the quote lets you put `{name}` and `{len(name)}` inside, and Python fills them in. Without the `f` you would get the braces printed literally, which is a good mistake to make once.
 
 `print` puts the result on the screen. Without it the program still computes, silently, and you see nothing. A surprising amount of early confusion is a program that worked and never said so.
+
+<br>
+
+## Try this
+
+> [!NOTE]
+> ```
+> python -c "import this"
+> ```
+>
+> Nineteen lines of guidance that have been hidden inside every copy of
+> Python for more than twenty years. *Simple is better than complex. Readability counts.*
+> They are worth reading now and worth reading again in a year, when you
+> have written enough code to disagree with one of them.
 
 <br>
 
@@ -102,6 +122,17 @@ python tools/run_lessons.py phases/00-your-machine/03-your-first-program
 ```
 
 The check runs your file and reads what it prints, so it is checking your program, not a copy of the answer.
+
+<br>
+
+## Going further
+
+Optional, and there is no check for it.
+
+Change the program to count words rather than characters. You will need
+`name.split()`, which cuts the text wherever there is a space and hands
+back a list of the pieces, and `len` on that list. Two functions, working
+on each other's output, is most of programming.
 
 <br>
 

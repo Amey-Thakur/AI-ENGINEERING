@@ -1,5 +1,10 @@
 # 4. An isolated environment
 
+> **One day you will install something for a new project and an old one will break.**
+>
+> You changed nothing in the old project. It will still be broken. This
+> lesson is twenty minutes now against the afternoon that costs you later.
+
 **You will:** understand why installing a library can break a project you were not touching, and build the wall that prevents it.
 
 **You need:** [lesson 3](../03-your-first-program/).
@@ -56,6 +61,22 @@ So when a package you definitely installed is suddenly not found, the first ques
 | macOS and Linux | `which python` |
 
 If the answer does not have `.venv` in it, that is your bug.
+
+<br>
+
+## Try this
+
+> [!NOTE]
+> With the environment active, run:
+>
+> ```
+> python -c "import sys; print(sys.prefix)"
+> ```
+>
+> Then `deactivate` and run exactly the same line again. The answer changes.
+> Nothing about the command changed, and nothing about your machine changed.
+> The only thing that changed is which Python the word `python` now means,
+> which is the entire trick a virtual environment is built on.
 
 <br>
 
@@ -119,6 +140,16 @@ python tools/run_lessons.py phases/00-your-machine/04-an-isolated-environment
 ```
 
 If `python -m venv` fails on Debian or Ubuntu, install the piece the distribution leaves out: `sudo apt install python3-venv`.
+
+<br>
+
+## Going further
+
+Optional, and there is no check for it.
+
+Make a second environment beside the first. Activate one, and ask it what
+it can see. Activate the other and ask again. They know nothing about each
+other, which is precisely what you are paying for.
 
 <br>
 

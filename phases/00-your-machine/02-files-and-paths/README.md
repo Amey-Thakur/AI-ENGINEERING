@@ -1,5 +1,11 @@
 # 2. Files and paths
 
+> **Ask a working engineer what wasted their afternoon last week.**
+>
+> A surprising share of the time the answer is a path: a file that was
+> there, a program that looked somewhere else, and forty minutes spent
+> on the wrong question. Ten minutes here buys those afternoons back.
+
 **You will:** read a path the way the computer reads it, move around with `cd`, and make a folder inside a folder.
 
 **You need:** [lesson 1](../01-the-terminal/).
@@ -82,6 +88,17 @@ To make a folder inside a folder that does not exist yet, ask for the whole rout
 
 <br>
 
+## Try this
+
+> [!NOTE]
+> Run `cd ..` over and over, checking `pwd` each time. Eventually it stops
+> moving. You have hit the root of the tree, the one folder with nothing
+> above it, and every file on the machine is somewhere beneath where you are
+> standing. Then get home in one step with `cd ~` on macOS or Linux, or
+> `cd ~` in PowerShell.
+
+<br>
+
 ## Why a path in an error is good news
 
 When something fails, it usually prints a path. That path is the most useful part of the message, because it says exactly where the program looked. Nine times out of ten the file is real and the program was standing somewhere else, and `pwd` tells you that in one line.
@@ -126,6 +143,16 @@ From the repository root:
 ```
 python tools/run_lessons.py phases/00-your-machine/02-files-and-paths
 ```
+
+<br>
+
+## Going further
+
+Optional, and there is no check for it.
+
+Go home with `cd ~`, then get back to this lesson using a relative path
+only, with no `~` and no absolute path. It is fiddly on purpose. Doing it
+once is what makes relative paths stop being abstract.
 
 <br>
 

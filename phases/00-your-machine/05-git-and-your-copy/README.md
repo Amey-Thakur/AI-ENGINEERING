@@ -1,5 +1,12 @@
 # 5. Git and your copy
 
+> **Git's real gift is not backup.**
+>
+> It is that you stop hesitating. Once a version is recorded you can delete
+> the part you suspect is wrong, try the idea that probably will not work,
+> and rewrite the lot, because getting back is one command. People who use
+> git well are not more careful. They are less careful, on purpose.
+
 **You will:** record a version of a folder, see the record, and understand what forking this course actually does.
 
 **You need:** [lesson 4](../04-an-isolated-environment/).
@@ -48,6 +55,22 @@ git log --oneline   the history, one line each
 > `git status` is the command to type whenever you are unsure of anything.
 > It describes the current state in plain language and usually names the
 > exact command you want next.
+
+<br>
+
+## Try this
+
+> [!NOTE]
+> In any repository with some history, run:
+>
+> ```
+> git log --oneline
+> ```
+>
+> Every line is a moment somebody decided was worth keeping. Pick one and
+> run `git show` with its short code. You are reading the exact change that
+> was made, by whom, and when. Every open source project you will ever use
+> can be read this way, all the way back to its first day.
 
 <br>
 
@@ -102,6 +125,17 @@ From the repository root:
 ```
 python tools/run_lessons.py phases/00-your-machine/05-git-and-your-copy
 ```
+
+<br>
+
+## Going further
+
+Optional, and there is no check for it.
+
+Change the file, then run `git diff` before you stage anything. Git prints
+exactly what is different, line by line, with a `-` for what left and a `+`
+for what arrived. Read a diff once and you will read every code review for
+the rest of your career more quickly.
 
 <br>
 

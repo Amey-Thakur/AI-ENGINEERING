@@ -1,5 +1,11 @@
 # 1. The terminal
 
+> **Why does every serious tool in this field still hand you a line of text to type?**
+>
+> Not nostalgia. A line can be written down, sent to someone, pasted into a
+> bug report and repeated exactly a year later. A sequence of clicks cannot.
+> That is the whole reason the terminal outlived the mouse.
+
 **You will:** open a terminal, run three commands, read what comes back, send the answer to a file, and install Python.
 
 **You need:** a computer. Nothing else.
@@ -115,6 +121,23 @@ You are looking for **3.10 or higher**. If you get 3.9 or lower, install a newer
 
 <br>
 
+## Try this
+
+> [!NOTE]
+> Run this, exactly as written:
+>
+> ```
+> python -c "print(2 ** 1000)"
+> ```
+>
+> That is two multiplied by itself a thousand times, printed instantly, all
+> 302 digits of it. Most languages cannot do that: their whole numbers stop
+> at about nineteen digits and quietly wrap around. Python's do not have a
+> ceiling at all. The `-c` flag means *run this line and exit*, which is how
+> you ask Python a question without making a file first.
+
+<br>
+
 ## Sending output somewhere
 
 One more piece of syntax, because it turns the terminal from a place you read into a place you produce things.
@@ -164,6 +187,17 @@ python tools/run_lessons.py phases/00-your-machine/01-the-terminal
 ```
 
 `pass` means your terminal works, Python is installed, and you can put the output of a command into a file. That is a real foundation, and most people never lay it.
+
+<br>
+
+## Going further
+
+Optional, and there is no check for it.
+
+Find out which shell you are actually using. `echo $SHELL` on macOS and
+Linux, `$PSVersionTable` in PowerShell. There are several, they differ in
+small ways, and knowing which one is answering you explains why a command
+from a blog post sometimes behaves differently on your machine.
 
 <br>
 
