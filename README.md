@@ -61,7 +61,7 @@ Those are not aspirations in a contributing guide. They are four programs in [`t
 | Phase | What you build | Status |
 | --- | --- | --- |
 | **0** | [Your machine](phases/00-your-machine/) | Ready |
-| **1** | [Teach it to tell two things apart](phases/01-teach-it-to-tell-two-things-apart/) | In progress |
+| **1** | [Teach it to tell two things apart](phases/01-teach-it-to-tell-two-things-apart/) | Ready |
 | 2 | A neural network you wrote yourself | Planned |
 | 3 | Words into numbers that mean something | Planned |
 | 4 | A language model you wrote yourself | Planned |
