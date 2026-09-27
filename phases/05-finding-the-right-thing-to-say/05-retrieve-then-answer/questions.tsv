@@ -1,0 +1,21 @@
+question	answer
+how long does the test suite take	the test suite takes twelve minutes to run
+how often are credentials rotated	credentials in the vault are rotated every ninety days
+where are the credentials kept	the vault holds the credentials the service reads at startup
+how many users did the incident affect	the incident lasted twenty minutes and affected four hundred users
+when is the postmortem written	the postmortem is written within two days of the incident
+what did the code review catch	the code review caught the missing index
+how often does a flaky test fail	a flaky test fails once in every twenty runs
+why did the server restart	the server ran out of memory and restarted itself
+how long did the rollback take	the rollback took two minutes and the error rate settled
+which day do we deploy on	we deploy on tuesday and never on friday
+what did adding an index do	adding an index took the query from seconds to milliseconds
+how long is the standup	the standup is fifteen minutes and covers blockers only
+what does access to production require	access to production requires a second factor
+where does the documentation live	the documentation lives in the same repository as the code
+how long after the incident did monitoring fire	monitoring fired an alert nine minutes after the incident
+what happens when a client retries immediately	the client retried immediately and made the load worse
+what protects a service from its own clients	rate limits protect the service from its own clients
+what did the migration lock	the migration locked the table for longer than expected
+how many nodes can the cluster lose	the cluster tolerates one node failing and not two
+what is a backup useless until	backups are useless until a restore has been rehearsed
