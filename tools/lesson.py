@@ -35,14 +35,19 @@ TIMEOUT_SECONDS = 120
 
 
 def find(selector: str | None = None) -> list[Path]:
-    """Every lesson directory in course order, narrowed by an optional path."""
+    """Every lesson directory in course order, narrowed by an optional path.
+
+    The selector matches on the front of the path, so a partial name works:
+    phases/02 finds the whole of phase 2 without anyone having to type or
+    remember the rest of the folder name.
+    """
     found = sorted(path.parent for path in PHASES.glob("*/*/check.py"))
 
     if not selector:
         return found
 
-    wanted = (ROOT / selector).resolve()
-    return [lesson for lesson in found if wanted in (lesson, *lesson.parents)]
+    wanted = selector.replace("\\", "/").strip("/")
+    return [lesson for lesson in found if name(lesson).startswith(wanted)]
 
 
 def missing(lesson: Path) -> list[str]:
