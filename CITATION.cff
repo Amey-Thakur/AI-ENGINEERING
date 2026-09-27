@@ -1,0 +1,37 @@
+# Name: CITATION.cff
+# Purpose: Machine-readable citation metadata for this repository.
+# Description: GitHub reads this file to offer a "Cite this repository" button
+#   and to format the reference, so anyone can credit this course correctly in
+#   papers, posts, and other work.
+# License: MIT
+# Author: Amey Thakur (https://github.com/Amey-Thakur)
+# Date: 2026-09-26
+cff-version: 1.2.0
+title: "AI Engineering: a course that runs offline, with no dependencies, from nothing installed to shipping"
+message: "If you use this course, please cite it using the metadata below."
+abstract: "A practical course in AI engineering that takes a reader with nothing installed through to building and measuring a working system. Every lesson runs on the Python standard library alone, with no account, no API key, no GPU, no paid service and no network access, and every lesson is executed on Linux, macOS and Windows on each change so that the material cannot silently stop working."
+type: software
+authors:
+  - given-names: Amey
+    family-names: Thakur
+    email: ameythakur20@gmail.com
+    website: "https://github.com/Amey-Thakur"
+repository-code: "https://github.com/Amey-Thakur/AI-ENGINEERING"
+url: "https://github.com/Amey-Thakur/AI-ENGINEERING"
+license: MIT
+keywords:
+  - ai-engineering
+  - machine-learning
+  - deep-learning
+  - llm
+  - course
+  - curriculum
+  - tutorial
+  - from-scratch
+  - learn-to-code
+  - python
+  - no-dependencies
+  - offline-first
+  - beginners
+  - self-taught
+  - education

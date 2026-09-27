@@ -1,0 +1,18 @@
+# What a learner produces while working through a lesson.
+.work/
+
+# Environments, which are rebuilt rather than stored.
+.venv/
+venv/
+
+# Python's own leavings.
+__pycache__/
+*.pyc
+
+# The built site.
+_site/
+
+# What operating systems leave behind.
+.DS_Store
+Thumbs.db
+desktop.ini
