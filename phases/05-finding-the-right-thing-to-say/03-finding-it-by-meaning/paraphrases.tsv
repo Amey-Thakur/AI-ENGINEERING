@@ -1,0 +1,21 @@
+question	answer
+how slow are the automated checks	the test suite takes twelve minutes to run
+how frequently do secrets change	credentials in the vault are rotated every ninety days
+where do services get their secrets	the vault holds the credentials the service reads at startup
+why did the machine reboot	the server ran out of memory and restarted itself
+what is needed to reach live systems	access to production requires a second factor
+why is an untested backup worthless	backups are useless until a restore has been rehearsed
+how do you stop callers overwhelming a system	rate limits protect the service from its own clients
+where are the docs stored	the documentation lives in the same repository as the code
+how unreliable is an intermittent check	a flaky test fails once in every twenty runs
+how much hardware failure can it survive	the cluster tolerates one node failing and not two
+what made the lookup faster	adding an index took the query from seconds to milliseconds
+when is the writeup due	the postmortem is written within two days of the incident
+how many people were hit by the outage	the incident lasted twenty minutes and affected four hundred users
+what did the second pair of eyes spot	the code review caught the missing index
+how long is the daily catch up	the standup is fifteen minutes and covers blockers only
+which weekday is shipping avoided	we deploy on tuesday and never on friday
+what happens if a caller repeats at once	the client retried immediately and made the load worse
+how long was the undo	the rollback took two minutes and the error rate settled
+what did the schema change hold up	the migration locked the table for longer than expected
+how quickly did the alarm go off	monitoring fired an alert nine minutes after the incident
