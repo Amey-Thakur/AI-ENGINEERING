@@ -61,15 +61,19 @@ Those are not aspirations in a contributing guide. They are four programs in [`t
 | Phase | What you build | Status |
 | --- | --- | --- |
 | **0** | [Your machine](phases/00-your-machine/) | Ready |
-| 1 | The mathematics you need, each idea introduced by something that breaks without it | In progress |
-| 2 | Learning from data, by hand | Planned |
-| 3 | Text into numbers | Planned |
-| 4 | A neural network you wrote yourself | Planned |
-| 5 | A language model you wrote yourself | Planned |
-| 6 | Retrieval | Planned |
-| 7 | Tools and agents | Planned |
-| 8 | Measuring whether any of it works | Planned |
-| 9 | Shipping: cost, latency, failure, safety | Planned |
+| **1** | [Teach it to tell two things apart](phases/01-teach-it-to-tell-two-things-apart/) | In progress |
+| 2 | A neural network you wrote yourself | Planned |
+| 3 | Words into numbers that mean something | Planned |
+| 4 | A language model you wrote yourself | Planned |
+| 5 | Retrieval: finding the right thing to say | Planned |
+| 6 | Tools and agents | Planned |
+| 7 | Measuring whether any of it works | Planned |
+| 8 | Shipping: cost, latency, failure, safety | Planned |
+
+There is no mathematics phase, and that is deliberate. Mathematics arrives in
+the lesson where something breaks without it, which is the only time anyone has
+ever wanted to learn it. You meet a weighted sum when your program needs one,
+not eighty pages earlier.
 
 You build one system across the whole course, rather than a drawer of disconnected exercises. Each phase adds a layer to the thing you already have.
 
