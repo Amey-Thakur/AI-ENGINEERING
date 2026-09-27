@@ -1,0 +1,61 @@
+label	message
+question	what time does the meeting start
+statement	the meeting starts at ten
+question	how do i reset my password
+statement	i reset my password this morning
+question	can you send me the report
+statement	the report is attached to this message
+question	when is the deadline for this
+statement	the deadline is next friday
+question	why did the build fail
+statement	the build failed because of a typo
+question	who is responsible for deployment
+statement	deployment is handled by the platform team
+question	where can i find the documentation
+statement	the documentation lives in the wiki
+question	is the server still down
+statement	the server came back up an hour ago
+question	are we shipping on friday
+statement	we are shipping on friday
+question	do you have the latest version
+statement	i have the latest version installed
+question	does this work on windows
+statement	this works on windows and linux
+question	should i merge this now
+statement	i merged the change already
+question	could you review my changes
+statement	i reviewed your changes yesterday
+question	what happened to the old logs
+statement	the old logs were rotated out
+question	how long does the test suite take
+statement	the test suite takes twelve minutes
+question	can we move the call to tuesday
+statement	the call moved to tuesday
+question	is there a way to undo this
+statement	you can undo this with a revert
+question	what is the difference between these two
+statement	why it is slow is still unclear
+question	how many users are affected
+statement	about four hundred users are affected
+question	when will the fix be released
+statement	the fix ships in the next release
+question	who approved this change
+statement	the change was approved on monday
+question	where did the archived data go
+statement	how the cache works is documented
+question	do i need to install anything else
+statement	nothing else needs installing
+question	does anyone know the admin password
+statement	the admin password is in the vault
+question	can this run without a gpu
+statement	it runs fine without a gpu
+question	what does this error mean
+statement	that error means the file is missing
+question	how do i roll back the release
+statement	rolling back takes about two minutes
+question	is it safe to delete these files
+statement	those files are safe to delete
+question	are the backups working
+statement	the backups ran overnight
+question	why is the dashboard so slow
+statement	what happened is written in the postmortem

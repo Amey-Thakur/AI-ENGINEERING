@@ -51,6 +51,12 @@ allowed into the prose.
 **Re-runnable.** Running `solve.py` twice must work. A solution that only works
 on a folder it has not already touched is not finished.
 
+**Written for Python 3.10.** That is what the front page promises, so that is
+what lessons are held to. The trap worth naming is the f-string: a multi line
+expression inside one only became legal in 3.12, and it will run perfectly on
+your machine while failing for a reader on an older Python. CI runs every
+lesson on 3.10 for exactly this reason.
+
 **Deterministic.** Same input, same output, every time. No clock, no unseeded
 randomness, no machine-specific path in anything you print.
 

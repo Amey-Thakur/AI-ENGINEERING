@@ -52,6 +52,25 @@ jobs:
       - name: Every lesson runs
         run: ${{ matrix.python }} tools/run_lessons.py
 
+  oldest:
+    name: Oldest Python the course claims
+    runs-on: ubuntu-latest
+
+    # The only job that installs a Python rather than using the runner's own.
+    # The front page says the course needs 3.10 or higher, and a promise about
+    # a version nobody ever runs is not a promise. Syntax that arrived later,
+    # such as a multi line expression inside an f-string, fails here rather
+    # than on the machine of somebody who has not upgraded.
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Every lesson runs on 3.10
+        run: python tools/run_lessons.py
+
   material:
     name: Material
     runs-on: ubuntu-latest
