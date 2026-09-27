@@ -62,8 +62,8 @@ Those are not aspirations in a contributing guide. They are four programs in [`t
 | --- | --- | --- |
 | **0** | [Your machine](phases/00-your-machine/) | Ready |
 | **1** | [Teach it to tell two things apart](phases/01-teach-it-to-tell-two-things-apart/) | Ready |
-| 2 | A neural network you wrote yourself | Planned |
-| 3 | Words into numbers that mean something | Planned |
+| **2** | [A network you wrote yourself](phases/02-a-network-you-wrote-yourself/) | Ready |
+| 3 | Words that know what they mean | Planned |
 | 4 | A language model you wrote yourself | Planned |
 | 5 | Retrieval: finding the right thing to say | Planned |
 | 6 | Tools and agents | Planned |
@@ -105,6 +105,7 @@ You do not have to take any of the four guarantees on trust. Run them.
 python tools/run_lessons.py       every lesson still works
 python tools/check_output.py      shown output matches real output
 python tools/check_imports.py     nothing outside the standard library
+python tools/progress.py          how far you have got
 ```
 
 <br>
