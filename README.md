@@ -64,7 +64,7 @@ Those are not aspirations in a contributing guide. They are four programs in [`t
 | **1** | [Teach it to tell two things apart](phases/01-teach-it-to-tell-two-things-apart/) | Ready |
 | **2** | [A network you wrote yourself](phases/02-a-network-you-wrote-yourself/) | Ready |
 | **3** | [Words that know what they mean](phases/03-words-that-know-what-they-mean/) | Ready |
-| 4 | A language model you wrote yourself | Planned |
+| **4** | [A language model you wrote yourself](phases/04-a-language-model-you-wrote-yourself/) | Ready |
 | 5 | Retrieval: finding the right thing to say | Planned |
 | 6 | Tools and agents | Planned |
 | 7 | Measuring whether any of it works | Planned |
