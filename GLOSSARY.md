@@ -151,6 +151,16 @@ That is a deliberate choice: a name learned before the thing it names is a word 
 
 <br>
 
+## Phase 9. Attention, and the block
+
+| In this course | Also called | What it is |
+| --- | --- | --- |
+| [The thing a bigram cannot see](phases/09-attention-and-the-block/01-the-thing-a-bigram-cannot-see/) | Long-range dependency, subject-verb agreement, targeted syntactic evaluation | A dependency wider than the model's window, which no amount of training or data can close. |
+| [Looking at every word at once](phases/09-attention-and-the-block/02-looking-at-every-word-at-once/) | Attention, scaled dot-product attention, query, key and value | Scoring every earlier position against a query, normalising the scores, and reading a blend of the values. |
+| [Dividing by the square root](phases/09-attention-and-the-block/02-looking-at-every-word-at-once/) | The scaling factor, `1/sqrt(d_k)` | What keeps a dot product of wide vectors from saturating the softmax before training has learned anything. |
+
+<br>
+
 ## Words this course does not use, and why
 
 A few terms you will meet constantly are absent from the lessons on purpose.

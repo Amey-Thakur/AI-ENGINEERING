@@ -27,15 +27,15 @@ You should absolutely use those libraries afterwards. You will use them better.
 
 ## Where are transformers, attention and LLMs?
 
-They are not here. The course builds a bigram model and then a small neural language model in [phase 4](phases/04-a-language-model-you-wrote-yourself/), and stops.
+Attention is here, in [phase 9](phases/09-attention-and-the-block/), which is being written now. You build one head and its backward pass by hand, and it clears a ceiling that no n-gram of any order can reach on the corpus.
 
-That is a real gap and it is worth being straight about. Two reasons for it:
+A full transformer is not here. Phase 9 ends at the block rather than at a stack of them, and that is worth being straight about. Two reasons for it:
 
 **The course goes toward engineering, not deeper modelling.** After phase 4 it turns to retrieval, tools, measurement and shipping, which is where most of the work actually is on most jobs. Phases 5 to 8 are about a system that has a model in it, not about the model.
 
 **The corpus is 2,019 words, and that is a real constraint on what a bigger architecture could show.** [Phase 3 lesson 5](phases/03-words-that-know-what-they-mean/05-does-it-help/) measured meaning-based search at zero on paraphrases and the reason was data volume, not method. Attention on this corpus would run, and it would demonstrate the mechanism, and it would not beat the bigram, so the lesson would have to be honest about teaching a shape rather than a result.
 
-A phase on attention is the clearest candidate for what comes next, and it would have to earn its place the same way everything else did: by measuring something.
+Phase 9 earns its place the same way everything else did, by measuring something: the bigram is capped at exactly half on that corpus and one head reaches 16 of 20 on sentences it was not trained on, which luck alone produces 0.59% of the time. What it does not do is stack blocks and claim the result resembles a language model anybody ships.
 
 <br>
 
