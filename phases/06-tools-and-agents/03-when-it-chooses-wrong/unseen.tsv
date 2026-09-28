@@ -1,0 +1,9 @@
+question	tool	answer
+how many letters are in pipeline	count	8
+how many letters are in reviewer	count	8
+letters in the word schema	count	6
+count the letters in monitoring	count	10
+what is 88 divided by 11	calculate	8
+what is 6 times 7	calculate	42
+how many reviewers approved the change	search	the change was approved by two reviewers on monday
+who reads the readme first	search	the readme is the first thing a new engineer reads
