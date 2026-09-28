@@ -185,4 +185,4 @@ Then add a counter for the sort inside search. It sorts all 217 sentences to fin
 - Adding caution to a system does not reduce its bill.
 - With no index the cost is exactly linear in the corpus, so 217,000 sentences means 687,000 comparisons a question.
 
-**Next:** [2. When the corpus grows](../02-when-the-corpus-grows/), where the thirteen line search meets a corpus a thousand times larger and an index costs eleven lines.
+**Next:** [2. When the corpus grows](../02-when-the-corpus-grows/), where an index does identical work for an eighth of the cost, and the obvious next optimisation quietly breaks the system.
