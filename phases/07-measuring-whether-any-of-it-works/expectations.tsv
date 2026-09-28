@@ -1,0 +1,49 @@
+question	outcome
+what is 47 times 13	right
+what is 1024 divided by 8	right
+what is 365 minus 78	right
+what is 19 plus 256	right
+what is 12 times 12	right
+what is 900 divided by 25	right
+what is 2048 minus 1999	right
+what is 144 plus 856	right
+what is 7 times 111	right
+what is 630 divided by 9	right
+how many letters are in deployment	right
+how many letters are in vault	right
+how many letters are in postmortem	right
+how many letters are in index	right
+how many letters are in monitoring	right
+how many letters are in backup	right
+how many letters are in cluster	right
+how many letters are in schema	right
+how many letters are in rollback	right
+how many letters are in staging	right
+how long does the test suite take	right
+how often are credentials rotated	right
+why did the server restart	held back
+what did the code review catch	wrong
+how long did the rollback take	held back
+which day do we deploy on	right
+how long is the standup	right
+what does access to production require	right
+where does the documentation live	held back
+what protects a service from its own clients	right
+how many users did the incident affect	right
+how many nodes can the cluster lose	wrong
+how many minutes does the standup take	right
+what is the vault for	held back
+what is a flaky test	right
+how many letters are in incident	right
+how many letters are in query	right
+what is 88 plus 12	right
+who is on call this weekend	declined
+what is the database password	declined
+how much revenue did the outage cost	declined
+when will the migration finish	declined
+which customer reported the bug	wrong
+how many engineers are on the team	declined
+which region did the traffic come from	declined
+what is the budget for next quarter	declined
+what is the name of the failing service	wrong
+how long until the contract renews	declined

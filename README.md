@@ -68,7 +68,7 @@ Those are not aspirations in a contributing guide. They are five programs in [`t
 | **4** | [A language model you wrote yourself](phases/04-a-language-model-you-wrote-yourself/) | Ready |
 | **5** | [Finding the right thing to say](phases/05-finding-the-right-thing-to-say/) | Ready |
 | **6** | [Tools and agents](phases/06-tools-and-agents/) | Ready |
-| 7 | Measuring whether any of it works | Planned |
+| **7** | [Measuring whether any of it works](phases/07-measuring-whether-any-of-it-works/) | Ready |
 | 8 | Shipping: cost, latency, failure, safety | Planned |
 
 There is no mathematics phase, and that is deliberate. Mathematics arrives in
