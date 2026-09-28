@@ -1,0 +1,39 @@
+question	tool	answer
+what is 47 times 13	calculate	611
+what is 1024 divided by 8	calculate	128
+what is 365 minus 78	calculate	287
+what is 19 plus 256	calculate	275
+what is 12 times 12	calculate	144
+what is 900 divided by 25	calculate	36
+what is 2048 minus 1999	calculate	49
+what is 144 plus 856	calculate	1000
+what is 7 times 111	calculate	777
+what is 630 divided by 9	calculate	70
+how many letters are in deployment	count	10
+how many letters are in vault	count	5
+how many letters are in postmortem	count	10
+how many letters are in index	count	5
+how many letters are in monitoring	count	10
+how many letters are in backup	count	6
+how many letters are in cluster	count	7
+how many letters are in schema	count	6
+how many letters are in rollback	count	8
+how many letters are in staging	count	7
+how long does the test suite take	search	the test suite takes twelve minutes to run
+how often are credentials rotated	search	credentials in the vault are rotated every ninety days
+why did the server restart	search	the server ran out of memory and restarted itself
+what did the code review catch	search	the code review caught the missing index
+how long did the rollback take	search	the rollback took two minutes and the error rate settled
+which day do we deploy on	search	we deploy on tuesday and never on friday
+how long is the standup	search	the standup is fifteen minutes and covers blockers only
+what does access to production require	search	access to production requires a second factor
+where does the documentation live	search	the documentation lives in the same repository as the code
+what protects a service from its own clients	search	rate limits protect the service from its own clients
+how many users did the incident affect	search	the incident lasted twenty minutes and affected four hundred users
+how many nodes can the cluster lose	search	the cluster tolerates one node failing and not two
+how many minutes does the standup take	search	the standup is fifteen minutes and covers blockers only
+what is the vault for	search	the vault holds the credentials the service reads at startup
+what is a flaky test	search	a flaky test fails once in every twenty runs
+how many letters are in incident	count	8
+how many letters are in query	count	5
+what is 88 plus 12	calculate	100
