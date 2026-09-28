@@ -1,0 +1,13 @@
+question	answer
+when does the meeting start	the meeting starts at ten and runs for half an hour
+when was the agenda sent	the agenda was sent the evening before the meeting
+why did the call run over	the call ran over because the agenda had six items
+what happens to a meeting without an agenda	a meeting without an agenda becomes a status update
+where did the calendar invite go	the calendar invite went to the wrong group
+how did the customer report the issue	the customer reported the issue through a ticket
+how many accounts were affected	the issue affected four hundred accounts for twenty minutes
+why was the account locked	the customer account was locked after too many attempts
+why did the customer email bounce	the customer email bounced because the address was stale
+what do we do with flaky tests	we quarantine flaky tests rather than delete them
+what does coverage tell you	coverage tells you what ran and not what was checked
+what did the assertion compare	the assertion compared the wrong two values

@@ -192,4 +192,4 @@ Then delete the router instead of the search, leaving one tool that tries `calcu
 - The fix for an invisible component is more examples that exercise it, not a better component.
 - Phase 3's word vector classifier beat a fixed answer by one message out of twenty, which a coin manages four times in ten.
 
-**Next:** [4. The test set you keep looking at](../04-the-test-set-you-keep-looking-at/), where the threshold from phase 6 is chosen properly and turns out to have been chosen on the answers.
+**Next:** [4. The test set you keep looking at](../04-the-test-set-you-keep-looking-at/), where phase 6's threshold meets twenty questions written after it was fixed.
