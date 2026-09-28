@@ -87,3 +87,6 @@ jobs:
 
       - name: The same output on every run
         run: python3 tools/check_determinism.py
+
+      - name: The glossary still points at the course
+        run: python3 tools/check_glossary.py

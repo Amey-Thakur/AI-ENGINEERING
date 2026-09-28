@@ -1,0 +1,77 @@
+# File: .github/ISSUE_TEMPLATE/a-lesson-does-not-work.yml
+# Purpose: Collect the one thing the guarantees are supposed to make impossible.
+# Description: Every lesson runs on three operating systems on every change, so
+#   a lesson that does not run on somebody's machine means a guarantee has a
+#   hole in it. The form asks for the version and the platform first, because
+#   that is almost always where the answer is.
+# License: MIT
+# Author: Amey Thakur (https://github.com/Amey-Thakur)
+
+name: A lesson does not work
+description: A solution, a check or a tool fails to run
+title: "broken: "
+labels: ["broken"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Every lesson is run on Linux, macOS and Windows on every change and
+        again nightly, so this should not happen. When it does, a guarantee
+        has a hole in it and the hole matters more than the lesson.
+
+  - type: input
+    id: lesson
+    attributes:
+      label: Which lesson or tool
+      placeholder: phases/04-a-language-model-you-wrote-yourself/02-never-say-never
+    validations:
+      required: true
+
+  - type: dropdown
+    id: what
+    attributes:
+      label: What fails
+      options:
+        - solve.py errors
+        - check.py fails on output solve.py produced
+        - check.py passes when it should not
+        - a tool in tools/ errors
+        - the printed output does not match the README
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: What it printed
+      description: The whole traceback or the whole failure message, not a summary of it.
+      render: text
+    validations:
+      required: true
+
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      description: The output of `python --version`. The course claims 3.10 and above.
+      placeholder: "Python 3.10.12"
+    validations:
+      required: true
+
+  - type: input
+    id: platform
+    attributes:
+      label: Operating system
+      placeholder: "Windows 11, or Ubuntu 22.04, or macOS 14 on Apple silicon"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checked
+    attributes:
+      label: Before opening this
+      options:
+        - label: I ran the lesson from inside its own directory, or with `python tools/run_lessons.py <path>`
+          required: false
+        - label: I ran `python tools/run_lessons.py` and can say whether other lessons fail too
+          required: false

@@ -1,0 +1,58 @@
+# File: .github/ISSUE_TEMPLATE/something-is-unclear.yml
+# Purpose: Catch the lessons that confuse people.
+# Description: A lesson that runs perfectly and teaches nothing has failed, and
+#   only a reader can report that. The form asks where the reader stopped
+#   following, because that sentence is the defect.
+# License: MIT
+# Author: Amey Thakur (https://github.com/Amey-Thakur)
+
+name: Something is unclear
+description: A lesson runs, but it lost you
+title: "unclear: "
+labels: ["unclear"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A lesson that runs and teaches nothing has failed, and there is no
+        program that can detect it. This is the only way that gets found.
+
+        You do not need a fix or a suggestion. Naming the sentence where you
+        stopped following is the entire contribution.
+
+  - type: input
+    id: lesson
+    attributes:
+      label: Which lesson
+      placeholder: phases/02-a-network-you-wrote-yourself/04-backpropagation
+    validations:
+      required: true
+
+  - type: textarea
+    id: where
+    attributes:
+      label: Where you stopped following
+      description: Quote the sentence, the code block, or the table. The more specific this is, the more likely the rewrite fixes the right thing.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you thought was happening
+      description: Optional, and genuinely useful. A wrong model of what the code does tells me exactly which sentence built it.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: background
+    attributes:
+      label: Roughly where you are starting from
+      description: Not a judgement. The course claims no prerequisites and this is how that gets checked.
+      options:
+        - New to programming
+        - Comfortable with Python, new to this subject
+        - Comfortable with the subject, reading for the engineering
+        - Teaching this to somebody else
+    validations:
+      required: false

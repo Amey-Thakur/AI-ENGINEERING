@@ -1,0 +1,69 @@
+# File: .github/ISSUE_TEMPLATE/a-measurement-disagrees.yml
+# Purpose: The most valuable issue anybody can open on this repository.
+# Description: A lesson claims a number. You measured it and got another one.
+#   This form is first in the list on purpose, because a course that reports
+#   its own failures has to make it easy to report them.
+# License: MIT
+# Author: Amey Thakur (https://github.com/Amey-Thakur)
+
+name: A measurement disagrees
+description: A lesson claims something and your measurement says otherwise
+title: "measurement: "
+labels: ["measurement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is the most useful issue you can open here. Several lessons exist
+        because a claim was checked and turned out to be false, and a lesson
+        that is wrong should be corrected rather than defended.
+
+        You do not need to be sure. "I think this is wrong and here is what I
+        ran" is enough.
+
+  - type: input
+    id: lesson
+    attributes:
+      label: Which lesson
+      placeholder: phases/07-measuring-whether-any-of-it-works/03-the-baseline-you-forgot
+    validations:
+      required: true
+
+  - type: textarea
+    id: claim
+    attributes:
+      label: What the lesson claims
+      description: Quote the sentence or the number, so there is no ambiguity about which claim is in question.
+      placeholder: "The README says the word vector classifier beats the floor by one message out of twenty."
+    validations:
+      required: true
+
+  - type: textarea
+    id: measured
+    attributes:
+      label: What you measured
+      description: The number you got, and what you ran to get it. A short script beats a description.
+      render: text
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of disagreement
+      options:
+        - The number in the README is wrong
+        - The number is right but the conclusion drawn from it is not
+        - The method measures something other than what it says
+        - The result does not reproduce on my machine
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Python version and operating system
+      placeholder: "3.11.4, macOS 14"
+    validations:
+      required: false

@@ -1,0 +1,19 @@
+# File: .github/ISSUE_TEMPLATE/config.yml
+# Purpose: Configure the issue chooser.
+# Description: Blank issues stay enabled on purpose. The three forms cover the
+#   cases worth structuring, and a reader with something that fits none of them
+#   should not be turned away by a form.
+# License: MIT
+# Author: Amey Thakur (https://github.com/Amey-Thakur)
+
+blank_issues_enabled: true
+contact_links:
+  - name: Read the FAQ first
+    url: https://github.com/Amey-Thakur/AI-ENGINEERING/blob/main/FAQ.md
+    about: Why there is no PyTorch, where transformers are, whether this is enough to get a job, and how long it takes.
+  - name: The glossary
+    url: https://github.com/Amey-Thakur/AI-ENGINEERING/blob/main/GLOSSARY.md
+    about: The course teaches ideas before their names. This maps what a lesson calls something onto what the field calls it.
+  - name: Ask a question or say how you got on
+    url: https://github.com/Amey-Thakur/AI-ENGINEERING/discussions
+    about: For anything that is not a defect. Study groups, what you built afterwards, and where you got stuck.

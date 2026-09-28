@@ -20,17 +20,28 @@ so that it cannot decay unnoticed.
   course, and that is enforced by a program rather than by a policy.
 - Lessons run with the network closed, so a lesson cannot come to depend on
   something that can be taken away.
+- Every solution prints the same thing on every run. Each one is executed under
+  three different string hash seeds and the output must match, so no figure in
+  the course can depend on a clock, on unseeded randomness, or on the order a
+  set happens to have.
 
 ## Structure
 
 - phases/ holds the course, one directory per phase, one per lesson inside it.
 - Each lesson is three files: README.md teaches it, solve.py is the worked
   solution, check.py decides whether the result is right.
-- tools/ holds the four programs that enforce the guarantees above.
+- tools/ holds the five programs that enforce the guarantees above, and they
+  can be run by anybody: run_lessons.py, check_output.py, check_imports.py,
+  check_determinism.py and check_glossary.py.
+- The course is 45 lessons across 9 phases, about 33 hours by the estimates at
+  the top of each phase, and builds one system throughout rather than a set of
+  disconnected exercises.
 
 ## Links
 
 - Repository: https://github.com/Amey-Thakur/AI-ENGINEERING
 - Phase 0, for a reader with nothing installed: phases/00-your-machine/
+- Glossary, mapping the course's plain words onto the field's: GLOSSARY.md
+- Questions, including where transformers are and why they are not here: FAQ.md
 - Author: Amey Thakur, https://github.com/Amey-Thakur
 - License: MIT

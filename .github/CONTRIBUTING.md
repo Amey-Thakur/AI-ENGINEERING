@@ -76,10 +76,15 @@ python tools/run_lessons.py
 python tools/check_output.py
 python tools/check_imports.py
 python tools/check_determinism.py
+python tools/check_glossary.py
 ```
 
-All four must pass. They are the same four that run on your pull request, so
+All five must pass. They are the same five that run on your pull request, so
 there are no surprises waiting for you.
+
+A new lesson needs a row in [GLOSSARY.md](../GLOSSARY.md) naming whatever it
+introduces, or an entry in that checker's `UNTRANSLATED` set saying why it does
+not. `check_glossary.py` will tell you which.
 
 <br>
 

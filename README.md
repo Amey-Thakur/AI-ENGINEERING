@@ -107,8 +107,21 @@ python tools/run_lessons.py       every lesson still works
 python tools/check_output.py      shown output matches real output
 python tools/check_imports.py     nothing outside the standard library
 python tools/check_determinism.py the same output on every run
+python tools/check_glossary.py    the glossary still points at the course
 python tools/progress.py          how far you have got
 ```
+
+<br>
+
+## Alongside the lessons
+
+| | |
+| --- | --- |
+| [**Glossary**](GLOSSARY.md) | The course teaches ideas before their names, and in places never uses the standard name at all. This maps what a lesson calls something onto what the field calls it, with a link to the lesson where you built it. |
+| [**Questions**](FAQ.md) | Why there is no PyTorch, where transformers are, whether thirty-three hours is enough to get a job, and why the course keeps reporting that its own lessons were wrong. |
+| [**Contributing**](.github/CONTRIBUTING.md) | The contract a lesson has to meet. |
+| [**Security**](.github/SECURITY.md) | What the attack surface of forty-five offline files actually is, and the short list of things worth reporting. |
+| [**Code of conduct**](.github/CODE_OF_CONDUCT.md) | Short. The part that matters is that a reader who is lost has found a defect. |
 
 <br>
 
