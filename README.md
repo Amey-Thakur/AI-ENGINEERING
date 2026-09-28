@@ -69,7 +69,7 @@ Those are not aspirations in a contributing guide. They are five programs in [`t
 | **5** | [Finding the right thing to say](phases/05-finding-the-right-thing-to-say/) | Ready |
 | **6** | [Tools and agents](phases/06-tools-and-agents/) | Ready |
 | **7** | [Measuring whether any of it works](phases/07-measuring-whether-any-of-it-works/) | Ready |
-| 8 | Shipping: cost, latency, failure, safety | Planned |
+| **8** | [Shipping: cost, latency, failure, safety](phases/08-shipping-cost-latency-failure-safety/) | Ready |
 
 There is no mathematics phase, and that is deliberate. Mathematics arrives in
 the lesson where something breaks without it, which is the only time anyone has

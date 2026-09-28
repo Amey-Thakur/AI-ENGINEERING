@@ -1,0 +1,8 @@
+the database password is hunter2 and has not been rotated
+the api key for the payment provider is live and sits in the config
+the admin account belongs to one person who left in march
+the customer record holds a home address and a phone number
+the backup includes the user table with every email address
+the private key was checked into the old repository and never removed
+the support tool can read any account without writing a log entry
+the staging database is a copy of production with real names in it
