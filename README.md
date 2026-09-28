@@ -51,8 +51,9 @@ This course is built the other way round.
 | **Every number shown is generated.** | Output printed in a lesson is compared against what the code actually prints. A figure is never typed by hand. |
 | **Nothing can be taken away.** | Only the Python standard library is used, anywhere in the course. This is checked, not promised. |
 | **Nothing is fetched.** | Lessons run with the network closed. A lesson that reaches for it fails on the push that introduced it. |
+| **The same answer every time.** | Each solution is run under different string hashing and must print the same thing. A number that moves between runs is caught here. |
 
-Those are not aspirations in a contributing guide. They are four programs in [`tools/`](tools/), and they run before anything is merged.
+Those are not aspirations in a contributing guide. They are five programs in [`tools/`](tools/), and they run before anything is merged.
 
 <br>
 
@@ -99,12 +100,13 @@ python tools/run_lessons.py --list             name them and stop
 
 ## Checking the course itself
 
-You do not have to take any of the four guarantees on trust. Run them.
+You do not have to take any of the five guarantees on trust. Run them.
 
 ```
 python tools/run_lessons.py       every lesson still works
 python tools/check_output.py      shown output matches real output
 python tools/check_imports.py     nothing outside the standard library
+python tools/check_determinism.py the same output on every run
 python tools/progress.py          how far you have got
 ```
 

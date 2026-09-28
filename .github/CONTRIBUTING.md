@@ -60,6 +60,13 @@ lesson on 3.10 for exactly this reason.
 **Deterministic.** Same input, same output, every time. No clock, no unseeded
 randomness, no machine-specific path in anything you print.
 
+The quiet one is iteration order. `max(set(words), key=words.count)` picks a
+different winner on different runs when two words tie, because the order of a
+set of strings follows their hashes and Python randomises those per process.
+Sort before you take a maximum, and break every tie explicitly.
+`tools/check_determinism.py` runs your solution under three different hash
+seeds and fails if the output moves.
+
 <br>
 
 ## Before you open a pull request
@@ -68,9 +75,10 @@ randomness, no machine-specific path in anything you print.
 python tools/run_lessons.py
 python tools/check_output.py
 python tools/check_imports.py
+python tools/check_determinism.py
 ```
 
-All three must pass. They are the same three that run on your pull request, so
+All four must pass. They are the same four that run on your pull request, so
 there are no surprises waiting for you.
 
 <br>

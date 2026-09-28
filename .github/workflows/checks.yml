@@ -1,8 +1,9 @@
 # Name: checks.yml
-# Purpose: Enforce the four guarantees the course is built on.
+# Purpose: Enforce the five guarantees the course is built on.
 # Description: Runs every lesson on Linux, macOS and Windows, checks that the
-#   output shown in each lesson is the output its code produces, and checks
-#   that nothing outside the Python standard library is imported. Runs on every
+#   output shown in each lesson is the output its code produces, checks that
+#   nothing outside the Python standard library is imported, and checks that a
+#   lesson prints the same thing on every run. Runs on every
 #   change and again nightly, so that material which stops working is found by
 #   this file rather than by a reader.
 # License: MIT
@@ -83,3 +84,6 @@ jobs:
 
       - name: Nothing outside the standard library
         run: python3 tools/check_imports.py
+
+      - name: The same output on every run
+        run: python3 tools/check_determinism.py
