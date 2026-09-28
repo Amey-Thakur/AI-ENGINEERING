@@ -8,16 +8,17 @@ License: MIT
 Description:
 Draws the card that appears when the repository is shared.
 
-The card says what the course is and what is unusual about it, in the fewest
-words that are still true. The one graphic on it is not decoration: it is the
-course, drawn to scale. Nine steps, one per phase, each rising by the number
-of lessons that phase actually contains, so the shape of the climb is the
-shape of the material. If a phase is added the staircase grows a step, and if
-a lesson is deleted a step gets shorter.
+The geometry is the sibling geometry, measured from the other repositories
+rather than invented here: a 1280 by 640 canvas, six bands, every one of them
+centred on the middle of the card, the mark's ink starting at y=75, the title
+sitting on a 300 pixel baseline, a 344 pixel rule at y=396, and the footer
+starting at y=575. check_layout asserts all of that before the file is
+written, so the card cannot drift off the family and still be saved.
 
-Every number and every measurement on the card is counted from the repository
-rather than typed, so the card cannot fall out of step with the course the way
-a hand written one would.
+Nothing countable appears on it. A card is a static image somebody uploads to
+GitHub by hand, so a lesson count printed on it is wrong from the first commit
+that adds a lesson. The card carries what will still be true next year: what
+the course is, and the three things about it that are unusual.
 
 Usage:
     python tools/social_preview.py
@@ -25,149 +26,225 @@ Usage:
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from PIL import Image, ImageDraw, ImageFont
 
 import lesson
+import typeface
 
 OUT = lesson.ROOT / ".github" / "social-preview.png"
-FONTS = Path("C:/Windows/Fonts")
+MARK = lesson.ROOT / ".github" / "assets" / "mark-flat.png"
 
-# GitHub renders the card at 1280 by 640. Everything is drawn at twice that
-# and resampled down, which is the cheapest way to get clean edges on text.
 SIZE = (1280, 640)
-SCALE = 2
 
-INK = (247, 249, 252)
-DIM = (150, 160, 176)
-FAINT = (92, 102, 120)
-ACCENT = (110, 231, 183)
-BACKGROUND = (13, 16, 22)
-RULE = (38, 44, 56)
+BACKGROUND = (0x0D, 0x10, 0x16)
+INK = (0xF7, 0xF9, 0xFC)
+PALE = (0xC6, 0xCE, 0xDA)
+ACCENT = (0x6E, 0xE7, 0xB7)
+DIM = (0x8A, 0x94, 0xA4)
+EDGE = (0x2A, 0x3B, 0x34)
 
-MARGIN = 96
+TITLE = "AI Engineering"
+SUBTITLE = "Learn to build AI systems by building them"
+KEYWORDS = "no dependencies · no API key · offline"
+FOOTER = "AI Engineering · MIT · github.com/Amey-Thakur"
 
-# The staircase occupies the space the title does not. The left edge is set
-# from the measured width of the longest line beside it, not by eye.
-CHART_LEFT = 720
-CHART_RIGHT = SIZE[0] - MARGIN
-CHART_BASE = 318
-CHART_TALLEST = 180
-CHART_GAP = 9
+#: Anchors measured from the sibling cards.
+MARK_W, MARK_H = 74, 64
+LOGO_TOP = 75
+TITLE_BASE = 300
+TITLE_FITS = 760
+SUB_TOP = 339
+RULE_Y, RULE_W = 396, 344
+KEY_TOP = 433
+FOOT_TOP = 575
 
+#: How far a band's centre may sit from the middle of the card.
+OFF_CENTRE = 2.0
 
-def font(name: str, size: int) -> ImageFont.FreeTypeFont:
-    return ImageFont.truetype(str(FONTS / name), size * SCALE)
+#: A row counts as inked when a pixel differs from the ground by this much,
+#: summed across the three channels.
+THRESHOLD = 18
 
+#: Rows closer together than this belong to the same band.
+BAND_GAP = 6
 
-def counted() -> list[tuple[str, int]]:
-    """Every phase and how many lessons it holds, counted rather than claimed."""
-    tally: dict[str, int] = {}
-
-    for directory in lesson.find():
-        tally[directory.parent.name] = tally.get(directory.parent.name, 0) + 1
-
-    return sorted(tally.items())
-
-
-def blend(start: tuple[int, int, int], end: tuple[int, int, int],
-          share: float) -> tuple[int, int, int]:
-    """A colour part of the way between two others."""
-    return tuple(round(a + (b - a) * share) for a, b in zip(start, end))
+_probe = ImageDraw.Draw(Image.new("RGB", (1, 1)))
 
 
-def staircase(pen: ImageDraw.ImageDraw, phases: list[tuple[str, int]]) -> None:
-    """The course drawn to scale: one step per phase, rising by its lessons."""
-    steps = len(phases)
-    total = sum(count for _, count in phases)
-    span = (CHART_RIGHT - CHART_LEFT) * SCALE
-    width = (span - CHART_GAP * SCALE * (steps - 1)) / steps
-    climbed = 0
+def ink_box(text: str, font: ImageFont.FreeTypeFont):
+    """Ink extent in the coordinates draw.text uses, so subtracting the box
+    origin lands the ink exactly on an anchor."""
+    return _probe.textbbox((0, 0), text, font=font)
 
-    for index, (name, count) in enumerate(phases):
-        climbed += count
-        height = CHART_TALLEST * SCALE * climbed / total
-        left = CHART_LEFT * SCALE + index * (width + CHART_GAP * SCALE)
 
-        pen.rectangle(
-            [left, CHART_BASE * SCALE - height, left + width,
-             CHART_BASE * SCALE],
-            fill=blend(FAINT, ACCENT, index / (steps - 1)),
-        )
+def centred(card: Image.Image, text: str, font: ImageFont.FreeTypeFont,
+            fill, top: int):
+    """Place text so its ink starts at `top` and is centred on the canvas.
 
-        # The phase number, under its own step.
-        pen.text((left + width / 2, (CHART_BASE + 13) * SCALE),
-                 name.split("-")[0].lstrip("0") or "0",
-                 font=font("consola.ttf", 20), fill=FAINT, anchor="ma")
+    The text is drawn on its own layer, cropped to the ink it actually
+    produced, and only then positioned. Placing it by the predicted box
+    instead leaves it a pixel or two off, because the antialiased left edge of
+    one glyph and the right edge of another do not fade symmetrically, and the
+    layout check below measures the ink rather than the prediction.
+    """
+    x0, y0, x1, y1 = ink_box(text, font)
+    pad = 40
+    layer = Image.new("RGBA", (x1 - x0 + pad * 2, y1 - y0 + pad * 2),
+                      (0, 0, 0, 0))
+    ImageDraw.Draw(layer).text((pad - x0, pad - y0), text, font=font,
+                               fill=fill + (255,))
 
-    pen.line([CHART_LEFT * SCALE, CHART_BASE * SCALE, CHART_RIGHT * SCALE,
-              CHART_BASE * SCALE], fill=RULE, width=2 * SCALE)
+    ink = layer.getbbox()
+
+    if ink is None:
+        return 0, 0
+
+    cropped = layer.crop(ink)
+    card.paste(cropped, (round((SIZE[0] - cropped.width) / 2), top), cropped)
+
+    return cropped.width, cropped.height
+
+
+def fit_title(text: str, target: int, largest: int = 124):
+    """The largest black face that keeps the title inside `target`."""
+    size = largest
+
+    while size > 24:
+        face = typeface.of("black", size)
+        x0, _, x1, _ = ink_box(text, face)
+
+        if x1 - x0 <= target:
+            return face
+
+        size -= 1
+
+    return typeface.of("black", 24)
 
 
 def draw() -> Image.Image:
-    card = Image.new("RGB", (SIZE[0] * SCALE, SIZE[1] * SCALE), BACKGROUND)
+    card = Image.new("RGB", SIZE, BACKGROUND)
     pen = ImageDraw.Draw(card)
 
-    left = MARGIN * SCALE
-    phases = counted()
-    lessons = sum(count for _, count in phases)
+    mark = Image.open(MARK).convert("RGBA")
 
-    # A single accent rule, top left, instead of a logo.
-    pen.rectangle([left, 92 * SCALE, left + 64 * SCALE, 98 * SCALE],
-                  fill=ACCENT)
+    if mark.size != (MARK_W, MARK_H):
+        mark = mark.resize((MARK_W, MARK_H), Image.LANCZOS)
 
-    pen.text((left, 128 * SCALE), "AI Engineering",
-             font=font("calibrib.ttf", 92), fill=INK)
+    card.paste(mark, (round((SIZE[0] - MARK_W) / 2), LOGO_TOP), mark)
 
-    pen.text((left, 248 * SCALE),
-             "Learn to build AI systems by building them.",
-             font=font("calibri.ttf", 34), fill=INK)
-    pen.text((left, 294 * SCALE),
-             "From nothing installed, to shipping.",
-             font=font("calibri.ttf", 34), fill=DIM)
+    # The title is placed by its bottom edge, not its top, so a longer or
+    # shorter name still sits on the same line as the sibling cards.
+    title = fit_title(TITLE, TITLE_FITS)
+    _, top, _, bottom = ink_box(TITLE, title)
+    centred(card, TITLE, title, INK, TITLE_BASE - (bottom - top))
 
-    # Names the axis, which is what a chart needs and what a caption is for.
-    pen.text((CHART_RIGHT * SCALE, 90 * SCALE), "cumulative lessons",
-             font=font("calibri.ttf", 22), fill=FAINT, anchor="ra")
+    centred(card, SUBTITLE, typeface.of("sans", 29), PALE, SUB_TOP)
 
-    staircase(pen, phases)
+    pen.line([(SIZE[0] - RULE_W) / 2, RULE_Y, (SIZE[0] + RULE_W) / 2, RULE_Y],
+             fill=EDGE)
 
-    pen.line([left, 382 * SCALE, (SIZE[0] - MARGIN) * SCALE, 382 * SCALE],
-             fill=RULE, width=2 * SCALE)
+    centred(card, KEYWORDS, typeface.of("mono", 26), ACCENT, KEY_TOP)
+    centred(card, FOOTER, typeface.of("mono", 21), DIM, FOOT_TOP)
 
-    # The four things that are actually unusual about it.
-    claims = [
-        ("0", "dependencies"),
-        ("$0", "to run"),
-        ("Offline", "no API key, no GPU"),
-        (f"{lessons}", f"lessons across {len(phases)} phases"),
-    ]
+    return card
 
-    column = left
-    for value, caption in claims:
-        pen.text((column, 424 * SCALE), value,
-                 font=font("calibrib.ttf", 44), fill=ACCENT)
-        pen.text((column, 480 * SCALE), caption,
-                 font=font("calibri.ttf", 26), fill=DIM)
-        column += 262 * SCALE
 
-    pen.text((left, 556 * SCALE), "github.com/Amey-Thakur/AI-ENGINEERING",
-             font=font("consola.ttf", 26), fill=DIM)
+def _inked(pixels, ground, x: int, y: int) -> bool:
+    spot = pixels[x, y]
 
-    return card.resize(SIZE, Image.LANCZOS)
+    return (abs(spot[0] - ground[0]) + abs(spot[1] - ground[1])
+            + abs(spot[2] - ground[2])) > THRESHOLD
+
+
+def bands(pixels, ground) -> list[tuple[int, int]]:
+    """The vertical runs of rows that have ink in them."""
+    rows = []
+
+    for y in range(SIZE[1]):
+        for x in range(SIZE[0]):
+            if _inked(pixels, ground, x, y):
+                rows.append(y)
+                break
+
+    if not rows:
+        return []
+
+    found = []
+    start = previous = rows[0]
+
+    for y in rows[1:]:
+        if y - previous > BAND_GAP:
+            found.append((start, previous))
+            start = y
+
+        previous = y
+
+    found.append((start, previous))
+
+    return found
+
+
+def check_layout(card: Image.Image) -> list[tuple[int, int]]:
+    """The card is only a sibling if it lands on the sibling geometry."""
+    pixels = card.convert("RGB").load()
+    ground = pixels[5, 5]
+    found = bands(pixels, ground)
+    problems = []
+
+    if len(found) != 6:
+        problems.append(f"expected 6 bands, drew {len(found)}")
+
+    for top, bottom in found:
+        left = right = None
+
+        for x in range(SIZE[0]):
+            if any(_inked(pixels, ground, x, y)
+                   for y in range(top, bottom + 1)):
+                left = x if left is None else left
+                right = x
+
+        if left is None:
+            continue
+
+        middle = (left + right + 1) / 2
+
+        if abs(middle - SIZE[0] / 2) > OFF_CENTRE:
+            problems.append(f"band {top}-{bottom} centred on {middle:.1f}, "
+                            f"not {SIZE[0] / 2}")
+
+    # One pixel of slack: the faintest antialiased row of a glyph can fall
+    # under the threshold, which moves a measured band without the text having
+    # moved.
+    if found and abs(found[0][0] - LOGO_TOP) > 1:
+        problems.append(f"the mark starts at {found[0][0]}, not {LOGO_TOP}")
+
+    if found and abs(found[-1][0] - FOOT_TOP) > 1:
+        problems.append(f"the footer starts at {found[-1][0]}, not {FOOT_TOP}")
+
+    if problems:
+        raise SystemExit("the card drifted off the sibling geometry:\n  "
+                         + "\n  ".join(problems))
+
+    return found
 
 
 def main() -> int:
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    draw().save(OUT, optimize=True)
+    if not MARK.exists():
+        print(f"FAIL  {MARK.relative_to(lesson.ROOT).as_posix()} is missing")
+        print("      run `python tools/build_mark.py` first")
+        return 1
 
-    phases = counted()
-    lessons = sum(count for _, count in phases)
-    print(f"{OUT.relative_to(lesson.ROOT).as_posix()}  "
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    card = draw()
+
+    for top, bottom in check_layout(card):
+        print(f"  band y={top}-{bottom}")
+
+    card.save(OUT, optimize=True)
+
+    print(f"  {OUT.relative_to(lesson.ROOT).as_posix()}  "
           f"{SIZE[0]}x{SIZE[1]}  {OUT.stat().st_size // 1024} KB  "
-          f"({lessons} lessons across {len(phases)} phases, counted from the "
-          f"repository)")
+          f"six bands, every one centred")
 
     return 0
 

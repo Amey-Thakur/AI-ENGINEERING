@@ -39,7 +39,7 @@ Nothing new except `private.txt`: eight sentences that must never be returned, o
 **A question about next quarter's budget returns an API key.** Two of three leaks came from questions that asked for nothing sensitive. A blocked word list on the question stopped one of three and refused a legitimate question about credential rotation. Not indexing the sentences stopped all three and cost nothing.
 
 > [!WARNING]
-> Robustness that swallows a failure is not robustness. The guard that stops
+> Error handling that hides a failure has not handled it. The guard that stops
 > an empty corpus raising `IndexError` is what turns a page-somebody outage
 > into a system that returns 200 and quietly declines everything.
 >

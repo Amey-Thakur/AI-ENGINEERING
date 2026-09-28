@@ -1,0 +1,72 @@
+# Name: certificate.yml
+# Purpose: Issue a record of completion from a learner's own fork.
+# Description: Run by hand from the Actions tab after forking. It runs all 45
+#   lessons on a clean machine and, only if every one passes, draws the record
+#   and attaches it as a downloadable artifact. The run's own log is a second
+#   copy of the evidence, which is why this exists as a workflow rather than
+#   only as a local script: the log is public, timestamped and not editable by
+#   the person it is about.
+# License: MIT
+# Author: Amey Thakur (https://github.com/Amey-Thakur)
+# Date: 2026-09-28
+
+name: Record of completion
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "The name to put on it, written as you want it to read"
+        required: true
+        type: string
+      date:
+        description: "Date in YYYY-MM-DD form. Leave blank for today."
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  issue:
+    name: Run the course, then issue
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Pillow draws the record. It is the only thing installed anywhere in
+      # this repository, it is installed here rather than for the lessons, and
+      # no lesson can import it: tools/check_imports.py fails the build if one
+      # tries.
+      - name: Install what the drawing needs
+        run: |
+          python -m pip install --quiet --upgrade pip
+          python -m pip install --quiet pillow
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core
+
+      - name: Show which fonts this machine resolved
+        run: python tools/typeface.py
+
+      # The real work. This runs every solve.py and every check.py and exits
+      # non-zero if a single lesson fails, so the artifact below cannot exist
+      # unless the course actually passed here.
+      - name: Run the course and issue the record
+        run: |
+          python tools/certificate.py \
+            --name "${{ inputs.name }}" \
+            ${{ inputs.date && format('--date {0}', inputs.date) || '' }} \
+            --out record-of-completion.png
+
+      - name: Attach it
+        uses: actions/upload-artifact@v4
+        with:
+          name: record-of-completion
+          path: record-of-completion.png
+          if-no-files-found: error
+          retention-days: 90

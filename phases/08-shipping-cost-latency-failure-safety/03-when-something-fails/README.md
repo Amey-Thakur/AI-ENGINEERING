@@ -161,7 +161,7 @@ Without it, the next line does `ranked[0]` on an empty list and raises `IndexErr
 Adding the guard is the obvious defensive move, and it converts a total outage from an exception into a system that returns 200 and declines everything.
 
 > [!WARNING]
-> Robustness that swallows a failure is not robustness. A component which
+> Error handling that hides a failure has not handled it. A component which
 > cannot do its job and says so is far more useful than one which degrades
 > quietly into a plausible shape.
 >

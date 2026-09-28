@@ -75,7 +75,7 @@ Five failures, and they are three different problems.
 
 ### One was a coin toss
 
-> *who approved this change* — really a question, called a statement, **score +0**
+> *who approved this change*, really a question but called a statement, **score +0**
 
 Exactly zero. The model had no opinion whatsoever. It came out as "statement" because the code says `total > 0`, and zero is not greater than zero. Write `>=` instead and this message becomes correct, with **nothing about the model changed at all**.
 
@@ -99,7 +99,7 @@ That matters because it tells you what to do. A model that is wrong and unsure n
 
 ### One was confidently wrong
 
-> *what happened is written in the postmortem* — really a statement, called a question, **score +3**
+> *what happened is written in the postmortem*, really a statement but called a question, **score +3**
 
 This one it was sure about, and it was wrong. This is the same message that defeated your hand written rule in lesson 2, for the same reason: it opens like a question and then makes a claim.
 

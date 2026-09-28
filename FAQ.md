@@ -103,6 +103,22 @@ Reading `solve.py` when stuck is not cheating. It is a considerably better use o
 
 <br>
 
+## Is there a certificate?
+
+There is a **record of completion**, and the distinction is the point.
+
+```bash
+python tools/certificate.py --name "Your Name"
+```
+
+It runs all 45 lessons before it draws anything and refuses if one fails. There is no flag to skip that. What it then attests to is narrow and checkable: on this date, at this commit, every check in this course passed on your machine. It prints the command to re-verify that on its own face.
+
+It does not say you are good at this, and it does not say anybody assessed you, because neither would be true. Most course certificates assert exactly those two things and no reader can check either.
+
+Running it from your own fork's Actions tab is worth more than running it locally, because the log is public, timestamped, and not editable by the person it is about.
+
+<br>
+
 ## Can I use this to teach a class or run a study group?
 
 Yes. MIT licensed, and there is nothing to install or provision, which is usually the part that kills a workshop. Thirty people on thirty different laptops with no network will all get identical output, and [`tools/check_determinism.py`](tools/check_determinism.py) exists to keep that true.

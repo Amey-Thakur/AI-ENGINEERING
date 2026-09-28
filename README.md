@@ -1,136 +1,287 @@
 <div align="center">
 
+<a href="https://github.com/Amey-Thakur/AI-ENGINEERING" title="AI Engineering"><img src="assets/ai-engineering-header.png" alt="AI Engineering, a course that runs offline with no dependencies" width="700"/></a>
+
 # AI Engineering
 
-**Learn to build AI systems by building them. From nothing installed, to shipping.**
+### Build It Yourself · Measure Everything · Then Ship It
 
-No account. No API key. No GPU. No paid service. No library to install.
-Every lesson runs on the Python that comes with your machine, and on a laptop with the network switched off.
+[![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)](LICENSE)
+[![Course](https://img.shields.io/badge/Course-AI%20Engineering-1DE9B6.svg)](#the-course)
+[![Platform](https://img.shields.io/badge/Platform-Offline-00838F.svg)](#guarantees)
+[![Technology](https://img.shields.io/badge/Technology-Python-3776AB.svg)](https://www.python.org/)
+[![Author](https://img.shields.io/badge/Author-Amey%20Thakur-0969DA.svg)](https://github.com/Amey-Thakur)
 
-<img alt="License" src="https://img.shields.io/github/license/Amey-Thakur/AI-ENGINEERING?color=lightgrey&label=License">
-<img alt="Dependencies" src="https://img.shields.io/badge/Dependencies-0-2EA043">
-<img alt="Cost" src="https://img.shields.io/badge/Cost-%240-2EA043">
-<img alt="Runs offline" src="https://img.shields.io/badge/Runs-Offline-2EA043">
-<a href="https://github.com/Amey-Thakur"><img alt="Developed by Amey Thakur" src="https://img.shields.io/badge/Developed%20by-Amey%20Thakur-0969DA"></a>
+**You write every line, measure every claim, and install nothing. No account, no API key, no GPU, no paid service, and no network at any point.**
+
+---
+
+[❖ Author](#author) &nbsp;·&nbsp; [ⓘ Overview](#overview) &nbsp;·&nbsp; [◎ Motivation](#motivation) &nbsp;·&nbsp; [▶ Start Here](#start-here) &nbsp;·&nbsp; [☰ The Course](#the-course) &nbsp;·&nbsp; [★ What You Will Build](#what-you-will-build) &nbsp;·&nbsp; [⚑ Guarantees](#guarantees) &nbsp;·&nbsp; [◬ Completion](#record-of-completion) &nbsp;·&nbsp; [☷ Usage Guidelines](#usage-guidelines) &nbsp;·&nbsp; [© License](#license) &nbsp;·&nbsp; [⌬ About](#about-this-repository) &nbsp;·&nbsp; [✦ Acknowledgments](#acknowledgments)
 
 </div>
 
-<br>
+---
 
-## Start here
+<!-- AUTHORS -->
+<div align="center">
 
-You need a computer. That is the whole prerequisite list.
+  <a name="author"></a>
+  ## Author
 
-```
-git clone https://github.com/Amey-Thakur/AI-ENGINEERING.git
+| <a href="https://github.com/Amey-Thakur"><img src="https://github.com/Amey-Thakur.png" width="150" height="150" alt="Amey Thakur"></a><br>[**Amey Thakur**](https://github.com/Amey-Thakur)<br><br>[![ORCID](https://img.shields.io/badge/ORCID-0000--0001--5644--1575-A6CE39.svg)](https://orcid.org/0000-0001-5644-1575)<br>[![LinkedIn](https://img.shields.io/badge/LinkedIn-Amey%20Thakur-0077B5.svg)](https://www.linkedin.com/in/amey-thakur) |
+| :---: |
+
+</div>
+
+---
+
+## Overview
+
+You clone this repository, open a terminal, and run a file. That is the whole setup. There is nothing to provision, nothing to sign up for, and nothing that can be withdrawn from under you later.
+
+From there you build one system across nine phases. It starts as a classifier that tells a question from a statement and ends as something with tools, a retrieval index, a cost meter, an access boundary and a release sheet. Every piece of it is yours, in plain Python, on data small enough to read in full.
+
+The part that makes this different from other courses is the second half. Anybody can show you a model that works. Phases 7 and 8 hand you the instruments to find out whether it does, and the first thing you point them at is the course's own earlier lessons. Several of them do not survive.
+
+**Purpose**: To take a reader with nothing installed through to building, measuring and shipping a working AI system, using only the Python standard library, so that the material still runs in ten years and every number in it can be checked by the reader.
+
+**Target Audience**: Anyone who can read a `for` loop. Beginners who want to start at a terminal, self-taught engineers who can already use the libraries and want to know what is under them, and working engineers who need the measurement half nobody taught them.
+
+---
+
+## Motivation
+
+I kept opening well-regarded courses and finding the same things.
+
+Code that no longer ran, because a package had moved. A dataset that had been withdrawn. A statistics page reporting a figure that was simply wrong. A cloud account demanded before lesson two. None of that is carelessness. It is what happens when material is written faster than it can be checked, and when it is built on services that belong to somebody else.
+
+There was a second problem, quieter and worse. The courses taught how to make a number go up and never how to tell whether it had. I learned to call `model.fit()` years before I learned that a score on twenty examples means almost nothing, and the gap between those two moments holds a great deal of work I would now call wasted.
+
+This course is built the other way round. Nothing is installed, so nothing can be taken away. Every number printed in a lesson is generated by the code beside it and compared against the real output, so no figure in it can be typed by hand. And when a measurement contradicts an earlier lesson, the measurement stays and the earlier lesson gets a link to it.
+
+> [!NOTE]
+> That last rule is not a pose. [Phase 7](phases/07-measuring-whether-any-of-it-works/)
+> finds that phase 3's classifier cannot be told apart from a coin, and that
+> the entire retrieval half of the finished system cannot be told apart from
+> deleting it. Both findings sit in the material, next to the lessons they
+> undermine.
+
+---
+
+## Start Here
+
+Three commands. The third one is the course.
+
+```bash
+git clone https://github.com/Amey-Thakur/AI-ENGINEERING
 cd AI-ENGINEERING
 python tools/run_lessons.py phases/00-your-machine/01-the-terminal
 ```
 
-If that last line fails because you do not have Python, or because you have never opened a terminal, that is expected and it is [lesson 1](phases/00-your-machine/01-the-terminal/).
+If that last line fails because you do not have Python, or because you have never opened a terminal, that is expected, and it is exactly what [lesson 1](phases/00-your-machine/01-the-terminal/) is for.
+
+Then work forwards. Every lesson is a directory holding the same three files:
+
+| File | What it is |
+|:-----|:-----------|
+| `README.md` | The lesson. Read this first. |
+| `solve.py` | The worked solution, written to be read rather than hidden. |
+| `check.py` | Looks at what you produced and says what is wrong in one line. |
+
+```bash
+python tools/run_lessons.py                    every lesson
+python tools/run_lessons.py phases/03          one phase, or one lesson
+python tools/progress.py                       how far you have got
+```
 
 > [!TIP]
-> Fork this repository before you clone it, and clone your fork. Your work then
-> lives on your own account rather than on one machine, and it is a record of
-> what you did. [Lesson 5](phases/00-your-machine/05-git-and-your-copy/)
-> explains the difference.
+> Reading `solve.py` when you are stuck is not cheating. It is a considerably
+> better use of an evening than an hour of guessing, and the lesson's README
+> explains what the solution does and why it does it that way.
 
-<br>
+Skip [phase 0](phases/00-your-machine/) if you already have a terminal, Python and Git. Everybody else should start there, because the rest of the course assumes you can run a file and nothing more than that.
 
-## Why this one
+---
 
-There is no shortage of AI courses. There is a shortage of AI courses that still work.
+## The Course
 
-Open the most popular ones today and you will find lessons whose code no longer runs, datasets that were withdrawn, a statistics page reporting a p-value that is wrong, and a cloud account required before lesson two. None of that is carelessness. It is what happens when material is written faster than it can be checked, and when it is built on services that belong to somebody else.
+Nine phases, five lessons each, one system built the whole way through.
 
-This course is built the other way round.
+| # | Phase | What you will have built by the end of it |
+|:-:|:------|:------------------------------------------|
+| **0** | [Your machine](phases/00-your-machine/) | A terminal you are not afraid of, Python running, an isolated environment, and your first commit |
+| **1** | [Teach it to tell two things apart](phases/01-teach-it-to-tell-two-things-apart/) | A classifier that sorts questions from statements, first by a rule you wrote, then by weights it learned |
+| **2** | [A network you wrote yourself](phases/02-a-network-you-wrote-yourself/) | A network with a hidden layer, trained by a backpropagation you wrote and checked against nudging the weights |
+| **3** | [Words that know what they mean](phases/03-words-that-know-what-they-mean/) | Word vectors built from co-occurrence counts, compressed by power iteration, then measured against the actual task |
+| **4** | [A language model you wrote yourself](phases/04-a-language-model-you-wrote-yourself/) | A model that generates text, scored by perplexity, and a measurement of what it cannot recall |
+| **5** | [Finding the right thing to say](phases/05-finding-the-right-thing-to-say/) | A retrieval system that beats the model 15 to 0, and the measurement showing the generator makes it worse |
+| **6** | [Tools and agents](phases/06-tools-and-agents/) | An agent: tools it can call, a rule that picks one, a loop that can stop, and a scorecard with six columns |
+| **7** | [Measuring whether any of it works](phases/07-measuring-whether-any-of-it-works/) | Confidence intervals, a paired significance test, baselines and a regression test, turned on your own earlier work |
+| **8** | [Shipping: cost, latency, failure, safety](phases/08-shipping-cost-latency-failure-safety/) | An index, a cost meter, an outage drill, an access boundary, and the release sheet you hand somebody |
+
+**About thirty-three hours** in total, by the estimate printed at the top of each phase. Phase 0 is the shortest at two hours, phase 4 the longest at five.
+
+> [!TIP]
+> If you only have one evening, read [phase 7 lesson 1](phases/07-measuring-whether-any-of-it-works/01-the-number-has-error-bars/).
+> It puts a confidence interval on every score this course reports and finds
+> that most of them establish very little. It needs nothing from the phases
+> before it, and it will change how you read every benchmark you meet after it.
+
+---
+
+## What You Will Build
+
+Not a toy that works because the data was chosen to make it work. These are results you measure yourself, with your own code, and all of them are in the material:
+
+| What you measure | The result |
+|:-----------------|:-----------|
+| A hand-written rule against a perceptron against a network | The rule wins, and for three phases nothing learned beats it |
+| Whether a language model can recall a fact it was trained on | **0 of 20**, and its interval is the narrowest in the course |
+| Counting shared words against BM25 on your corpus | Counting wins, because BM25's reputation was earned on somebody else's data |
+| Retrieval, and then generation on top of it | The generator destroys **15 of 15** correct retrievals |
+| A retry loop on a search that refused | Provably incapable of working, 2.15 times the cost, not one answer changed |
+| A confidence threshold, measured twice | A 3-for-1 loss on answerable questions, a 3-for-8 gain once unanswerable ones exist |
+| Deleting the entire retrieval half of your agent | Costs seven questions of forty-eight, and chance produces that gap 83% of the time |
+| Losing the whole corpus in production | Accuracy falls 15%, false statements fall to zero, and no ordinary alarm fires |
+| Putting a secret in the corpus | A question about next quarter's budget returns an API key |
+
+> [!IMPORTANT]
+> Read that table again and notice how many of the results are negative. That
+> is the point. Showing that something does not work is cheap, showing that one
+> thing beats another is expensive, and knowing which of the two you are
+> looking at is most of the skill.
+
+---
+
+## Guarantees
+
+You do not have to take any of these on trust. Each one is a program in [`tools/`](tools/), and they all run on every change and again nightly.
 
 | Guarantee | How it is kept |
-| --- | --- |
+|:----------|:---------------|
 | **Every lesson runs.** | Every solution and every check is executed on Linux, macOS and Windows on each change, and again every night. |
 | **Every number shown is generated.** | Output printed in a lesson is compared against what the code actually prints. A figure is never typed by hand. |
 | **Nothing can be taken away.** | Only the Python standard library is used, anywhere in the course. This is checked, not promised. |
 | **Nothing is fetched.** | Lessons run with the network closed. A lesson that reaches for it fails on the push that introduced it. |
-| **The same answer every time.** | Each solution is run under different string hashing and must print the same thing. A number that moves between runs is caught here. |
+| **The same answer every time.** | Each solution runs under three different string hash seeds and must print the same thing. A number that moves between runs is caught here. |
 
-Those are not aspirations in a contributing guide. They are five programs in [`tools/`](tools/), and they run before anything is merged.
-
-<br>
-
-## The course
-
-| Phase | What you build | Status |
-| --- | --- | --- |
-| **0** | [Your machine](phases/00-your-machine/) | Ready |
-| **1** | [Teach it to tell two things apart](phases/01-teach-it-to-tell-two-things-apart/) | Ready |
-| **2** | [A network you wrote yourself](phases/02-a-network-you-wrote-yourself/) | Ready |
-| **3** | [Words that know what they mean](phases/03-words-that-know-what-they-mean/) | Ready |
-| **4** | [A language model you wrote yourself](phases/04-a-language-model-you-wrote-yourself/) | Ready |
-| **5** | [Finding the right thing to say](phases/05-finding-the-right-thing-to-say/) | Ready |
-| **6** | [Tools and agents](phases/06-tools-and-agents/) | Ready |
-| **7** | [Measuring whether any of it works](phases/07-measuring-whether-any-of-it-works/) | Ready |
-| **8** | [Shipping: cost, latency, failure, safety](phases/08-shipping-cost-latency-failure-safety/) | Ready |
-
-There is no mathematics phase, and that is deliberate. Mathematics arrives in
-the lesson where something breaks without it, which is the only time anyone has
-ever wanted to learn it. You meet a weighted sum when your program needs one,
-not eighty pages earlier.
-
-You build one system across the whole course, rather than a drawer of disconnected exercises. Each phase adds a layer to the thing you already have.
-
-<br>
-
-## How a lesson works
-
-Three files, the same every time.
-
-| File | What it is |
-| --- | --- |
-| `README.md` | The lesson. |
-| `solve.py` | The worked solution, written to be read. |
-| `check.py` | Looks at what you produced, and says what is wrong in one line. |
-
-```
-python tools/run_lessons.py                    every lesson
-python tools/run_lessons.py phases/00          one phase, or one lesson
-python tools/run_lessons.py --list             name them and stop
+```bash
+python tools/run_lessons.py        every lesson still works
+python tools/check_output.py       shown output matches real output
+python tools/check_imports.py      nothing outside the standard library
+python tools/check_determinism.py  the same output on every run
+python tools/check_glossary.py     the glossary still points at the course
 ```
 
-<br>
+---
 
-## Checking the course itself
+## Record of Completion
 
-You do not have to take any of the five guarantees on trust. Run them.
+When you finish there is a record, and it is deliberately not a certificate of competence.
 
-```
-python tools/run_lessons.py       every lesson still works
-python tools/check_output.py      shown output matches real output
-python tools/check_imports.py     nothing outside the standard library
-python tools/check_determinism.py the same output on every run
-python tools/check_glossary.py    the glossary still points at the course
-python tools/progress.py          how far you have got
+```bash
+python tools/certificate.py --name "Your Name"
 ```
 
-<br>
+It runs every lesson first and refuses to draw anything if one fails. There is no flag to skip that. What it produces attests to something narrow and checkable, and it prints the command to re-verify itself on its own face.
 
-## Alongside the lessons
+| What it says | What it does not say |
+|:-------------|:---------------------|
+| Every lesson passed, and how many there were | That you are good at this |
+| The commit they passed at | That anybody assessed you |
+| The date, and a credential number derived from those | Anything a reader has to take on trust |
+
+You can also run it from your own fork's Actions tab with [`certificate.yml`](.github/workflows/certificate.yml), which runs the course on a clean machine and attaches the result. That version is worth more than the local one, because the log is public, timestamped, and not editable by the person it is about.
+
+---
+
+## Alongside the Lessons
 
 | | |
-| --- | --- |
+|:--|:--|
 | [**Glossary**](GLOSSARY.md) | The course teaches ideas before their names, and in places never uses the standard name at all. This maps what a lesson calls something onto what the field calls it, with a link to the lesson where you built it. |
-| [**Questions**](FAQ.md) | Why there is no PyTorch, where transformers are, whether thirty-three hours is enough to get a job, and why the course keeps reporting that its own lessons were wrong. |
+| [**Questions**](FAQ.md) | Why there is no PyTorch, where transformers are, whether this is enough to get a job, and why the course keeps reporting that its own lessons were wrong. |
 | [**Contributing**](.github/CONTRIBUTING.md) | The contract a lesson has to meet. |
-| [**Security**](.github/SECURITY.md) | What the attack surface of forty-five offline files actually is, and the short list of things worth reporting. |
+| [**Security**](.github/SECURITY.md) | What the attack surface of forty-five offline files actually is. |
 | [**Code of conduct**](.github/CODE_OF_CONDUCT.md) | Short. The part that matters is that a reader who is lost has found a defect. |
 
-<br>
+---
 
-## Contributing
+## Usage Guidelines
 
-A lesson is accepted when it teaches one thing, its solution runs, and its check explains itself on failure. The full contract is in [CONTRIBUTING.md](.github/CONTRIBUTING.md).
+**For Beginners**  
+Start at [phase 0](phases/00-your-machine/) and do not skip it. It assumes you have never opened a terminal and it ends with you having made a commit. Nothing later in the course assumes more than that.
 
-<br>
+**For Self-taught Engineers**  
+You can already call the libraries. Phases 1 to 4 are what is inside them, and they are worth the weekend for the moment in [phase 2 lesson 4](phases/02-a-network-you-wrote-yourself/04-backpropagation/) where you check your own gradients against nudging the weights and autodiff stops being magic.
+
+**For Working Engineers**  
+Read [phase 7](phases/07-measuring-whether-any-of-it-works/) and [phase 8](phases/08-shipping-cost-latency-failure-safety/) first, then come back for the rest. Confidence intervals, McNemar's test, ablations, a regression test for a system that is allowed to be wrong, cost distributions, outage drills and retrieval access control are the parts that decide whether what you build survives contact with users.
+
+**For Educators**  
+MIT licensed, and there is nothing to install or provision, which is usually what kills a workshop. Thirty people on thirty laptops with no network all get identical output, and [`tools/check_determinism.py`](tools/check_determinism.py) exists to keep that true.
+
+**For Researchers**  
+The negative results are the honest contribution. Where a method failed, the material records what it was measured against and how many examples that measurement had, so it can be repeated rather than taken on trust.
+
+---
 
 ## License
 
-[MIT](LICENSE). Use it, fork it, teach from it, translate it. Attribution is appreciated and not required.
+This course is made available under the **MIT License**. See the [LICENSE](LICENSE) file for complete terms.
+
+> [!NOTE]
+> **Summary**: Use it, fork it, teach from it, translate it, run a paid
+> workshop on it. Attribution is appreciated and not required.
+
+Copyright © 2026 Amey Thakur
+
+---
+
+## About This Repository
+
+**Created & Maintained by**: [Amey Thakur](https://github.com/Amey-Thakur)
+
+This is the course I wanted when I started and could not find: one that installs nothing, states plainly what it cannot do, and is honest about which of its own results hold up. It builds one system across nine phases rather than a drawer of disconnected exercises, and every claim in it was produced by running the code rather than by remembering roughly what the answer ought to be.
+
+**Connect:** [GitHub](https://github.com/Amey-Thakur) &nbsp;·&nbsp; [LinkedIn](https://www.linkedin.com/in/amey-thakur) &nbsp;·&nbsp; [ORCID](https://orcid.org/0000-0001-5644-1575)
+
+### Acknowledgments
+
+**Period**: 2026  
+**Built with**: The Python standard library, and nothing else
+
+Grateful acknowledgment to the **Python core developers**, whose standard library is the reason this course can promise that nothing in it will be withdrawn. A batteries-included library maintained for decades is a public good, and material built only on it inherits that durability for nothing.
+
+Grateful acknowledgment to the **authors whose results this course re-measures**, named in the lessons that use them: Clopper and Pearson in 1934, McNemar in 1947, Firth in 1957, Rosenblatt on the perceptron, and Robertson and Zaragoza on BM25. Their methods are old, short, readable, and still the right tools.
+
+Grateful acknowledgment to everyone who **reports that a lesson lost them**. A lesson that runs perfectly and teaches nothing has failed, no program can detect that, and a reader saying so is the only way it is ever found.
+
+---
+
+<!-- FOOTER -->
+<div align="center">
+
+  [↑ Back to Top](#ai-engineering)
+
+  [❖ Author](#author) &nbsp;·&nbsp; [ⓘ Overview](#overview) &nbsp;·&nbsp; [◎ Motivation](#motivation) &nbsp;·&nbsp; [▶ Start Here](#start-here) &nbsp;·&nbsp; [☰ The Course](#the-course) &nbsp;·&nbsp; [★ What You Will Build](#what-you-will-build) &nbsp;·&nbsp; [⚑ Guarantees](#guarantees) &nbsp;·&nbsp; [◬ Completion](#record-of-completion) &nbsp;·&nbsp; [☷ Usage Guidelines](#usage-guidelines) &nbsp;·&nbsp; [© License](#license) &nbsp;·&nbsp; [⌬ About](#about-this-repository) &nbsp;·&nbsp; [✦ Acknowledgments](#acknowledgments)
+
+</div>
+
+---
+
+<div align="center">
+
+**◈ The phases:** [Your machine](phases/00-your-machine/) &nbsp;·&nbsp; [Tell two things apart](phases/01-teach-it-to-tell-two-things-apart/) &nbsp;·&nbsp; [A network](phases/02-a-network-you-wrote-yourself/) &nbsp;·&nbsp; [Word vectors](phases/03-words-that-know-what-they-mean/) &nbsp;·&nbsp; [A language model](phases/04-a-language-model-you-wrote-yourself/) &nbsp;·&nbsp; [Retrieval](phases/05-finding-the-right-thing-to-say/) &nbsp;·&nbsp; [Tools and agents](phases/06-tools-and-agents/) &nbsp;·&nbsp; [Measurement](phases/07-measuring-whether-any-of-it-works/) &nbsp;·&nbsp; [Shipping](phases/08-shipping-cost-latency-failure-safety/)
+
+---
+
+<a href="https://github.com/Amey-Thakur/AI-ENGINEERING" title="AI Engineering"><img src="assets/ai-engineering-mark.png" alt="AI Engineering mark" width="64"></a>
+
+### [AI Engineering](https://github.com/Amey-Thakur/AI-ENGINEERING)
+
+**Learn to build AI systems by building them**
+
+*Nine phases from nothing installed to shipping, with every number in them generated by the code beside it.*
+
+</div>

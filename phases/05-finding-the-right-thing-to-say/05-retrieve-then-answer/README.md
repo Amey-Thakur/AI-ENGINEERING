@@ -80,7 +80,7 @@ Questions where retrieval was wrong, so nothing downstream could help: 5
 | **Retrieve and return it** | **15 of 20** |
 | Retrieve, then generate | 0 of 20 |
 
-Read the first example. Search found *the test suite takes twelve minutes to run* — exactly right. The model then turned it into *the meeting was watching*.
+Read the first example. Search found *the test suite takes twelve minutes to run*, which is exactly right. The model then turned it into *the meeting was watching*.
 
 **Fifteen questions where retrieval was right and generating lost it.** Every single correct retrieval, destroyed by the step that came after it.
 

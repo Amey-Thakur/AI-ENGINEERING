@@ -36,6 +36,10 @@ so that it cannot decay unnoticed.
 - The course is 45 lessons across 9 phases, about 33 hours by the estimates at
   the top of each phase, and builds one system throughout rather than a set of
   disconnected exercises.
+- tools/certificate.py issues a record of completion, and runs every lesson
+  before drawing one. It attests only that all 45 checks passed at a named
+  commit on a named date, and prints the command to re-verify that. It is not
+  a claim about the holder's ability and does not present itself as one.
 
 ## Links
 
