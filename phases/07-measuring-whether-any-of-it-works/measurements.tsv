@@ -1,0 +1,13 @@
+what	right	asked
+phase 1 lesson 2, the hand written rule	18	20
+phase 1 lesson 4, the perceptron	15	20
+phase 2, the network you wrote	15	20
+phase 3, word vectors averaged	11	20
+phase 3, the first word and the average	13	20
+phase 5, search finding the right sentence	15	20
+phase 5, the model recalling what it read	0	20
+phase 6, search on its own questions	12	15
+phase 6, the confident agent	35	38
+phase 6, the cautious agent	32	38
+phase 6, declining the unanswerable	8	10
+phase 6, the routing rule on held back questions	6	8
