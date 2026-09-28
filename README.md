@@ -66,7 +66,7 @@ Those are not aspirations in a contributing guide. They are four programs in [`t
 | **3** | [Words that know what they mean](phases/03-words-that-know-what-they-mean/) | Ready |
 | **4** | [A language model you wrote yourself](phases/04-a-language-model-you-wrote-yourself/) | Ready |
 | **5** | [Finding the right thing to say](phases/05-finding-the-right-thing-to-say/) | Ready |
-| 6 | Tools and agents | Planned |
+| **6** | [Tools and agents](phases/06-tools-and-agents/) | Ready |
 | 7 | Measuring whether any of it works | Planned |
 | 8 | Shipping: cost, latency, failure, safety | Planned |
 
