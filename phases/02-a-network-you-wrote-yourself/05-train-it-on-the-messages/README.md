@@ -149,4 +149,4 @@ You proved a limit, built the thing that breaks it, measured gradients from firs
 
 That last part is the phase. A course that stopped at "the network learns XOR" would have taught you something true and left you believing something false.
 
-**Next:** [Phase 3](../03-words-that-know-what-they-mean/), which attacks the actual bottleneck: the model has no idea that *dashboard* and *server* have anything to do with each other.
+**Next:** [Phase 3](../../03-words-that-know-what-they-mean/), which attacks the actual bottleneck: the model has no idea that *dashboard* and *server* have anything to do with each other.

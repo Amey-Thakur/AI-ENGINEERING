@@ -136,4 +136,4 @@ You built a language model by counting and measured it with perplexity, found it
 
 That last sentence is, in miniature, how the models everyone is talking about were built.
 
-**Next:** [Phase 5](../05-finding-the-right-thing-to-say/), where the model stops having to remember everything and learns to look things up instead.
+**Next:** [Phase 5](../../05-finding-the-right-thing-to-say/), where the model stops having to remember everything and learns to look things up instead.

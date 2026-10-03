@@ -168,4 +168,4 @@ You wrote something that learns, in plain Python, with nothing installed. Then y
 
 That order matters. Most people learn the first part and never learn the rest, which is how a field ends up full of confident numbers that do not survive contact with anything real.
 
-**Next:** [Phase 2](../02-a-network-you-wrote-yourself/), where one weighted sum becomes many, and the model can finally see things a single line cannot.
+**Next:** [Phase 2](../../02-a-network-you-wrote-yourself/), where one weighted sum becomes many, and the model can finally see things a single line cannot.

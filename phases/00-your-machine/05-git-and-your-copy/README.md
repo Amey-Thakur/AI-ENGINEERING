@@ -161,4 +161,4 @@ Five passes means you have a terminal you can use, a Python you proved, a grasp 
 
 Nothing in this phase was about AI. All of it is what the rest of the course assumes, and what most courses assume without ever saying.
 
-**Next:** [Phase 1](../../01-the-mathematics-you-need/) begins the course proper.
+**Next:** [Phase 1](../../01-teach-it-to-tell-two-things-apart/) begins the course proper.

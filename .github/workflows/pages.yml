@@ -1,0 +1,85 @@
+# Name: pages.yml
+# Purpose: Publish the course as a site, from the markdown already in the repo.
+# Description: Assembles docs/ from the phase and lesson READMEs, builds it with
+#   MkDocs Material in strict mode so a broken link fails the run rather than
+#   shipping, and deploys through GitHub Pages. Nothing on the site is written
+#   twice: every page is a file a reader can also read on GitHub.
+# License: MIT
+# Author: Amey Thakur (https://github.com/Amey-Thakur)
+# Date: 2026-10-03
+
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Pages needs to write to its own deployment, and nothing else.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time, and a newer push waits rather than cancelling, so
+# the site is never left built from a half-finished run.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build the site
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # The course itself installs nothing and that is checked by
+      # tools/check_imports.py. These are for the publisher, not the lessons,
+      # the same way Pillow is for the card.
+      - name: Install the publisher
+        run: |
+          python -m pip install --quiet --upgrade pip
+          python -m pip install --quiet mkdocs-material
+
+      # The artwork is generated rather than committed, so the site gets the
+      # same mark, card and header plate the README does.
+      - name: Draw the artwork
+        run: |
+          python -m pip install --quiet pillow
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core
+          python tools/build_mark.py
+          python tools/build_header.py
+          python tools/social_preview.py
+
+      - name: Assemble the pages and the navigation
+        run: python tools/build_docs.py
+
+      # Strict, so an unresolved link fails here rather than on the site.
+      - name: Build
+        run: python -m mkdocs build --strict
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

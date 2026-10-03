@@ -151,4 +151,4 @@ You showed a model cannot recall what it has read, built a search that beat it 1
 
 The engineering lesson of the phase is the last one. **Every component you add can subtract.** The only way to know is to measure the system with it and without it, which almost nobody does, because the shape came recommended.
 
-**Next:** [Phase 6](../06-tools-and-agents/), where the model stops answering from text and starts deciding to do things.
+**Next:** [Phase 6](../../06-tools-and-agents/), where the model stops answering from text and starts deciding to do things.

@@ -80,6 +80,12 @@ python tools/run_lessons.py phases/00-your-machine/01-the-terminal
 
 If that last line fails because you do not have Python, or because you have never opened a terminal, that is expected, and it is exactly what [lesson 1](phases/00-your-machine/01-the-terminal/) is for.
 
+> [!TIP]
+> The whole course is also readable in a browser at
+> **[amey-thakur.github.io/AI-ENGINEERING](https://amey-thakur.github.io/AI-ENGINEERING/)**, with a sidebar
+> in course order, search across every lesson, and a next link at the foot of
+> each page. Same material, same numbers, built from these files on every push.
+
 Then work forwards. Every lesson is a directory holding the same three files:
 
 | File | What it is |

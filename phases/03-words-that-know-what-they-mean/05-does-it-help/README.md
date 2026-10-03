@@ -166,4 +166,4 @@ You proved that one-hot words are all exactly √2 apart, built profiles by coun
 
 Three phases have now ended with the nine line rule from phase 1 still in front. That is not a joke at your expense. It is what the measurement says, and a course that hid it would be worth less than one that shows it.
 
-**Next:** [Phase 4](../04-a-language-model-you-wrote-yourself/), where order stops being something a model discards and becomes the thing it is built around.
+**Next:** [Phase 4](../../04-a-language-model-you-wrote-yourself/), where order stops being something a model discards and becomes the thing it is built around.

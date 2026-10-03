@@ -227,4 +227,4 @@ You put an interval on every number this course has reported and found most of t
 
 The phase has one idea in it. **A number is a claim, and a claim needs a denominator, a baseline, a comparison, and a set of examples that existed before the thing being measured.** Four of those are usually missing, and that is why so much reported progress is not.
 
-**Next:** [Phase 8](../08-shipping-cost-latency-failure-safety/), where the system meets a user, a bill, and a bad day.
+**Next:** [Phase 8](../../08-shipping-cost-latency-failure-safety/), where the system meets a user, a bill, and a bad day.

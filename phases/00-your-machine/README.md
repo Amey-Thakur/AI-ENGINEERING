@@ -52,4 +52,4 @@ Run all five at once:
 python tools/run_lessons.py phases/00-your-machine
 ```
 
-Five passes and you have a working machine, proved rather than assumed. [Phase 1](../01-the-mathematics-you-need/) begins the course proper.
+Five passes and you have a working machine, proved rather than assumed. [Phase 1](../01-teach-it-to-tell-two-things-apart/) begins the course proper.

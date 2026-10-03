@@ -234,4 +234,4 @@ You showed a model cannot produce a digit it has never seen and closed the gap w
 
 The thread through all five is that **the interesting number is almost never the one being reported.** 29 of 30 hid a human doing the hard part. 38 of 38 hid a rule fitted to the questions. 12 of 15 hid ten questions that had no answer. And 35 against 32 hid nine extra false statements.
 
-**Next:** [Phase 7](../07-measuring-whether-any-of-it-works/), where measurement stops being a step at the end and becomes the thing you build first.
+**Next:** [Phase 7](../../07-measuring-whether-any-of-it-works/), where measurement stops being a step at the end and becomes the thing you build first.

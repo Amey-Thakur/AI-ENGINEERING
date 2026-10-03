@@ -44,6 +44,7 @@ so that it cannot decay unnoticed.
 ## Links
 
 - Repository: https://github.com/Amey-Thakur/AI-ENGINEERING
+- The course, readable in a browser: https://amey-thakur.github.io/AI-ENGINEERING/
 - Phase 0, for a reader with nothing installed: phases/00-your-machine/
 - Glossary, mapping the course's plain words onto the field's: GLOSSARY.md
 - Questions, including where transformers are and why they are not here: FAQ.md

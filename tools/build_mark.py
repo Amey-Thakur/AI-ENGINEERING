@@ -24,7 +24,9 @@ one product this course names is Python.
 Two outputs, matching the sibling convention:
 
     assets/ai-engineering-mark.png        192x192, for the README footer
-    .github/assets/mark-flat.png          74x64, for the social preview card
+    .github/assets/mark-flat.png          its own ink size, for the card
+    assets/mark-on-slate.png              paper ink, for the site title bar
+    assets/favicon.png                    64x64 plated, for the browser tab
 
 The square one is plated so it reads the same on GitHub's light and dark
 themes. The flat one is transparent, because the card supplies its own ground.
@@ -41,6 +43,11 @@ import lesson
 
 SQUARE = lesson.ROOT / "assets" / "ai-engineering-mark.png"
 FLAT = lesson.ROOT / ".github" / "assets" / "mark-flat.png"
+
+#: For the published site: the mark in paper, which is what reads on the
+#: slate title bar, and a plated square for the browser tab.
+ON_SLATE = lesson.ROOT / "assets" / "mark-on-slate.png"
+FAVICON = lesson.ROOT / "assets" / "favicon.png"
 
 #: Supersampled, then resampled down, which is the only way a stroked chevron
 #: comes out with clean edges.
@@ -132,7 +139,18 @@ def main() -> int:
     FLAT.parent.mkdir(parents=True, exist_ok=True)
     flat.save(FLAT, optimize=True)
 
-    for path, card in ((SQUARE, plated), (FLAT, flat)):
+    # The title bar of the site is slate, so its mark is drawn in paper.
+    light = cropped_to_ink(prompt(320, 280, PAPER, PYTHON))
+    light = light.resize(
+        (round(light.width * 96 / light.height), 96), Image.LANCZOS)
+    ON_SLATE.parent.mkdir(parents=True, exist_ok=True)
+    light.save(ON_SLATE, optimize=True)
+
+    favicon = plated.resize((64, 64), Image.LANCZOS)
+    favicon.save(FAVICON, optimize=True)
+
+    for path, card in ((SQUARE, plated), (FLAT, flat), (ON_SLATE, light),
+                       (FAVICON, favicon)):
         print(f"  {path.relative_to(lesson.ROOT).as_posix()}  "
               f"{card.width}x{card.height}  "
               f"{path.stat().st_size // 1024} KB")

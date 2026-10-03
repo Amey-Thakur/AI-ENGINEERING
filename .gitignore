@@ -12,6 +12,14 @@ __pycache__/
 # The built site.
 _site/
 
+# The site, and everything generated on the way to it. All of it comes from
+# tools/build_docs.py, so committing any of it would only let it drift from
+# the markdown it is built out of.
+docs/
+mkdocs.yml
+overrides/
+tools/docs_hooks.py
+
 # What operating systems leave behind.
 .DS_Store
 Thumbs.db
