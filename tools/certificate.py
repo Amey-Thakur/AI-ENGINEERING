@@ -48,12 +48,14 @@ SIGNATURE = lesson.ROOT / ".github" / "assets" / "signature.png"
 SIZE = (2000, 1414)
 SCALE = 2
 
-BACKGROUND = (252, 252, 250)
-INK = (24, 28, 36)
-DIM = (112, 120, 134)
-FAINT = (168, 174, 184)
-ACCENT = (13, 116, 88)
-RULE = (214, 217, 212)
+#: The same paper, slate and Python blue the mark, the header and the card
+#: use, so a record printed from this repository looks like it came from it.
+BACKGROUND = (0xFA, 0xFB, 0xFC)
+INK = (0x22, 0x30, 0x3C)
+DIM = (0x5B, 0x6B, 0x78)
+FAINT = (0x87, 0x94, 0xA0)
+ACCENT = (0x37, 0x76, 0xAB)
+RULE = (0xD7, 0xDD, 0xE3)
 
 MARGIN = 160
 

@@ -8,17 +8,23 @@ License: MIT
 Description:
 Draws the card that appears when the repository is shared.
 
-The geometry is the sibling geometry, measured from the other repositories
-rather than invented here: a 1280 by 640 canvas, six bands, every one of them
-centred on the middle of the card, the mark's ink starting at y=75, the title
-sitting on a 300 pixel baseline, a 344 pixel rule at y=396, and the footer
-starting at y=575. check_layout asserts all of that before the file is
-written, so the card cannot drift off the family and still be saved.
+The hero is the lockup: the mark, then the name beside it, the same pairing
+the README header uses. The sibling index card splits those into a small
+wordmark above a large title, which works when the two differ. Here they would
+be the same two words, so the card would say the name twice. One lockup, once,
+at size.
+
+Everything below it keeps the sibling discipline. Five bands, every one
+centred on the middle of the card, each anchored to a measured row, and
+check_layout asserts all of it before the file is written, so the card cannot
+drift off its geometry and still be saved.
 
 Nothing countable appears on it. A card is a static image somebody uploads to
 GitHub by hand, so a lesson count printed on it is wrong from the first commit
-that adds a lesson. The card carries what will still be true next year: what
-the course is, and the three things about it that are unusual.
+that adds a lesson. The card carries what will still be true next year.
+
+Colours are paper, slate and Python's own blue, taken from the launch kit's
+colour reference rather than invented here.
 
 Usage:
     python tools/social_preview.py
@@ -28,34 +34,36 @@ from __future__ import annotations
 
 from PIL import Image, ImageDraw, ImageFont
 
+import build_mark
 import lesson
 import typeface
 
 OUT = lesson.ROOT / ".github" / "social-preview.png"
-MARK = lesson.ROOT / ".github" / "assets" / "mark-flat.png"
 
 SIZE = (1280, 640)
 
-BACKGROUND = (0x0D, 0x10, 0x16)
-INK = (0xF7, 0xF9, 0xFC)
-PALE = (0xC6, 0xCE, 0xDA)
-ACCENT = (0x6E, 0xE7, 0xB7)
-DIM = (0x8A, 0x94, 0xA4)
-EDGE = (0x2A, 0x3B, 0x34)
+BACKGROUND = (0xFA, 0xFB, 0xFC)
+INK = (0x22, 0x30, 0x3C)
+PALE = (0x5B, 0x6B, 0x78)
+ACCENT = (0x37, 0x76, 0xAB)
+DIM = (0x87, 0x94, 0xA0)
+EDGE = (0xD7, 0xDD, 0xE3)
 
-TITLE = "AI Engineering"
+NAME = "AI Engineering"
 SUBTITLE = "Learn to build AI systems by building them"
 KEYWORDS = "no dependencies · no API key · offline"
 FOOTER = "AI Engineering · MIT · github.com/Amey-Thakur"
 
-#: Anchors measured from the sibling cards.
-MARK_W, MARK_H = 74, 64
-LOGO_TOP = 75
-TITLE_BASE = 300
-TITLE_FITS = 760
-SUB_TOP = 339
-RULE_Y, RULE_W = 396, 344
-KEY_TOP = 433
+#: The lockup: how tall the mark is, the gap to the name, and the name's size.
+MARK_H = 86
+MARK_GAP = 28
+NAME_SIZE = 96
+
+#: Anchors. The lockup and the footer are asserted; the rest sit between them.
+LOCKUP_TOP = 168
+SUB_TOP = 322
+RULE_Y, RULE_W = 400, 344
+KEY_TOP = 440
 FOOT_TOP = 575
 
 #: How far a band's centre may sit from the middle of the card.
@@ -68,6 +76,9 @@ THRESHOLD = 18
 #: Rows closer together than this belong to the same band.
 BAND_GAP = 6
 
+#: How many bands the card is meant to have.
+BANDS = 5
+
 _probe = ImageDraw.Draw(Image.new("RGB", (1, 1)))
 
 
@@ -77,15 +88,12 @@ def ink_box(text: str, font: ImageFont.FreeTypeFont):
     return _probe.textbbox((0, 0), text, font=font)
 
 
-def centred(card: Image.Image, text: str, font: ImageFont.FreeTypeFont,
-            fill, top: int):
-    """Place text so its ink starts at `top` and is centred on the canvas.
+def rendered(text: str, font: ImageFont.FreeTypeFont, fill) -> Image.Image:
+    """The text on its own layer, trimmed to the ink it actually produced.
 
-    The text is drawn on its own layer, cropped to the ink it actually
-    produced, and only then positioned. Placing it by the predicted box
-    instead leaves it a pixel or two off, because the antialiased left edge of
-    one glyph and the right edge of another do not fade symmetrically, and the
-    layout check below measures the ink rather than the prediction.
+    Positioning by the predicted box leaves text a pixel or two off, because
+    the antialiased left edge of one glyph and the right edge of another do
+    not fade symmetrically, and the layout check measures ink.
     """
     x0, y0, x1, y1 = ink_box(text, font)
     pad = 40
@@ -93,52 +101,45 @@ def centred(card: Image.Image, text: str, font: ImageFont.FreeTypeFont,
                       (0, 0, 0, 0))
     ImageDraw.Draw(layer).text((pad - x0, pad - y0), text, font=font,
                                fill=fill + (255,))
+    box = layer.getbbox()
 
-    ink = layer.getbbox()
-
-    if ink is None:
-        return 0, 0
-
-    cropped = layer.crop(ink)
-    card.paste(cropped, (round((SIZE[0] - cropped.width) / 2), top), cropped)
-
-    return cropped.width, cropped.height
+    return layer.crop(box) if box else layer
 
 
-def fit_title(text: str, target: int, largest: int = 124):
-    """The largest black face that keeps the title inside `target`."""
-    size = largest
+def centred(card: Image.Image, text: str, font: ImageFont.FreeTypeFont,
+            fill, top: int) -> None:
+    """Place text so its ink starts at `top` and is centred on the canvas."""
+    patch = rendered(text, font, fill)
+    card.paste(patch, (round((SIZE[0] - patch.width) / 2), top), patch)
 
-    while size > 24:
-        face = typeface.of("black", size)
-        x0, _, x1, _ = ink_box(text, face)
 
-        if x1 - x0 <= target:
-            return face
+def lockup(card: Image.Image) -> None:
+    """The mark, then the name, as one block centred on the card.
 
-        size -= 1
+    The name sits on the mark's own bottom edge rather than on its centre,
+    which is what stops the letters looking as though they float beside it.
+    """
+    mark = build_mark.cropped_to_ink(
+        build_mark.prompt(MARK_H * 6, MARK_H * 5, INK, ACCENT))
+    mark = mark.resize(
+        (round(mark.width * MARK_H / mark.height), MARK_H), Image.LANCZOS)
 
-    return typeface.of("black", 24)
+    name = rendered(NAME, typeface.of("black", NAME_SIZE), INK)
+    span = mark.width + MARK_GAP + name.width
+    left = round((SIZE[0] - span) / 2)
+    base = LOCKUP_TOP + max(mark.height, name.height)
+
+    card.paste(mark, (left, base - mark.height), mark)
+    card.paste(name, (left + mark.width + MARK_GAP, base - name.height), name)
 
 
 def draw() -> Image.Image:
     card = Image.new("RGB", SIZE, BACKGROUND)
     pen = ImageDraw.Draw(card)
 
-    mark = Image.open(MARK).convert("RGBA")
+    lockup(card)
 
-    if mark.size != (MARK_W, MARK_H):
-        mark = mark.resize((MARK_W, MARK_H), Image.LANCZOS)
-
-    card.paste(mark, (round((SIZE[0] - MARK_W) / 2), LOGO_TOP), mark)
-
-    # The title is placed by its bottom edge, not its top, so a longer or
-    # shorter name still sits on the same line as the sibling cards.
-    title = fit_title(TITLE, TITLE_FITS)
-    _, top, _, bottom = ink_box(TITLE, title)
-    centred(card, TITLE, title, INK, TITLE_BASE - (bottom - top))
-
-    centred(card, SUBTITLE, typeface.of("sans", 29), PALE, SUB_TOP)
+    centred(card, SUBTITLE, typeface.of("sans", 31), PALE, SUB_TOP)
 
     pen.line([(SIZE[0] - RULE_W) / 2, RULE_Y, (SIZE[0] + RULE_W) / 2, RULE_Y],
              fill=EDGE)
@@ -185,14 +186,14 @@ def bands(pixels, ground) -> list[tuple[int, int]]:
 
 
 def check_layout(card: Image.Image) -> list[tuple[int, int]]:
-    """The card is only a sibling if it lands on the sibling geometry."""
+    """The card is only right if it lands on its own measured geometry."""
     pixels = card.convert("RGB").load()
     ground = pixels[5, 5]
     found = bands(pixels, ground)
     problems = []
 
-    if len(found) != 6:
-        problems.append(f"expected 6 bands, drew {len(found)}")
+    if len(found) != BANDS:
+        problems.append(f"expected {BANDS} bands, drew {len(found)}")
 
     for top, bottom in found:
         left = right = None
@@ -215,25 +216,22 @@ def check_layout(card: Image.Image) -> list[tuple[int, int]]:
     # One pixel of slack: the faintest antialiased row of a glyph can fall
     # under the threshold, which moves a measured band without the text having
     # moved.
-    if found and abs(found[0][0] - LOGO_TOP) > 1:
-        problems.append(f"the mark starts at {found[0][0]}, not {LOGO_TOP}")
+    if found and abs(found[0][0] - LOCKUP_TOP) > 1:
+        problems.append(f"the lockup starts at {found[0][0]}, not "
+                        f"{LOCKUP_TOP}")
 
     if found and abs(found[-1][0] - FOOT_TOP) > 1:
-        problems.append(f"the footer starts at {found[-1][0]}, not {FOOT_TOP}")
+        problems.append(f"the footer starts at {found[-1][0]}, not "
+                        f"{FOOT_TOP}")
 
     if problems:
-        raise SystemExit("the card drifted off the sibling geometry:\n  "
+        raise SystemExit("the card drifted off its geometry:\n  "
                          + "\n  ".join(problems))
 
     return found
 
 
 def main() -> int:
-    if not MARK.exists():
-        print(f"FAIL  {MARK.relative_to(lesson.ROOT).as_posix()} is missing")
-        print("      run `python tools/build_mark.py` first")
-        return 1
-
     OUT.parent.mkdir(parents=True, exist_ok=True)
     card = draw()
 
@@ -244,7 +242,7 @@ def main() -> int:
 
     print(f"  {OUT.relative_to(lesson.ROOT).as_posix()}  "
           f"{SIZE[0]}x{SIZE[1]}  {OUT.stat().st_size // 1024} KB  "
-          f"six bands, every one centred")
+          f"{BANDS} bands, every one centred")
 
     return 0
 

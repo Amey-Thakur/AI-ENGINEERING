@@ -8,10 +8,15 @@ License: MIT
 Description:
 Builds the header plate that opens the README.
 
-The mark is mint on nothing. Dropped straight into a README it reads on
-GitHub's dark theme and washes out on its light one, so the plate composites
-the mark and the wordmark onto the repository's own ground. One image, correct
-in both themes, which is the only reason this script exists.
+The mark and the wordmark are composited onto a slate plate. Dropped into a
+README on transparency they would read on GitHub's dark theme and wash out on
+its light one, so the plate gives one image that is correct in both, which is
+the only reason this script exists and the same reason the sibling index
+repository plates its logo.
+
+The mark is drawn here by build_mark.prompt rather than loaded from a file,
+because the plate needs it in paper rather than in slate and a third asset on
+disk would be a third thing to keep in step.
 
 The lockup and the strapline are centred as a single block rather than
 separately, so the plate stays balanced if either line changes length.
@@ -24,11 +29,11 @@ from __future__ import annotations
 
 from PIL import Image, ImageDraw
 
+import build_mark
 import lesson
 import typeface
 
 OUT = lesson.ROOT / "assets" / "ai-engineering-header.png"
-MARK = lesson.ROOT / ".github" / "assets" / "mark-flat.png"
 
 SIZE = (1000, 260)
 
@@ -36,9 +41,11 @@ SIZE = (1000, 260)
 #: clean.
 SS = 3
 
-GROUND = (0x0D, 0x10, 0x16)
-INK = (0xF7, 0xF9, 0xFC)
-DIM = (0x8A, 0x94, 0xA4)
+#: Slate plate, paper type, Python blue cursor. The same three values the
+#: mark and the card use, so the repository's artwork reads as one system.
+GROUND = (0x2F, 0x3E, 0x4A)
+INK = (0xFA, 0xFB, 0xFC)
+DIM = (0xAE, 0xBA, 0xC4)
 
 WORDMARK = "AI Engineering"
 STRAP = "Learn to build AI systems by building them"
@@ -51,11 +58,6 @@ STRAP_GAP = 26
 
 
 def main() -> int:
-    if not MARK.exists():
-        print(f"FAIL  {MARK.relative_to(lesson.ROOT).as_posix()} is missing")
-        print("      run `python tools/build_mark.py` first")
-        return 1
-
     plate = Image.new("RGB", (SIZE[0] * SS, SIZE[1] * SS), GROUND)
     pen = ImageDraw.Draw(plate)
 
@@ -66,20 +68,25 @@ def main() -> int:
     word_w, word_h = wx1 - wx0, wy1 - wy0
     strap_w = pen.textlength(STRAP, font=strap)
 
-    lockup_w = MARK_W * SS + MARK_GAP * SS + word_w
+    mark = build_mark.cropped_to_ink(
+        build_mark.prompt(MARK_W * SS * 2, MARK_H * SS * 2, INK,
+                          build_mark.PYTHON))
+    mark = mark.resize(
+        (round(mark.width * MARK_H * SS / mark.height), MARK_H * SS),
+        Image.LANCZOS)
+
+    lockup_w = mark.width + MARK_GAP * SS + word_w
     lockup_h = max(MARK_H * SS, word_h)
     block_h = lockup_h + STRAP_GAP * SS + STRAP_SIZE * SS
     top = (SIZE[1] * SS - block_h) / 2
     left = (SIZE[0] * SS - lockup_w) / 2
 
-    mark = Image.open(MARK).convert("RGBA").resize(
-        (MARK_W * SS, MARK_H * SS), Image.LANCZOS)
-    plate.paste(mark, (round(left), round(top + (lockup_h - MARK_H * SS) / 2)),
+    plate.paste(mark, (round(left), round(top + lockup_h - mark.height)),
                 mark)
 
     # The wordmark sits on the mark's own bottom edge, which is what stops the
     # letters looking as though they are floating beside it.
-    pen.text((round(left + MARK_W * SS + MARK_GAP * SS - wx0),
+    pen.text((round(left + mark.width + MARK_GAP * SS - wx0),
               round(top + lockup_h - word_h - wy0)),
              WORDMARK, font=word, fill=INK)
 
