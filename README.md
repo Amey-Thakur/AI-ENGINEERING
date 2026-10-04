@@ -123,7 +123,7 @@ Nine finished phases of five lessons each, one system built the whole way throug
 | **6** | [Tools and agents](phases/06-tools-and-agents/) | An agent: tools it can call, a rule that picks one, a loop that can stop, and a scorecard with six columns |
 | **7** | [Measuring whether any of it works](phases/07-measuring-whether-any-of-it-works/) | Confidence intervals, a paired significance test, baselines and a regression test, turned on your own earlier work |
 | **8** | [Shipping: cost, latency, failure, safety](phases/08-shipping-cost-latency-failure-safety/) | An index, a cost meter, an outage drill, an access boundary, and the release sheet you hand somebody |
-| **9** | [Attention, and the block](phases/09-attention-and-the-block/) *(2 of 5 lessons so far)* | One attention head and its backward pass, clearing a ceiling no n-gram can reach, and the reason its weights do not explain it |
+| **9** | [Attention, and the block](phases/09-attention-and-the-block/) | One attention head and its backward pass, a transformer block assembled and proved correct by hand, and the measurements showing neither of them explains itself the way you would expect |
 
 **About thirty-three hours** for the nine finished phases, by the estimate printed at the top of each. Phase 0 is the shortest at two hours, phase 4 the longest at five.
 

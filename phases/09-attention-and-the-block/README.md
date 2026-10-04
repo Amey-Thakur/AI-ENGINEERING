@@ -1,16 +1,18 @@
 # Phase 9. Attention, and the block
 
-**Two lessons of a planned five. About ninety minutes for what exists. Still nothing installed.**
+**Five lessons. About four hours. Still nothing installed.**
 
 Phase 4 built a model that predicts the next word from the one before it, and phase 8 shipped a system with that model inside it. This phase is about the limit that sits underneath all of it: a word that decides the answer can be further away than the model can see, and widening the window runs into the vocabulary wall from the other direction.
 
 Attention removes the limit by addressing a position by what is in it rather than by how far away it is. One head, three projections, a softmax and a weighted sum, written out and trained by a backward pass you derive yourself.
 
-> [!WARNING]
-> **This phase is being written.** Two of its five lessons are finished and
-> the other three are not, so it does not yet close the way the earlier
-> phases do. The two that exist are complete, checked and measured to the
-> same standard as everything before them.
+> [!NOTE]
+> **Three of these five lessons end in a negative result**, and they are the
+> three worth reading. A head whose attention weights turn out not to matter,
+> a held-back split that could not have been answered by anything, and a
+> complete transformer block that buys nothing a bare head could not already
+> do. Each one is measured, each one is checked, and none of them is written
+> up as a success.
 
 <br>
 
@@ -20,9 +22,9 @@ Attention removes the limit by addressing a position by what is in it rather tha
 | --- | --- | --- |
 | 1 | [The thing a bigram cannot see](01-the-thing-a-bigram-cannot-see/) | A ceiling no amount of training moves |
 | 2 | [Looking at every word at once](02-looking-at-every-word-at-once/) | One head clears it, and its weights do not explain how |
-| 3 | *It works without looking* | Being written |
-| 4 | *Where a word sits* | Being written |
-| 5 | *The block* | Being written |
+| 3 | [It works without looking](03-it-works-without-looking/) | The weights are not where the signal is, so a heatmap is not an explanation |
+| 4 | [Where a word sits](04-where-a-word-sits/) | Position makes order visible, and which examples it sees decides whether it learns any |
+| 5 | [The block](05-the-block/) | The real thing, assembled, proved correct by nudging, and no better than the head |
 
 <br>
 

@@ -197,4 +197,4 @@ Then take the scaling out, so the scores reach the softmax undivided, and print 
 - What made that possible is addressing a position by content rather than by offset, not scale and not more data.
 - The head's weights are nearly flat and nearly identical between the two cases it distinguishes, so they are not an account of how it decided.
 
-**Next:** *3. It works without looking*, being written, where the signal turns out to be somewhere other than the weights.
+**Next:** [3. It works without looking](../03-it-works-without-looking/), where the signal turns out to be somewhere other than the weights.
