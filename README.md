@@ -1,6 +1,6 @@
 <div align="center">
 
-<a href="https://github.com/Amey-Thakur/AI-ENGINEERING" title="AI Engineering"><img src="assets/ai-engineering-header.png" alt="AI Engineering, a course that runs offline with no dependencies" width="700"/></a>
+<a href="https://github.com/Amey-Thakur/AI-ENGINEERING" title="AI Engineering"><img src="assets/ai-engineering-header.svg" alt="AI Engineering, a course that runs offline with no dependencies" width="700"/></a>
 
 # AI Engineering
 
@@ -283,7 +283,7 @@ Grateful acknowledgment to everyone who **reports that a lesson lost them**. A l
 
 ---
 
-<a href="https://github.com/Amey-Thakur/AI-ENGINEERING" title="AI Engineering"><img src="assets/ai-engineering-mark.png" alt="AI Engineering mark" width="64"></a>
+<a href="https://github.com/Amey-Thakur/AI-ENGINEERING" title="AI Engineering"><img src="assets/ai-engineering-mark.svg" alt="AI Engineering mark" width="64"></a>
 
 ### [AI Engineering](https://github.com/Amey-Thakur/AI-ENGINEERING)
 

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="42.12 27.68 57.76 36.64"
+     width="58" height="37" role="img"
+     aria-label="AI Engineering: a shell prompt with a blinking cursor">
+  <title>AI Engineering</title>
+  <style>
+    /* On for half the cycle, off for the other half, switching rather than
+       fading, which is what a terminal cursor actually does. */
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      50.01%, 100% { opacity: 0; }
+    }
+    .cursor {
+      animation: blink 1.06s steps(1, end) infinite;
+    }
+    /* Anybody who has asked not to be shown motion gets a steady cursor. */
+    @media (prefers-reduced-motion: reduce) {
+      .cursor { animation: none; opacity: 1; }
+    }
+  </style>
+  <polyline points="46.12,31.68 62.44,48.00 46.12,64.32" fill="none" stroke="#FAFBFC"
+            stroke-width="8" stroke-linecap="round"
+            stroke-linejoin="round"/>
+  <rect class="cursor" x="71.08" y="56.32"
+        width="28.80" height="8.00"
+        rx="3" fill="#3776AB"/>
+</svg>

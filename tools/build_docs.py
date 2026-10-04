@@ -100,7 +100,7 @@ hooks:
 theme:
   name: material
   custom_dir: overrides
-  logo: assets/mark-on-slate.png
+  logo: assets/mark-on-slate.svg
   favicon: assets/favicon.png
   font:
     text: Inter
@@ -285,6 +285,87 @@ PALETTE = """\
 .md-typeset blockquote {
   border-left: 2px solid var(--md-accent-fg-color);
   color: var(--md-default-fg-color);
+}
+
+/* The palette control, drawn as a switch rather than left as a bare icon.
+   Material shows exactly one of the two labels at a time, so the label is the
+   track and its icon is the knob: parked left while the light scheme is on,
+   slid right while the dark one is. */
+form[data-md-component="palette"] {
+  display: flex;
+  align-items: center;
+}
+
+form[data-md-component="palette"] > label.md-header__button {
+  position: relative;
+  box-sizing: border-box;
+  width: 2.4rem;
+  height: 1.2rem;
+  margin: 0 .35rem;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, .34);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, .16);
+  opacity: 1;
+  transition: background .25s, border-color .25s;
+}
+
+form[data-md-component="palette"] > label.md-header__button:hover {
+  background: rgba(255, 255, 255, .26);
+  border-color: rgba(255, 255, 255, .5);
+}
+
+form[data-md-component="palette"] > label.md-header__button svg {
+  position: absolute;
+  top: 50%;
+  width: .96rem;
+  height: .96rem;
+  padding: .16rem;
+  border-radius: 50%;
+  background: var(--md-primary-bg-color);
+  color: var(--md-primary-fg-color);
+  transform: translateY(-50%);
+  transition: left .25s ease;
+}
+
+[data-md-color-scheme="default"] form[data-md-component="palette"] > label svg {
+  left: .08rem;
+}
+
+[data-md-color-scheme="slate"] form[data-md-component="palette"] > label svg {
+  left: calc(100% - 1.04rem);
+}
+
+/* The repository name, in full. Material allows it 11.7rem and
+   "Amey-Thakur/AI-ENGINEERING" is wider than that, so it arrived ellipsised. */
+/* Material lets this shrink, which is what was clipping the name: raising
+   max-width changed nothing because the flex layout, not the maximum, was
+   the constraint. Sizing it to its content and refusing to shrink fixes it,
+   and the maximum stays as a guard so a longer name cannot crowd the search
+   box out. */
+.md-header__source {
+  flex: 0 0 auto;
+  width: auto;
+  max-width: 19rem;
+  margin-left: .6rem;
+}
+
+/* Wide enough for the whole name, and still clipping rather than overlapping
+   if a longer one ever arrives. */
+.md-source__repository {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: .68rem;
+}
+
+/* Below the width where both fit, the name goes and the icon stays, which is
+   better than half a name. */
+@media screen and (max-width: 76.1875em) {
+  .md-header__source {
+    max-width: none;
+  }
 }
 
 /* Authorship, on its own line at the foot of every page. */
