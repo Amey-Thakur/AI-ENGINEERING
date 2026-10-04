@@ -52,8 +52,12 @@ RATE = 0.10
 UPDATES = 4000
 
 #: Three seeds, because one held-back number from one seed would not show how
-#: much of it is luck.
-SEEDS = (7, 11, 23)
+#: much of it is luck. These three were chosen for a second reason as well:
+#: their results do not move when the arithmetic is perturbed by a single
+#: last bit. Seed 11's does, which means its number depends on which C
+#: library Python was built against. Going further at the end of the lesson
+#: has the measurement.
+SEEDS = (7, 13, 23)
 
 
 def read_sentences():
@@ -363,8 +367,10 @@ def main() -> None:
     print()
     print(f"Position makes the training set solvable: {reported[0][1]} of "
           f"{sentences(kept)} becomes {reported[1][1]} of "
-          f"{sentences(kept)}, three")
-    print(f"times over. Held back it gives "
+          f"{sentences(kept)} at all")
+    print("three of these seeds, which the model without it cannot do at any "
+          "seed at all.")
+    print(f"Held back it gives "
           f"{', '.join(str(n) for n in spread[:-1])} and {spread[-1]} against "
           f"a chance of {sentences(held) // 2}.")
     print()

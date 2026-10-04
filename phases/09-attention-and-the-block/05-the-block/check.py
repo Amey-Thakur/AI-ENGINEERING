@@ -11,12 +11,16 @@ Then it insists on the four facts the lesson turns on:
 
     the hand-written backward pass agrees with finite differences,
     the block costs more than the bare head in both parameters and work,
-    the block separates no pair on the adjacent split that the head could not,
-    and taking the layer norms out stops it working entirely.
+    no difference between these architectures is larger than the spread
+        between seeds of a single one of them,
+    and at depth the residual and the layer norm do what they are there for.
 
-The third is the lesson's result and it is a negative one. If a block ever did
-beat the head here, the lesson would be wrong and should be rewritten rather
-than the check relaxed.
+The third is the lesson's result. An earlier version of this check asserted
+something stronger and more flattering, that the block separates nothing the
+head could not and that removing the layer norms stops it working. Both held
+for the three seeds the lesson first used and failed for the three it uses
+now, which is how the lesson ended up being about the spread rather than
+about the architecture.
 
 The first is worth keeping for its own sake. The block in this lesson had a
 real bug the first time it was written: the input layer norm's gain was
@@ -51,19 +55,18 @@ WIDTH = 8
 HIDDEN = 4 * WIDTH
 RATE = 0.10
 UPDATES = 4000
-SEEDS = (7, 11, 23)
+SEEDS = (7, 13, 23)
 EPS = 1e-5
 NUDGE = 1e-6
 GRADIENT_TOLERANCE = 1e-5
 DEPTHS = (1, 2, 4, 8, 16, 32)
 DEPTH_SEEDS = range(1, 21)
 
-#: The adjacent split is the one lesson 4 could not do. The block may not do
-#: any better on it, which is this lesson's finding.
-BLOCK_MAY_SEPARATE_ON_ADJACENT = 0
-
-#: With the layer norms gone the block must stop working altogether.
-WITHOUT_NORMS_MAY_SEPARATE = 0
+#: Every architecture comparison in this lesson must stay inside the noise:
+#: the gap between two configurations' averages may not exceed the spread
+#: within either of them. If one ever did, this lesson would have found a real
+#: architectural difference and would need rewriting to say so.
+GAP_MAY_NOT_EXCEED_SPREAD = True
 
 #: How much more gradient a 32 layer stack with residuals must deliver to its
 #: input than the same stack without them. Measured at over 600, so a tenth of
@@ -591,16 +594,9 @@ def main() -> None:
         "/".join(map(str, fits)), "/".join(map(str, helds)),
         "/".join(map(str, splits)))
 
-    adjacent = runs[0][0]
-    block_on_adjacent = separated[(adjacent, "full block")]
+    adjacent, widest_name = runs[0][0], runs[1][0]
+    separated[(widest_name, "block, no layer norms")] = splits
     head_on_adjacent = separated[(adjacent, "bare head")]
-
-    if max(block_on_adjacent) > BLOCK_MAY_SEPARATE_ON_ADJACENT:
-        fail(f"on the adjacent split the block separates "
-             f"{'/'.join(map(str, block_on_adjacent))} of {len(every)} pairs",
-             "the lesson reports that a whole block buys nothing lesson 4 "
-             "could not already do; if it has started working, say so and "
-             "rewrite the lesson rather than relaxing this")
 
     if max(head_on_adjacent) > 0:
         fail(f"on the adjacent split the bare head separates "
@@ -608,12 +604,28 @@ def main() -> None:
              "lesson 4's finding was that adjacent pairs teach it no order, "
              "and this lesson rests on it")
 
-    if max(splits) > WITHOUT_NORMS_MAY_SEPARATE:
-        fail(f"with the layer norms gone the block still separates "
-             f"{'/'.join(map(str, splits))} of {len(every)} pairs",
-             "the lesson reports that the layer norms are what keep the "
-             "block working at all, so this is the half of the ablation that "
-             "has to fail")
+    comparisons = (("head against block on the adjacent pairs",
+                    (adjacent, "bare head"), (adjacent, "full block")),
+                   ("head against block on the widest pairs",
+                    (widest_name, "bare head"), (widest_name, "full block")),
+                   ("the block against the block with no layer norms",
+                    (widest_name, "full block"),
+                    (widest_name, "block, no layer norms")))
+    biggest = 0.0
+
+    for label, left, right in comparisons:
+        first, second = separated[left], separated[right]
+        gap = abs(sum(first) / len(first) - sum(second) / len(second))
+        spread = max(max(first) - min(first), max(second) - min(second))
+        biggest = max(biggest, gap)
+
+        if GAP_MAY_NOT_EXCEED_SPREAD and gap > spread:
+            fail(f"{label}: the gap between the averages is {gap:.1f} and the "
+                 f"spread within a row is only {spread}",
+                 "that would be a real architectural difference rather than "
+                 "seed noise, which is the opposite of what this lesson "
+                 "reports; measure it over more seeds and rewrite the lesson "
+                 "rather than relaxing this")
 
     # 4. What the parts are for, at depth.
     deep = DEPTHS[-1]
@@ -673,14 +685,14 @@ def main() -> None:
                  "the seeds are fixed, so a different number means the model "
                  "differs rather than the luck")
 
-    print(f"PASS  gradients agree to {worst:.0e}, the block costs "
+    print(f"PASS  gradients all agree inside 1 part in "
+          f"{1 / GRADIENT_TOLERANCE:.0e}, the block costs "
           f"{whole / bare:.2f} times the parameters and "
-          f"{whole_work / bare_work:.2f} times the work and separates "
-          f"{max(block_on_adjacent)} of {len(every)} on the adjacent split "
-          f"against the head's {max(head_on_adjacent)}, the layer norms are "
-          f"load bearing at {max(splits)} of {len(every)} without them, and "
-          f"at {deep} layers the residual is worth {kept:.0f} times the "
-          f"gradient")
+          f"{whole_work / bare_work:.2f} times the work, every architecture "
+          f"gap stays inside the seed spread with the largest at "
+          f"{biggest:.1f}, and at {deep} layers the residual is worth "
+          f"{kept:.0f} times the gradient while the layer norm holds the "
+          f"stream {calmed:.0f} times smaller")
 
 
 if __name__ == "__main__":

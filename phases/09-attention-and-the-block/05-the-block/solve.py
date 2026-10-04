@@ -53,7 +53,7 @@ HIDDEN = 4 * WIDTH
 
 RATE = 0.10
 UPDATES = 4000
-SEEDS = (7, 11, 23)
+SEEDS = (7, 13, 23)
 
 #: Added inside the square root so a constant vector does not divide by zero.
 EPS = 1e-5
@@ -527,6 +527,7 @@ def main() -> None:
     every = list(itertools.combinations(STAGES, 2))
     reported = []
     done = {}
+    spreads = {}
 
     # 1. Is the backward pass right? Nudge every parameter group and see.
     def loss_of(context, target, weights):
@@ -565,7 +566,7 @@ def main() -> None:
     print("Every parameter group, by hand against a nudge of "
           f"{NUDGE:.0e}:")
     print()
-    print("  parameter          by hand      by nudging    relative gap")
+    print("  parameter          by hand      by nudging    agrees")
 
     for name, where in picked.items():
         mine = (by_hand[name][where[0]][where[1]]
@@ -585,11 +586,18 @@ def main() -> None:
         scale = max(abs(mine), abs(nudged), 1e-12)
         gap = abs(mine - nudged) / scale
         worst = max(worst, gap)
-        print(f"  {name:12}  {mine:13.3e}  {nudged:13.3e}    {gap:12.2e}")
+        # The gap is a ratio of two tiny differences. Its size varies by more
+        # than a factor of ten between one machine's maths library and
+        # another's, even when both gradients agree to nine figures, so
+        # printing it would make this page disagree with itself depending on
+        # where it ran. The verdict is the part that is the same everywhere.
+        print(f"  {name:12}  {mine:13.3e}  {nudged:13.3e}    "
+              f"{'yes' if gap <= GRADIENT_TOLERANCE else 'NO'}")
 
     print()
-    print(f"Largest relative gap across all {len(picked)} of them: "
-          f"{worst:.1e}. The backward pass is right.")
+    print(f"All {len(picked)} agree, every one of them inside 1 part in "
+          f"{1 / GRADIENT_TOLERANCE:.0e}.")
+    print("The backward pass is right.")
     print()
 
     # 2. What does it cost?
@@ -638,34 +646,25 @@ def main() -> None:
             row = ("/".join(map(str, fits)), "/".join(map(str, helds)),
                    "/".join(map(str, splits)))
             done[(name, label)] = row
+            spreads[(name, label)] = splits
             reported.append((f"{label}, {name}", *row))
             print(f"    {label:22}  {row[0]:>8} of {len(examples(chosen))}  "
                   f"{row[1]:>11} of {len(examples(rest))}  "
                   f"{row[2]:>8} of {len(every)}")
 
     print()
-    print("The block does not separate a single pair the head could not. On "
-          "the adjacent")
-    print("pairs neither of them separates anything at all, at any seed.")
+    print("Now put a number on how much of that is the architecture and how "
+          "much is the")
+    print("seed. For each pair of rows, compare the gap between their averages "
+          "against")
+    print("the spread within a single row:")
     print()
+    print("  comparison                                   gap between   "
+          "spread within")
 
-    # 4. Which part is carrying the block, then?
+    # 4. Take a part out, and compare the same way.
     widest = runs[1][1]
     rest = [pair for pair in pairs if pair not in widest]
-    print("So take the layer norms out of the block and train it again, on "
-          "the split")
-    print("where there was something to lose:")
-    print()
-    print("    model                    trained on       held back     "
-          "separated")
-
-    # The full block on this split was trained a moment ago, so that row is
-    # the one already measured rather than an identical model trained twice.
-    row = done[(runs[1][0], "full block")]
-    print(f"    {'full block':22}  {row[0]:>8} of {len(examples(widest))}  "
-          f"{row[1]:>11} of {len(examples(rest))}  "
-          f"{row[2]:>8} of {len(every)}")
-
     fits, helds, splits = [], [], []
 
     for seed in SEEDS:
@@ -679,19 +678,55 @@ def main() -> None:
     row = ("/".join(map(str, fits)), "/".join(map(str, helds)),
            "/".join(map(str, splits)))
     reported.append(("block with no layer norms, the nine widest pairs", *row))
-    print(f"    {'block, no layer norms':22}  "
-          f"{row[0]:>8} of {len(examples(widest))}  "
-          f"{row[1]:>11} of {len(examples(rest))}  "
-          f"{row[2]:>8} of {len(every)}")
+    spreads[(runs[1][0], "block, no layer norms")] = splits
+
+    def compare(label, left, right):
+        first, second = spreads[left], spreads[right]
+        gap = abs(sum(first) / len(first) - sum(second) / len(second))
+        widest_spread = max(max(first) - min(first), max(second) - min(second))
+        verdict_text = ("the seed" if widest_spread >= gap
+                        else "the architecture")
+        print(f"  {label:42}  {gap:11.1f}   {widest_spread:13}")
+
+        return gap, widest_spread
+
+    adjacent_name, widest_name = runs[0][0], runs[1][0]
+    verdicts_out = [
+        compare("head against block, adjacent pairs",
+                (adjacent_name, "bare head"), (adjacent_name, "full block")),
+        compare("head against block, widest pairs",
+                (widest_name, "bare head"), (widest_name, "full block")),
+        compare("block against block without layer norms",
+                (widest_name, "full block"),
+                (widest_name, "block, no layer norms")),
+    ]
 
     print()
-    print("Without them it separates nothing, at every seed. The layer norms "
-          "are not")
-    print("an improvement to the block. They are what keeps it working at "
-          "all, and the")
-    print("bare head needed none of them because it has no residual and no "
-          "network")
-    print("adding to its stream.")
+    print("Every one of those gaps is smaller than the spread inside a single "
+          "row. The")
+    print("block separates 9 pairs the head could not at one seed and none at "
+          "the other")
+    print("two. Taking the layer norms out destroys it at two seeds and "
+          "leaves it better")
+    print("than the full block at the third.")
+    print()
+    print("With three seeds on sixty sentences, none of these architectures "
+          "has been")
+    print("shown to differ from any other. That is the honest result, and it "
+          "is not the")
+    print("one this lesson was written expecting.")
+    print()
+    print("  the three rows, so you can see where the spread comes from")
+    print(f"    {'bare head, adjacent':38} "
+          f"{spreads[(adjacent_name, 'bare head')]}")
+    print(f"    {'full block, adjacent':38} "
+          f"{spreads[(adjacent_name, 'full block')]}")
+    print(f"    {'bare head, widest':38} "
+          f"{spreads[(widest_name, 'bare head')]}")
+    print(f"    {'full block, widest':38} "
+          f"{spreads[(widest_name, 'full block')]}")
+    print(f"    {'block without layer norms, widest':38} "
+          f"{spreads[(widest_name, 'block, no layer norms')]}")
     print()
 
     # 5. So what are the parts for? Depth.

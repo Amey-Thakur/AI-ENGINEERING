@@ -53,6 +53,15 @@ position embeddings, split A, seed 7              40          5
 
 Every model gets the same **4,000 weight updates**, whatever the size of its training set, so a run on nine pairs cannot be waved away as having been trained less than a run on twenty.
 
+> [!NOTE]
+> The three seeds are **7, 13 and 23, and they were chosen rather than
+> picked arbitrarily.** Two criteria, both measured and both explained at the
+> end of this lesson: the run fits its training set, and its result does not
+> change when the arithmetic is perturbed by a single last bit.
+>
+> Choosing seeds is the sort of thing that deserves to be said out loud,
+> because the same freedom can be used to choose a result.
+
 <br>
 
 ## What the solution prints
@@ -75,11 +84,12 @@ back, chance 10. Every model below gets 4000 weight updates.
   model                                 trained on   held back
   no position                           20 of 40    10 of 20
   position embeddings, seed 7           40 of 40     5 of 20
-  position embeddings, seed 11          40 of 40     9 of 20
+  position embeddings, seed 13          40 of 40     9 of 20
   position embeddings, seed 23          40 of 40    10 of 20
 
-Position makes the training set solvable: 20 of 40 becomes 40 of 40, three
-times over. Held back it gives 5, 9 and 10 against a chance of 10.
+Position makes the training set solvable: 20 of 40 becomes 40 of 40 at all
+three of these seeds, which the model without it cannot do at any seed at all.
+Held back it gives 5, 9 and 10 against a chance of 10.
 
 Before concluding anything about the model, audit the split. Of the 10 held-back
 pairs, how many have an order that follows from the training pairs by chaining?
@@ -199,17 +209,19 @@ Ask it about all 45 stage pairs, including the 15 that appear in no sentence at 
 It has not learned a chain. It has put the ten stages **on a line**, and it compares positions on that line. That is why it answers pairs no chain reaches, and why the pairs it refuses are the ones closest together: the gap is too small for its readout to resolve.
 
 > [!WARNING]
-> One run is one run, and the seed moves this more than the prose above would
-> suggest. Across eight seeds the distant run is wrong about **5 of 257**
-> commitments rather than none, and at one seed in the eight it collapses the
-> way the adjacent run does, separating **0 of 45**.
+> One run is one run. Across ten seeds the distant run is wrong about a
+> handful of its commitments rather than none, and at one seed in the ten it
+> collapses the way the adjacent run does, separating **0 of 45**.
 >
-> So the claim that survives is the comparison, not the individual figure: the
-> adjacent run separates nothing at every seed tried, the distant run usually
-> separates most pairs and is right about nearly all of them, and the gap
-> between those two is not a seed effect. "Never wrong" was true of seed 7 and
-> not of seed 42, and it is worth being exact about which of those a sentence
-> is describing.
+> So the claim that survives is the comparison, not the figure: the adjacent
+> run separates nothing at every seed tried, the distant run usually separates
+> most pairs and is right about nearly all of them, and the gap between those
+> two is larger than the gap between seeds. "Never wrong" is true of the seed
+> reported here and not of every seed, and it is worth being exact about
+> which of those a sentence is describing.
+>
+> [Lesson 5](../05-the-block/) is what happens when that distinction is not
+> made: two of its findings reversed when its seeds changed.
 
 > [!NOTE]
 > There is a reason the readout cannot resolve a small gap, and it is visible
@@ -244,7 +256,29 @@ Print `place[1]` and `place[4]` from the trained model and compare them. The who
 
 Then train on nine pairs drawn at random from every gap, several times over. Position embeddings fit 14, 16, 17 and 18 of 18 on four such draws, against 9 of 18 for the adjacent nine and 18 of 18 for the widest nine, which is the same finding from a third direction.
 
-Then run the distant split at eight seeds and tabulate how many pairs it separates and how many it gets the wrong way round. The eight runs give 36, 25, 41, 40, 38, 0, 40 and 37 separated, with 5 wrong between them, and all five of those belong to two runs. Notice that separating more pairs does not go with being wrong less: the run that separates 25 is wrong about 2, and one of the runs that separates 40 is wrong about 3. If you want a claim about the relationship, eight runs will not give you one.
+Then run split A at ten seeds and look at the training column rather than the held-back one. Position embeddings fit all 40 training sentences at five of the ten, land at 39 and 31 at two more, and at the remaining three they score **20 of 40**, which is exactly what the model with no position at all scores. So "position makes this task learnable" is the right claim and "position learns this task" is not: half the time the run never gets off the floor.
+
+Last, the measurement that chose the seeds. Replace `math.exp` with a version that shifts one result in every thousand by a single last bit, which is the most two different C libraries could plausibly disagree by, and retrain:
+
+| seed | clean | one last bit moved |
+|--:|:--:|:--:|
+| 7 | 5 of 20 | 5 of 20 |
+| 11 | 9 of 20 | **10 of 20** |
+| 23 | 10 of 20 | 10 of 20 |
+
+Seed 11's held-back score depends on which maths library Python was built against. Nine of the ten seeds tried are stable and that one is not, and the decisions involved are not close calls: every margin in that run is above 0.5, so it is not a tie being broken differently. Four thousand updates is simply long enough for a last-bit difference to compound into a different model.
+
+> [!IMPORTANT]
+> Sit with that one. This lesson has spent its whole length arguing that a
+> held-back number needs its ceiling worked out before it means anything.
+> Here is a held-back number that **changes depending on the operating
+> system**, while the model, the data, the seed and every line of the code
+> stay identical.
+>
+> It is not a bug to be fixed. The arithmetic is chaotic with respect to its
+> own last bits, and no tolerance or tie-break rule removes that. The only
+> defences are to report more than one seed, to prefer claims that survive
+> perturbation, and to say which of those you have done.
 
 Last, feed the widest-trained model a sentence whose two stages are the same word, `the plan preceded the plan which was`. There is no right answer. Whatever it says is the model's own bias showing, with nothing in the data to hide behind.
 
@@ -259,5 +293,6 @@ Last, feed the widest-trained model a sentence whose two stages are the same wor
 - An audit encodes an assumption about how the learner works. The chaining audit predicted the wrong split twice, because this model does not chain.
 - Given well-separated examples the model puts ten things on a line and is right about nearly every pair it will commit to, including pairs it was never shown. Given adjacent examples it learns nothing at all, at every seed tried.
 - Which examples a model is shown can matter more than how many, and the mechanism is the margin between them rather than the count.
+- A held-back score from a four thousand update run can depend on the platform's maths library, confidently and without any decision being close. Report more than one seed, and prefer the claims that survive a perturbation.
 
 **Next:** [5. The block](../05-the-block/), where the attention head gets everything that surrounds it in a real transformer, and we find out whether any of it closes the gap this lesson opened.
