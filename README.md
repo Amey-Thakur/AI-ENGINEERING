@@ -8,7 +8,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)](LICENSE)
 [![Course](https://img.shields.io/badge/Course-AI%20Engineering-1DE9B6.svg)](#the-course)
-[![Platform](https://img.shields.io/badge/Platform-Offline-00838F.svg)](#guarantees)
 [![Technology](https://img.shields.io/badge/Technology-Python-3776AB.svg)](https://www.python.org/)
 [![Author](https://img.shields.io/badge/Author-Amey%20Thakur-0969DA.svg)](https://github.com/Amey-Thakur)
 
