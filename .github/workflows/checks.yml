@@ -90,3 +90,6 @@ jobs:
 
       - name: The glossary still points at the course
         run: python3 tools/check_glossary.py
+
+      - name: The curriculum still matches the lessons
+        run: python3 tools/build_curriculum.py --check

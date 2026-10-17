@@ -33,6 +33,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import posixpath
 import shutil
@@ -51,12 +52,198 @@ TREE = f"{REPO}/tree/main"
 #: Top level markdown, and the name each one takes on the site.
 TOP = {
     "README.md": "index.md",
+    "CURRICULUM.md": "curriculum.md",
     "GLOSSARY.md": "glossary.md",
     "FAQ.md": "faq.md",
     ".github/CONTRIBUTING.md": "contributing.md",
     ".github/SECURITY.md": "security.md",
     ".github/CODE_OF_CONDUCT.md": "code-of-conduct.md",
 }
+
+#: Where the site is published. Kept beside the config that declares it.
+SITE = "https://amey-thakur.github.io/AI-ENGINEERING/"
+
+#: The one sentence every page falls back to, and the course's own summary in
+#: its structured data.
+SUMMARY = ("Learn to build AI systems by building them. A course that runs on "
+           "the Python standard library alone: no account, no API key, no "
+           "GPU, no paid service and no network at any point.")
+
+#: Pages that open with a header plate rather than prose, so there is nothing
+#: on them worth lifting. Written out, and kept short enough to survive a
+#: search result intact.
+WRITTEN_DESCRIPTIONS = {
+    "index.md": SUMMARY,
+    "faq.md": "What this course is, what it leaves out, how long it takes, "
+              "and why it installs nothing. Fifty lessons, ten phases, the "
+              "Python standard library and no network.",
+    "curriculum.md": "All fifty lessons of the course on one page, in order, "
+                     "with what you do in each. Ten phases, about "
+                     "thirty-seven hours, and nothing installed at any point.",
+    "glossary.md": "Every term this course uses, the name it usually goes by "
+                   "elsewhere, and the lesson that measures it. Written so "
+                   "you can read a paper after finishing the course.",
+    "contributing.md": "How to report a lesson that does not run, a "
+                       "measurement that disagrees, or an explanation that "
+                       "does not land. Every number here is reproducible, so "
+                       "a disagreement is a bug.",
+    "security.md": "How to report a security issue in this repository. The "
+                   "course runs offline on the standard library, so the "
+                   "surface is small, and it is written down here anyway.",
+    "code-of-conduct.md": "The standard of behaviour expected of everyone "
+                          "taking part in this project, and how to report "
+                          "behaviour that falls short of it.",
+}
+
+#: The curriculum page's boxes, made to remember. Nothing leaves the browser:
+#: there is no account to keep this in and no server to send it to, which is
+#: the same promise the rest of the course makes.
+PROGRESS = """\
+/* Written by tools/build_docs.py. Edit that file instead of this one. */
+
+(function () {
+  "use strict";
+
+  var KEY = "ai-engineering:done";
+
+  function read() {
+    try {
+      return JSON.parse(localStorage.getItem(KEY)) || {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function write(done) {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(done));
+    } catch (error) {
+      /* A private window refuses to store anything. The page still works. */
+    }
+  }
+
+  function setUp() {
+    var list = document.querySelector(".md-content .task-list");
+
+    if (!list) {
+      return;
+    }
+
+    var items = document.querySelectorAll(".md-content .task-list-item");
+
+    if (!items.length) {
+      return;
+    }
+
+    var done = read();
+    var bar = document.createElement("div");
+    bar.className = "progress-note";
+    var track = document.createElement("div");
+    track.className = "progress-track";
+    var fill = document.createElement("div");
+    fill.className = "progress-fill";
+    var said = document.createElement("p");
+    said.className = "progress-said";
+    track.appendChild(fill);
+    bar.appendChild(said);
+    bar.appendChild(track);
+
+    var reset = document.createElement("button");
+    reset.type = "button";
+    reset.className = "progress-reset";
+    reset.textContent = "Clear";
+    bar.appendChild(reset);
+
+    var boxes = [];
+
+    Array.prototype.forEach.call(items, function (item) {
+      var box = item.querySelector("input[type=checkbox]");
+      var link = item.querySelector("a[href]");
+
+      if (!box || !link) {
+        return;
+      }
+
+      var id = link.getAttribute("href");
+      box.disabled = false;
+      box.removeAttribute("disabled");
+      box.checked = Boolean(done[id]);
+      item.classList.toggle("is-done", box.checked);
+      boxes.push({ box: box, item: item, id: id });
+
+      box.addEventListener("change", function () {
+        var state = read();
+
+        if (box.checked) {
+          state[id] = true;
+        } else {
+          delete state[id];
+        }
+
+        write(state);
+        item.classList.toggle("is-done", box.checked);
+        show();
+      });
+    });
+
+    function show() {
+      var ticked = boxes.filter(function (each) {
+        return each.box.checked;
+      }).length;
+      var share = boxes.length ? (ticked / boxes.length) * 100 : 0;
+      fill.style.width = share.toFixed(1) + "%";
+      track.setAttribute("role", "progressbar");
+      track.setAttribute("aria-valuenow", String(ticked));
+      track.setAttribute("aria-valuemin", "0");
+      track.setAttribute("aria-valuemax", String(boxes.length));
+
+      if (!ticked) {
+        said.textContent = "Nothing ticked yet. " + boxes.length +
+          " lessons ahead of you.";
+      } else if (ticked === boxes.length) {
+        said.textContent = "All " + boxes.length +
+          " done. Go and claim the record of completion.";
+      } else {
+        said.textContent = ticked + " of " + boxes.length +
+          " done, " + (boxes.length - ticked) + " to go.";
+      }
+
+      reset.hidden = ticked === 0;
+    }
+
+    reset.addEventListener("click", function () {
+      write({});
+      boxes.forEach(function (each) {
+        each.box.checked = false;
+        each.item.classList.remove("is-done");
+      });
+      show();
+    });
+
+    list.parentNode.insertBefore(bar, list);
+    show();
+  }
+
+  if (window.document$ && window.document$.subscribe) {
+    window.document$.subscribe(setUp);
+  } else {
+    document.addEventListener("DOMContentLoaded", setUp);
+  }
+}());
+"""
+
+#: The homepage's own title. Without it the page is called "Start here",
+#: which says nothing to anybody who meets it in a list of search results.
+LANDING_TITLE = "AI Engineering: build it yourself, measure everything"
+
+#: What a crawler is told at the root. Everything is open; the point of the
+#: file is the sitemap line, which is how the rest gets found.
+ROBOTS = """\
+User-agent: *
+Allow: /
+
+Sitemap: https://amey-thakur.github.io/AI-ENGINEERING/sitemap.xml
+"""
 
 #: Images the pages reference.
 ASSETS = lesson.ROOT / "assets"
@@ -144,6 +331,9 @@ theme:
 extra_css:
   - assets/palette.css
 
+extra_javascript:
+  - assets/progress.js
+
 extra:
   social:
     - icon: fontawesome/brands/github
@@ -171,6 +361,8 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.smartsymbols
   - pymdownx.tilde
+  - pymdownx.tasklist:
+      custom_checkbox: true
 """
 
 #: The two palettes, written as a stylesheet because Material's own schemes do
@@ -373,6 +565,93 @@ form[data-md-component="palette"] > label.md-header__button svg {
   flex-wrap: wrap;
 }
 
+/* The curriculum page's progress strip. The boxes are ordinary task list
+   items everywhere else; here they are clickable and they keep their place
+   in this browser, which is the only place that state exists. */
+
+.progress-note {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.4rem 0.8rem;
+  margin: 1.2rem 0 1.6rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.3rem;
+  background: var(--md-code-bg-color);
+}
+
+.progress-said {
+  grid-column: 1;
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--md-default-fg-color);
+}
+
+.progress-track {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  height: 0.3rem;
+  overflow: hidden;
+  border-radius: 0.3rem;
+  background: var(--md-default-fg-color--lightest);
+}
+
+.progress-fill {
+  width: 0;
+  height: 100%;
+  border-radius: 0.3rem;
+  background: var(--md-primary-fg-color);
+  transition: width 0.25s ease;
+}
+
+.progress-reset {
+  grid-column: 2;
+  grid-row: 1;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--md-primary-fg-color);
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.2rem;
+}
+
+.progress-reset:hover {
+  border-color: var(--md-primary-fg-color);
+}
+
+.md-content .task-list-item {
+  transition: opacity 0.2s ease;
+}
+
+.md-content .task-list-item.is-done {
+  opacity: 0.55;
+}
+
+.md-content .task-list-item.is-done > .task-list-control ~ * {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.md-content .task-list-control input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.md-content .task-list-item label,
+.md-content .task-list-control {
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-fill,
+  .md-content .task-list-item {
+    transition: none;
+  }
+}
+
 .md-copyright {
   width: 100%;
 }
@@ -385,25 +664,59 @@ form[data-md-component="palette"] > label.md-header__button svg {
 #: The one thing the theme has no setting for: the card a link shows when the
 #: site is shared. It points at the same image GitHub uses, so a link to the
 #: site and a link to the repository look the same.
+#: The page head. Every page gets its own description and its own place in a
+#: breadcrumb trail, because one description repeated across sixty pages is
+#: the single thing a search engine most reliably ignores. The three
+#: __PLACEHOLDER__ tokens are filled in by main() with data read from the
+#: repository, so nothing here has to be kept in step by hand.
 OVERRIDE = """\
 {% extends "base.html" %}
 
 <!-- Written by tools/build_docs.py. Edit that file instead of this one. -->
 
+{% block htmltitle %}
+  {# Material appends the site name to every title. On the front page that
+     repeats it, and a title over about sixty characters is cut short in a
+     result list, so the front page carries its own and nothing is added. #}
+  {% if page and page.canonical_url == config.site_url %}
+    <title>{{ page.meta.title | default(config.site_name, true) }}</title>
+  {% elif page and page.title %}
+    <title>{{ page.title }} &middot; {{ config.site_name }}</title>
+  {% else %}
+    <title>{{ config.site_name }}</title>
+  {% endif %}
+{% endblock %}
+
 {% block extrahead %}
-  {% set page_title = page.title | default(config.site_name) %}
-  <meta property="og:type" content="website">
+  {# The 404 page is rendered without a page object, so everything below it
+     has to be skipped rather than guessed at. #}
+  {% if page %}
+  {% set page_title = page.meta.title | default(page.title, true) | default(config.site_name, true) %}
+  {% set page_description = page.meta.description | default(config.site_description, true) %}
+  <meta property="og:type" content="{% if page.canonical_url == config.site_url %}website{% else %}article{% endif %}">
   <meta property="og:site_name" content="{{ config.site_name }}">
   <meta property="og:title" content="{{ page_title }}">
-  <meta property="og:description" content="{{ config.site_description }}">
+  <meta property="og:description" content="{{ page_description }}">
   <meta property="og:url" content="{{ page.canonical_url }}">
   <meta property="og:image" content="{{ config.site_url }}assets/social-preview.png">
+  <meta property="og:image:alt" content="AI Engineering. Learn to build AI systems by building them.">
   <meta property="og:image:width" content="1280">
   <meta property="og:image:height" content="640">
+  <meta property="og:locale" content="en_GB">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ page_title }}">
-  <meta name="twitter:description" content="{{ config.site_description }}">
+  <meta name="twitter:description" content="{{ page_description }}">
   <meta name="twitter:image" content="{{ config.site_url }}assets/social-preview.png">
+  <meta name="twitter:image:alt" content="AI Engineering. Learn to build AI systems by building them.">
+  <meta name="author" content="Amey Thakur">
+  <link rel="author" href="https://github.com/Amey-Thakur">
+  {% if page.ancestors %}
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"{{ config.site_name }}","item":"{{ config.site_url }}"}{% for parent in page.ancestors | reverse %}{% if parent.title %},{"@type":"ListItem","position":{{ loop.index + 1 }},"name":"{{ parent.title | e }}"{% if parent.canonical_url is defined and parent.canonical_url %},"item":"{{ parent.canonical_url }}"{% endif %}}{% endif %}{% endfor %},{"@type":"ListItem","position":{{ (page.ancestors | length) + 2 }},"name":"{{ page.title | e }}","item":"{{ page.canonical_url }}"}]}</script>
+  {% endif %}
+  {% if page.canonical_url == config.site_url %}__COURSE__{% endif %}
+  {% if page.file.src_uri == "faq.md" %}__FAQ__{% endif %}
+  {% if page.file.src_uri == "glossary.md" %}__GLOSSARY__{% endif %}
+  {% endif %}
 {% endblock %}
 """
 
@@ -519,6 +832,221 @@ def lesson_title(directory: Path) -> str:
     return directory.name
 
 
+#: How long a meta description may run before a search engine truncates it.
+DESCRIPTION_LIMIT = 155
+
+#: Markdown that carries no meaning once the tags are gone.
+MARKUP = re.compile(r"\*\*|__|[`*_]|<[^>]+>")
+LINKED = re.compile(r"\[([^\]]*)\]\([^)]*\)")
+QUOTED = re.compile(r"^>\s?", re.M)
+SPACES = re.compile(r"\s+")
+
+
+def plain(text: str) -> str:
+    """Markdown with the markup taken out, on one line."""
+    text = LINKED.sub(r"\1", text)
+    text = MARKUP.sub("", text)
+
+    return SPACES.sub(" ", text).strip()
+
+
+def describe(body: str, fallback: str) -> str:
+    """A description for one page, taken from that page's own opening.
+
+    Every lesson opens with a blockquote stating what it found, which is both
+    the most accurate summary available and the one a reader would want to see
+    under a search result. Falls back to the site's own description for pages
+    that start with a header plate rather than prose.
+    """
+    lines = body.splitlines()
+    start = 1 if lines and lines[0].startswith("# ") else 0
+    blocks = re.split(r"\n\s*\n", "\n".join(lines[start:]))
+    chosen = ""
+
+    for block in blocks:
+        stripped = block.strip()
+
+        if not stripped:
+            continue
+
+        if stripped.startswith(">"):
+            chosen = plain(QUOTED.sub("", stripped))
+            break
+
+        if stripped.startswith(("#", "<", "|", "```", "---", "[!", "[![",
+                                "!!!", "*", "-")):
+            continue
+
+        chosen = plain(stripped)
+        break
+
+    if len(chosen) < 40:
+        return fallback
+
+    if len(chosen) <= DESCRIPTION_LIMIT:
+        return chosen
+
+    cut = chosen[:DESCRIPTION_LIMIT].rsplit(" ", 1)[0].rstrip(" ,;:.")
+
+    return f"{cut}..."
+
+
+def as_script(data: object) -> str:
+    """One JSON-LD block, safe to drop inside a script tag."""
+    body = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
+
+    return ('<script type="application/ld+json">'
+            + body.replace("</", "<\\/") + "</script>")
+
+
+def course_data(where: dict[str, str]) -> str:
+    """The course itself, so a search engine can show it as a course."""
+    syllabus = []
+
+    for source_path in sorted(where):
+        if not (source_path.startswith("phases/")
+                and source_path.count("/") == 2):
+            continue
+
+        directory = lesson.ROOT / source_path
+        body = directory.read_text(encoding="utf-8")
+        title = body.splitlines()[0].lstrip("# ").strip()
+        syllabus.append({
+            "@type": "Syllabus",
+            "name": title,
+            "description": describe(body, title),
+            "url": SITE + source_path.replace("/README.md", "/"),
+        })
+
+    author = {"@type": "Person", "name": "Amey Thakur",
+              "url": "https://github.com/Amey-Thakur",
+              "identifier": "https://orcid.org/0000-0001-5644-1575"}
+
+    return as_script({
+        "@context": "https://schema.org",
+        "@type": "Course",
+        "name": "AI Engineering",
+        "description": SUMMARY,
+        "url": SITE,
+        "provider": author,
+        "author": author,
+        "inLanguage": "en",
+        "isAccessibleForFree": True,
+        "isFamilyFriendly": True,
+        "license": "https://opensource.org/licenses/MIT",
+        "educationalLevel": "Beginner to intermediate",
+        "learningResourceType": ["Course", "Tutorial", "Exercise"],
+        "teaches": [
+            "Writing a classifier from scratch in Python",
+            "Backpropagation derived and checked by hand",
+            "Word vectors from co-occurrence counts",
+            "Language modelling and perplexity",
+            "Retrieval and why a generator can make it worse",
+            "Tool use, agent loops and measuring an agent",
+            "Confidence intervals, significance tests and baselines",
+            "Cost, latency, failure and safety before shipping",
+            "Attention, and a transformer block proved correct by hand",
+        ],
+        "coursePrerequisites": "Python installed. No account, no API key, "
+                               "no GPU and no third-party packages.",
+        "numberOfCredits": 0,
+        "timeRequired": "PT37H",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD",
+                   "category": "Free",
+                   "availability": "https://schema.org/InStock"},
+        "hasCourseInstance": {
+            "@type": "CourseInstance",
+            "courseMode": "online",
+            "courseWorkload": "PT37H",
+            "instructor": author,
+        },
+        "syllabusSections": syllabus,
+        "codeRepository": "https://github.com/Amey-Thakur/AI-ENGINEERING",
+    })
+
+
+def faq_data() -> str:
+    """The questions on the FAQ page, as questions."""
+    body = (lesson.ROOT / "FAQ.md").read_text(encoding="utf-8")
+    asked = []
+
+    for chunk in body.split("\n## ")[1:]:
+        lines = chunk.splitlines()
+        question = plain(lines[0])
+        answer = []
+
+        for line in lines[1:]:
+            stripped = line.strip()
+
+            if stripped.startswith("## "):
+                break
+
+            if stripped.startswith(("<", "|", "```", "---", "> [!")):
+                continue
+
+            if stripped:
+                answer.append(plain(stripped))
+            elif answer:
+                break
+
+        if question.endswith("?") and answer:
+            asked.append({
+                "@type": "Question",
+                "name": question,
+                "acceptedAnswer": {"@type": "Answer",
+                                   "text": " ".join(answer)},
+            })
+
+    if not asked:
+        return ""
+
+    return as_script({"@context": "https://schema.org", "@type": "FAQPage",
+                      "mainEntity": asked})
+
+
+def glossary_data() -> str:
+    """Every term the course defines, as terms."""
+    body = (lesson.ROOT / "GLOSSARY.md").read_text(encoding="utf-8")
+    terms = []
+
+    for line in body.splitlines():
+        if not line.startswith("| ["):
+            continue
+
+        cells = [cell.strip() for cell in line.strip("|").split("|")]
+
+        if len(cells) < 3:
+            continue
+
+        name = plain(cells[0])
+        definition = plain(cells[2])
+
+        if not name or not definition:
+            continue
+
+        entry = {"@type": "DefinedTerm", "name": name,
+                 "description": definition}
+        aliases = [plain(part) for part in cells[1].split(",") if part.strip()]
+
+        if aliases:
+            entry["alternateName"] = aliases
+
+        terms.append(entry)
+
+    if not terms:
+        return ""
+
+    return as_script({
+        "@context": "https://schema.org",
+        "@type": "DefinedTermSet",
+        "name": "AI Engineering glossary",
+        "description": "Every term this course uses, the names it is usually "
+                       "given elsewhere, and the lesson that measures it.",
+        "url": SITE + "glossary/",
+        "hasDefinedTerm": terms,
+    })
+
+
 def published() -> dict[str, str]:
     """Every source markdown path mapped to where it lands under docs/."""
     where = dict(TOP)
@@ -585,6 +1113,7 @@ def nav(where: dict[str, str]) -> str:
 
     lines = ["nav:",
              "  - Start here: index.md",
+             "  - Curriculum: curriculum.md",
              "  - The course:"]
 
     for directory in sorted((lesson.ROOT / "phases").glob("*")):
@@ -636,12 +1165,26 @@ def main() -> int:
 
         landing = DOCS / target
         landing.parent.mkdir(parents=True, exist_ok=True)
-        body = rewrite(origin.read_text(encoding="utf-8"), source, where)
+        raw = origin.read_text(encoding="utf-8")
+        body = rewrite(raw, source, where)
         body = body.replace(CENTRED, OPTED_IN)
-        landing.write_text(body, encoding="utf-8", newline="\n")
+
+        # Its own description, taken from its own opening, so that no two
+        # pages arrive at a search engine looking like the same page.
+        written = WRITTEN_DESCRIPTIONS.get(target)
+        front = [f"description: "
+                 f"{json.dumps(written or describe(raw, SUMMARY))}"]
+
+        if target == "index.md":
+            front.append(f"title: {json.dumps(LANDING_TITLE)}")
+
+        landing.write_text("---\n" + "\n".join(front) + "\n---\n\n" + body,
+                           encoding="utf-8", newline="\n")
 
     shutil.copytree(ASSETS, DOCS / "assets", dirs_exist_ok=True)
     (DOCS / "assets" / "palette.css").write_text(PALETTE, encoding="utf-8",
+                                                 newline="\n")
+    (DOCS / "assets" / "progress.js").write_text(PROGRESS, encoding="utf-8",
                                                  newline="\n")
 
     # The card a shared link shows. The same file GitHub serves, so a link to
@@ -653,8 +1196,18 @@ def main() -> int:
 
     overrides = lesson.ROOT / "overrides"
     overrides.mkdir(exist_ok=True)
-    (overrides / "main.html").write_text(OVERRIDE, encoding="utf-8",
+    head = (OVERRIDE.replace("__COURSE__", course_data(where))
+            .replace("__FAQ__", faq_data())
+            .replace("__GLOSSARY__", glossary_data()))
+    (overrides / "main.html").write_text(head, encoding="utf-8",
                                          newline="\n")
+
+    # A crawler looks for both of these at the root and neither existed.
+    (DOCS / "robots.txt").write_text(ROBOTS, encoding="utf-8", newline="\n")
+    guide = lesson.ROOT / "llms.txt"
+
+    if guide.exists():
+        shutil.copyfile(guide, DOCS / "llms.txt")
 
     (lesson.ROOT / "tools" / "docs_hooks.py").write_text(
         HOOKS, encoding="utf-8", newline="\n")

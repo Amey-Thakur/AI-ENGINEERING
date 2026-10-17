@@ -33,11 +33,12 @@ so that it cannot decay unnoticed.
 - tools/ holds the five programs that enforce the guarantees above, and they
   can be run by anybody: run_lessons.py, check_output.py, check_imports.py,
   check_determinism.py and check_glossary.py.
-- The course is 45 lessons across 9 phases, about 33 hours by the estimates at
-  the top of each phase, and builds one system throughout rather than a set of
-  disconnected exercises.
+- The course is 50 lessons across 10 phases, about 37 hours by the
+  estimates at the top of each phase, and builds one system throughout
+  rather than a set of disconnected exercises. CURRICULUM.md lists every
+  lesson with what it does.
 - tools/certificate.py issues a record of completion, and runs every lesson
-  before drawing one. It attests only that all 45 checks passed at a named
+  before drawing one. It attests only that all 50 checks passed at a named
   commit on a named date, and prints the command to re-verify that. It is not
   a claim about the holder's ability and does not present itself as one.
 
@@ -46,6 +47,7 @@ so that it cannot decay unnoticed.
 - Repository: https://github.com/Amey-Thakur/AI-ENGINEERING
 - The course, readable in a browser: https://amey-thakur.github.io/AI-ENGINEERING/
 - Phase 0, for a reader with nothing installed: phases/00-your-machine/
+- Curriculum, every lesson in order with what it does: CURRICULUM.md
 - Glossary, mapping the course's plain words onto the field's: GLOSSARY.md
 - Questions, including where transformers are and why they are not here: FAQ.md
 - Author: Amey Thakur, https://github.com/Amey-Thakur

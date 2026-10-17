@@ -4,24 +4,54 @@
   "name": "AI Engineering",
   "description": "A practical course in AI engineering that takes a reader with nothing installed through to building and measuring a working system. Every lesson runs on the Python standard library alone, with no account, no API key, no GPU, no paid service and no network access, and every lesson is executed on Linux, macOS and Windows on each change so that the material cannot silently stop working.",
   "identifier": "AI-ENGINEERING",
+  "version": "1.0.0",
+  "softwareVersion": "1.0.0",
   "license": "https://spdx.org/licenses/MIT",
   "programmingLanguage": [
     "Python"
   ],
   "runtimePlatform": "Python 3.10 or higher",
+  "operatingSystem": [
+    "Linux",
+    "macOS",
+    "Windows"
+  ],
+  "softwareRequirements": [
+    "Python 3.10 or higher. No third-party packages at any point."
+  ],
   "author": [
     {
       "@type": "Person",
       "givenName": "Amey",
       "familyName": "Thakur",
       "email": "ameythakur20@gmail.com",
-      "url": "https://github.com/Amey-Thakur"
+      "url": "https://github.com/Amey-Thakur",
+      "identifier": "https://orcid.org/0000-0001-5644-1575"
     }
   ],
+  "maintainer": {
+    "@type": "Person",
+    "givenName": "Amey",
+    "familyName": "Thakur",
+    "email": "ameythakur20@gmail.com",
+    "url": "https://github.com/Amey-Thakur",
+    "identifier": "https://orcid.org/0000-0001-5644-1575"
+  },
   "dateCreated": "2026-09-26",
+  "datePublished": "2026-10-17",
+  "dateModified": "2026-10-17",
   "codeRepository": "https://github.com/Amey-Thakur/AI-ENGINEERING",
+  "url": "https://amey-thakur.github.io/AI-ENGINEERING/",
+  "downloadUrl": "https://github.com/Amey-Thakur/AI-ENGINEERING/releases/tag/v1.0.0",
+  "issueTracker": "https://github.com/Amey-Thakur/AI-ENGINEERING/issues",
+  "readme": "https://github.com/Amey-Thakur/AI-ENGINEERING/blob/main/README.md",
+  "releaseNotes": "The course is complete: fifty lessons across ten phases, from a terminal to a transformer block, every number reproduced by the code beside it.",
   "developmentStatus": "active",
   "applicationCategory": "Education",
+  "learningResourceType": "Course",
+  "educationalLevel": "Beginner to intermediate",
+  "isAccessibleForFree": true,
+  "inLanguage": "en",
   "keywords": [
     "ai-engineering",
     "machine-learning",

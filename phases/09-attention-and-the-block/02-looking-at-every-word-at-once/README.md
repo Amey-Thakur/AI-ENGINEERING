@@ -163,7 +163,7 @@ And yet it answered one of them correctly, and it scores 16 of 20 overall.
 >
 > Something else is carrying the signal. Working out what, and what that means
 > for every attention heatmap you have ever seen presented as an explanation,
-> is the next lesson, which is being written.
+> is the next lesson.
 
 <br>
 

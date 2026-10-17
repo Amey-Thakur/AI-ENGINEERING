@@ -16,7 +16,7 @@ face, so a reader does not have to take it on trust any more than a reader of
 the lessons does.
 
 Which means the tool has to actually run the course before it draws anything.
-It does, all forty-five lessons, and it exits without writing a file if a
+It does, all fifty lessons, and it exits without writing a file if a
 single one fails. There is no flag to skip that.
 
 The credential number is a hash of the name, the commit and the score, so the

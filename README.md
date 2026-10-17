@@ -15,7 +15,7 @@
 
 ---
 
-[❖ Author](#author) &nbsp;·&nbsp; [ⓘ Overview](#overview) &nbsp;·&nbsp; [◎ Motivation](#motivation) &nbsp;·&nbsp; [▶ Start Here](#start-here) &nbsp;·&nbsp; [☰ The Course](#the-course) &nbsp;·&nbsp; [★ What You Will Build](#what-you-will-build) &nbsp;·&nbsp; [⚑ Guarantees](#guarantees) &nbsp;·&nbsp; [◬ Completion](#record-of-completion) &nbsp;·&nbsp; [☷ Usage Guidelines](#usage-guidelines) &nbsp;·&nbsp; [© License](#license) &nbsp;·&nbsp; [⌬ About](#about-this-repository) &nbsp;·&nbsp; [✦ Acknowledgments](#acknowledgments)
+[❖ Author](#author) &nbsp;·&nbsp; [ⓘ Overview](#overview) &nbsp;·&nbsp; [◎ Motivation](#motivation) &nbsp;·&nbsp; [▶ Start Here](#start-here) &nbsp;·&nbsp; [☰ The Course](#the-course) &nbsp;·&nbsp; [⊞ Curriculum](CURRICULUM.md) &nbsp;·&nbsp; [★ What You Will Build](#what-you-will-build) &nbsp;·&nbsp; [⚑ Guarantees](#guarantees) &nbsp;·&nbsp; [◬ Completion](#record-of-completion) &nbsp;·&nbsp; [☷ Usage Guidelines](#usage-guidelines) &nbsp;·&nbsp; [© License](#license) &nbsp;·&nbsp; [⌬ About](#about-this-repository) &nbsp;·&nbsp; [✦ Acknowledgments](#acknowledgments)
 
 </div>
 
@@ -38,7 +38,7 @@
 
 You clone this repository, open a terminal, and run a file. That is the whole setup. There is nothing to provision, nothing to sign up for, and nothing that can be withdrawn from under you later.
 
-From there you build one system across nine phases. It starts as a classifier that tells a question from a statement and ends as something with tools, a retrieval index, a cost meter, an access boundary and a release sheet. Every piece of it is yours, in plain Python, on data small enough to read in full.
+From there you build one system across ten phases. It starts as a classifier that tells a question from a statement and ends as something with tools, a retrieval index, a cost meter, an access boundary and a release sheet. Every piece of it is yours, in plain Python, on data small enough to read in full.
 
 The part that makes this different from other courses is the second half. Anybody can show you a model that works. Phases 7 and 8 hand you the instruments to find out whether it does, and the first thing you point them at is the course's own earlier lessons. Several of them do not survive.
 
@@ -110,7 +110,7 @@ Skip [phase 0](phases/00-your-machine/) if you already have a terminal, Python a
 
 ## The Course
 
-Nine finished phases of five lessons each, one system built the whole way through, and a tenth being written.
+Ten phases of five lessons each, fifty lessons, one system built the whole way through from a rule you write by hand to a transformer block you prove correct by hand.
 
 | # | Phase | What you will have built by the end of it |
 |:-:|:------|:------------------------------------------|
@@ -125,7 +125,9 @@ Nine finished phases of five lessons each, one system built the whole way throug
 | **8** | [Shipping: cost, latency, failure, safety](phases/08-shipping-cost-latency-failure-safety/) | An index, a cost meter, an outage drill, an access boundary, and the release sheet you hand somebody |
 | **9** | [Attention, and the block](phases/09-attention-and-the-block/) | One attention head and its backward pass, a transformer block assembled and proved correct by hand, and the measurements showing neither of them explains itself the way you would expect |
 
-**About thirty-three hours** for the nine finished phases, by the estimate printed at the top of each. Phase 0 is the shortest at two hours, phase 4 the longest at five.
+**About thirty-seven hours** in total, by the estimate printed at the top of each phase. Phase 0 is the shortest at two hours and phase 4 the longest at five. Nothing is installed at any point.
+
+**[Every lesson on one page &rarr;](CURRICULUM.md)** &nbsp;·&nbsp; all fifty, in order, with what you do in each. On [the website](https://amey-thakur.github.io/AI-ENGINEERING/curriculum/) the boxes tick off and remember where you stopped.
 
 > [!TIP]
 > If you only have one evening, read [phase 7 lesson 1](phases/07-measuring-whether-any-of-it-works/01-the-number-has-error-bars/).
@@ -208,7 +210,7 @@ You can also run it from your own fork's Actions tab with [`certificate.yml`](.g
 | [**Glossary**](GLOSSARY.md) | The course teaches ideas before their names, and in places never uses the standard name at all. This maps what a lesson calls something onto what the field calls it, with a link to the lesson where you built it. |
 | [**Questions**](FAQ.md) | Why there is no PyTorch, where transformers are, whether this is enough to get a job, and why the course keeps reporting that its own lessons were wrong. |
 | [**Contributing**](.github/CONTRIBUTING.md) | The contract a lesson has to meet. |
-| [**Security**](.github/SECURITY.md) | What the attack surface of forty-five offline files actually is. |
+| [**Security**](.github/SECURITY.md) | What the attack surface of a hundred offline files actually is. |
 | [**Code of conduct**](.github/CODE_OF_CONDUCT.md) | Short. The part that matters is that a reader who is lost has found a defect. |
 
 ---
@@ -248,7 +250,7 @@ Copyright © 2026 Amey Thakur
 
 **Created & Maintained by**: [Amey Thakur](https://github.com/Amey-Thakur)
 
-This is the course I wanted when I started and could not find: one that installs nothing, states plainly what it cannot do, and is honest about which of its own results hold up. It builds one system across nine phases rather than a drawer of disconnected exercises, and every claim in it was produced by running the code rather than by remembering roughly what the answer ought to be.
+This is the course I wanted when I started and could not find: one that installs nothing, states plainly what it cannot do, and is honest about which of its own results hold up. It builds one system across ten phases rather than a drawer of disconnected exercises, and every claim in it was produced by running the code rather than by remembering roughly what the answer ought to be.
 
 **Connect:** [GitHub](https://github.com/Amey-Thakur) &nbsp;·&nbsp; [LinkedIn](https://www.linkedin.com/in/amey-thakur) &nbsp;·&nbsp; [ORCID](https://orcid.org/0000-0001-5644-1575)
 
@@ -270,7 +272,7 @@ Grateful acknowledgment to everyone who **reports that a lesson lost them**. A l
 
   [↑ Back to Top](#ai-engineering)
 
-  [❖ Author](#author) &nbsp;·&nbsp; [ⓘ Overview](#overview) &nbsp;·&nbsp; [◎ Motivation](#motivation) &nbsp;·&nbsp; [▶ Start Here](#start-here) &nbsp;·&nbsp; [☰ The Course](#the-course) &nbsp;·&nbsp; [★ What You Will Build](#what-you-will-build) &nbsp;·&nbsp; [⚑ Guarantees](#guarantees) &nbsp;·&nbsp; [◬ Completion](#record-of-completion) &nbsp;·&nbsp; [☷ Usage Guidelines](#usage-guidelines) &nbsp;·&nbsp; [© License](#license) &nbsp;·&nbsp; [⌬ About](#about-this-repository) &nbsp;·&nbsp; [✦ Acknowledgments](#acknowledgments)
+  [❖ Author](#author) &nbsp;·&nbsp; [ⓘ Overview](#overview) &nbsp;·&nbsp; [◎ Motivation](#motivation) &nbsp;·&nbsp; [▶ Start Here](#start-here) &nbsp;·&nbsp; [☰ The Course](#the-course) &nbsp;·&nbsp; [⊞ Curriculum](CURRICULUM.md) &nbsp;·&nbsp; [★ What You Will Build](#what-you-will-build) &nbsp;·&nbsp; [⚑ Guarantees](#guarantees) &nbsp;·&nbsp; [◬ Completion](#record-of-completion) &nbsp;·&nbsp; [☷ Usage Guidelines](#usage-guidelines) &nbsp;·&nbsp; [© License](#license) &nbsp;·&nbsp; [⌬ About](#about-this-repository) &nbsp;·&nbsp; [✦ Acknowledgments](#acknowledgments)
 
 </div>
 

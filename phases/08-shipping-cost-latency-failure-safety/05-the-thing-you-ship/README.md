@@ -204,3 +204,7 @@ Forty-five lessons, nine phases, one system. No dependency was installed, no key
 The thing worth keeping is not the agent. It is the habit the whole course was arranged to build: **when you cannot say how you would measure it, you do not know it yet.** That sentence is why the retry loop is not in the final system, why the word vector classifier was reported as a failure, why the threshold has an interval next to it, and why the sheet above has a section saying what it does not establish.
 
 Everything else in this field will be replaced. That will not be.
+
+<br>
+
+**Next:** [Phase 9](../../09-attention-and-the-block/), which is the mechanism underneath every model you have read about, built one head at a time. It is the only phase that needs nothing from the system you just shipped, and three of its five lessons end by failing to show what they set out to show.

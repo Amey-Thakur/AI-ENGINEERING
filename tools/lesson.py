@@ -30,8 +30,12 @@ GUARD = ROOT / "tools" / "guard"
 #: The three files every lesson holds.
 REQUIRED = ("README.md", "solve.py", "check.py")
 
-#: A lesson that has not finished in this long is one a learner abandons.
-TIMEOUT_SECONDS = 120
+#: Long enough that a lesson doing real arithmetic is never cut off, short
+#: enough that one which has hung is. Phase 9's last two lessons are the
+#: expensive ones: each trains fifteen models and takes about two minutes on
+#: an ordinary laptop, so a two minute limit failed them by seconds on a slow
+#: machine. Everything else in the course finishes in under twenty seconds.
+TIMEOUT_SECONDS = 300
 
 
 def find(selector: str | None = None) -> list[Path]:

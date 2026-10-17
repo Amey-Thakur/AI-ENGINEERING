@@ -17,6 +17,8 @@
 
 **You need:** [lesson 4](../04-where-a-word-sits/), and [phase 2 lesson 4](../../02-a-network-you-wrote-yourself/04-backpropagation/) for the nudging technique.
 
+**It takes a while.** This is the most expensive lesson in the course: fifteen models trained from scratch, about two minutes for the solution and the same again for the check. It prints the gradient table and the cost immediately, then each result as it arrives, so you can watch it rather than wonder whether it has hung.
+
 <br>
 
 ## What a block is

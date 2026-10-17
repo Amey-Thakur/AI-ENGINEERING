@@ -17,7 +17,7 @@ Author: Amey Thakur (https://github.com/Amey-Thakur)
 
 Because a course that installs something has handed its lifespan to somebody else. The popular alternatives stopped working that way: a package was renamed, a dataset was withdrawn, a version was yanked, an install needed a compiler that was not there, and a reader on their first day met an error that had nothing to do with what they came to learn.
 
-The standard library is the one dependency that arrives with Python and cannot be withdrawn. [`tools/check_imports.py`](tools/check_imports.py) enforces it across all 45 lessons.
+The standard library is the one dependency that arrives with Python and cannot be withdrawn. [`tools/check_imports.py`](tools/check_imports.py) enforces it across all 50 lessons.
 
 It also changes what you learn. `model.fit()` teaches you an API. Writing the weighted sum, the sigmoid, the loss and the backward pass teaches you what the API does, and [phase 2 lesson 4](phases/02-a-network-you-wrote-yourself/04-backpropagation/) has you check your gradients against nudging the weights, which is the exercise that makes autodiff stop being magic.
 
@@ -27,7 +27,7 @@ You should absolutely use those libraries afterwards. You will use them better.
 
 ## Where are transformers, attention and LLMs?
 
-Attention is here, in [phase 9](phases/09-attention-and-the-block/), which is being written now. You build one head and its backward pass by hand, and it clears a ceiling that no n-gram of any order can reach on the corpus.
+Attention is here, in [phase 9](phases/09-attention-and-the-block/). You build one head and its backward pass by hand and it clears a ceiling no n-gram of any order can reach on the corpus, then you take the mechanism apart and find that its weights are not where the signal is. The phase ends with a full transformer block, assembled, its gradients proved against finite differences, and measured.
 
 A full transformer is not here. Phase 9 ends at the block rather than at a stack of them, and that is worth being straight about. Two reasons for it:
 
@@ -71,7 +71,7 @@ A course that only reported its successes would be teaching the opposite of what
 
 ## How long does it take?
 
-Between two and five hours per phase, and **thirty-three hours in total** by the estimates printed at the top of each phase. Phase 0 is the shortest at two hours, and can be skipped entirely if you are comfortable with a terminal, Git and virtual environments.
+Between two and five hours per phase, and **thirty-seven hours in total** by the estimates printed at the top of each phase. [The curriculum](CURRICULUM.md) lists all fifty lessons with what each one does. Phase 0 is the shortest at two hours, and can be skipped entirely if you are comfortable with a terminal, Git and virtual environments.
 
 There is no order requirement beyond the obvious: each phase builds on the one before it, and each lesson says at the top what it needs.
 
@@ -111,7 +111,7 @@ There is a **record of completion**, and the distinction is the point.
 python tools/certificate.py --name "Your Name"
 ```
 
-It runs all 45 lessons before it draws anything and refuses if one fails. There is no flag to skip that. What it then attests to is narrow and checkable: on this date, at this commit, every check in this course passed on your machine. It prints the command to re-verify that on its own face.
+It runs all 50 lessons before it draws anything and refuses if one fails. There is no flag to skip that. What it then attests to is narrow and checkable: on this date, at this commit, every check in this course passed on your machine. It prints the command to re-verify that on its own face.
 
 It does not say you are good at this, and it does not say anybody assessed you, because neither would be true. Most course certificates assert exactly those two things and no reader can check either.
 

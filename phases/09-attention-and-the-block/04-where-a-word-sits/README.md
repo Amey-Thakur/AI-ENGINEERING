@@ -12,6 +12,8 @@
 
 **You need:** [lesson 3](../03-it-works-without-looking/).
 
+**It takes a while.** This one trains seven models and runs for about half a minute. Nothing is wrong if it sits there; it prints each table as it finishes.
+
 <br>
 
 ## A new corpus, built so that order is the only signal

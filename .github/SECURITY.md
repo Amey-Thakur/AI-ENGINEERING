@@ -14,7 +14,7 @@ Author: Amey Thakur (https://github.com/Amey-Thakur)
 
 ## What this repository is
 
-Forty-five Python files that read small text files in the same directory and print to standard output. No lesson opens a socket, writes anywhere except its own `.work/` directory, or imports anything beyond the Python standard library.
+One hundred Python files, a solution and a check for each of fifty lessons, that read small text files in the same directory and print to standard output. No lesson opens a socket, writes anywhere except its own `.work/` directory, or imports anything beyond the Python standard library.
 
 The one exception is [phase 0](../phases/00-your-machine/), whose subject is the terminal, Git and virtual environments, so five of its lessons necessarily call `subprocess` to run a command and read what came back. No lesson in phases 1 through 8 does.
 
