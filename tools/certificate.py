@@ -39,6 +39,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
+import build_mark
 import lesson
 import typeface
 
@@ -59,10 +60,49 @@ RULE = (0xD7, 0xDD, 0xE3)
 
 MARGIN = 160
 
+#: The lockup, in the same proportions the card and the README header use:
+#: the mark, a gap, then the name set on the mark's own bottom edge.
+MARK_H = 64
+MARK_GAP = 22
+NAME_SIZE = 58
+
 
 def font(role: str, size: int) -> ImageFont.FreeTypeFont:
     """A font for a role, at the size the card is drawn at."""
     return typeface.of(role, size * SCALE)
+
+
+
+def rendered(text: str, face: ImageFont.FreeTypeFont,
+             fill: tuple[int, int, int]) -> Image.Image:
+    """The text on its own layer, trimmed to the ink it actually produced."""
+    layer = Image.new("RGBA", (len(text) * face.size + 200, face.size * 3),
+                      (0, 0, 0, 0))
+    ImageDraw.Draw(layer).text((100, face.size), text, font=face,
+                               fill=fill + (255,))
+    box = layer.getbbox()
+
+    return layer.crop(box) if box else layer
+
+
+def lockup_on(card: Image.Image, at: tuple[int, int]) -> int:
+    """The mark and the name as one block. Returns the height it took.
+
+    Drawn with build_mark rather than redrawn here, so the record cannot
+    drift away from the mark the rest of the repository uses.
+    """
+    height = MARK_H * SCALE
+    mark = build_mark.cropped_to_ink(
+        build_mark.prompt(height * 6, height * 5, INK, ACCENT))
+    mark = mark.resize((round(mark.width * height / mark.height), height),
+                       Image.LANCZOS)
+    name = rendered("AI Engineering", font("black", NAME_SIZE), INK)
+    base = at[1] + max(mark.height, name.height)
+    card.paste(mark, (at[0], base - mark.height), mark)
+    card.paste(name, (at[0] + mark.width + MARK_GAP * SCALE,
+                      base - name.height), name)
+
+    return max(mark.height, name.height)
 
 
 def commit() -> str:
@@ -173,13 +213,9 @@ def draw(name: str, at: str, when: str, passed: int, total: int,
     pen.rectangle([56 * SCALE, 56 * SCALE, (SIZE[0] - 56) * SCALE,
                    (SIZE[1] - 56) * SCALE], outline=RULE, width=2 * SCALE)
 
-    pen.rectangle([left, 150 * SCALE, left + 96 * SCALE, 158 * SCALE],
-                  fill=ACCENT)
+    lockup_on(card, (left, 148 * SCALE))
 
-    pen.text((left, 186 * SCALE), "A I   E N G I N E E R I N G",
-             font=font("sans bold", 26), fill=DIM)
-
-    pen.text((left, 240 * SCALE), "Record of completion",
+    pen.text((left, 266 * SCALE), "Record of completion",
              font=font("serif bold", 82), fill=INK)
 
     pen.line([left, 396 * SCALE, right, 396 * SCALE], fill=RULE,
@@ -257,8 +293,15 @@ def draw(name: str, at: str, when: str, passed: int, total: int,
              f"git checkout {at[:12]} && python tools/run_lessons.py",
              font=font("mono", 20), fill=DIM)
 
-    pen.text((left, 1188 * SCALE), "github.com/Amey-Thakur/AI-ENGINEERING",
+    # A footer band, so the document closes on a line rather than trailing
+    # off. Its bottom margin matches the space above the lockup.
+    pen.line([left, 1196 * SCALE, right, 1196 * SCALE], fill=RULE,
+             width=2 * SCALE)
+    pen.text((left, 1226 * SCALE), "github.com/Amey-Thakur/AI-ENGINEERING",
              font=font("mono", 24), fill=FAINT)
+    pen.text((right, 1226 * SCALE),
+             "MIT licence  ·  issued by the repository, not by a provider",
+             font=font("mono", 24), fill=FAINT, anchor="ra")
 
     # The signature, bottom right, above its own rule.
     block = 400
@@ -271,7 +314,76 @@ def draw(name: str, at: str, when: str, passed: int, total: int,
     pen.text((edge * SCALE, (base + 60) * SCALE),
              "Author, AI Engineering", font=font("serif", 24), fill=DIM)
 
-    return card.resize(SIZE, Image.LANCZOS)
+    finished = card.resize(SIZE, Image.LANCZOS)
+    check_layout(finished)
+
+    return finished
+
+
+
+#: Where the content begins and ends inside the frame, measured on the drawn
+#: pixels. The record is a document somebody prints, so these are asserted
+#: rather than assumed.
+FRAME_INSET = 56
+CONTENT_TOP = 148
+FOOTER_BASELINE = 1226
+
+#: The two margins inside the frame should agree to within this, or the page
+#: reads as top-heavy however carefully each element was placed.
+MARGINS_WITHIN = 24
+
+#: A pixel darker than this counts as ink. Paper is 0xFA.
+INKED = 235
+
+
+def check_layout(card: Image.Image) -> None:
+    """Refuse to save a record that has drifted off its geometry."""
+    grey = card.convert("L")
+    width, height = grey.size
+    pixels = grey.load()
+    # Inside the frame on all four sides: its own lines are not content, and
+    # the two vertical ones would otherwise mark every row as inked.
+    inset = FRAME_INSET + 60
+    rows = [y for y in range(FRAME_INSET + 20, height - FRAME_INSET - 20)
+            if any(pixels[x, y] < INKED
+                   for x in range(inset, width - inset, 2))]
+    problems = []
+
+    if not rows:
+        raise SystemExit("the record came out blank")
+
+    first, last = min(rows), max(rows)
+    inner_top = FRAME_INSET + 2
+    inner_bottom = height - FRAME_INSET - 2
+
+    if abs(first - CONTENT_TOP) > 2:
+        problems.append(f"the content starts at {first}, not {CONTENT_TOP}")
+
+    above = first - inner_top
+    below = inner_bottom - last
+
+    if abs(above - below) > MARGINS_WITHIN:
+        problems.append(f"{above}px above the content and {below}px below it, "
+                        f"which is more than {MARGINS_WITHIN}px apart")
+
+    if last < FOOTER_BASELINE:
+        problems.append(f"the content ends at {last}, above the footer at "
+                        f"{FOOTER_BASELINE}, so the footer did not draw")
+
+    # The lockup is the only blue in the top band, and it has to be there or
+    # the document does not look as though this repository issued it.
+    patch = card.convert("RGB").crop(
+        (FRAME_INSET, CONTENT_TOP - 8, width // 2, CONTENT_TOP + 140))
+    blue = sum(1 for red, green, blue_ in patch.getdata()
+               if blue_ > red + 24 and blue_ > 90)
+
+    if blue < 200:
+        problems.append(f"only {blue} accent pixels in the lockup band, so "
+                        f"the mark is missing or has lost its cursor")
+
+    if problems:
+        raise SystemExit("the record drifted off its geometry:\n  "
+                         + "\n  ".join(problems))
 
 
 def main() -> int:

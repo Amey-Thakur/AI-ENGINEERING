@@ -95,6 +95,29 @@ WRITTEN_DESCRIPTIONS = {
                           "behaviour that falls short of it.",
 }
 
+#: Material builds the edit link from the generated path. Overridden so it
+#: uses the source the build recorded, and so the "view source" button points
+#: at the same file rather than at a raw URL for something that is not there.
+ACTIONS = """\
+<!-- Written by tools/build_docs.py. Edit that file instead of this one. -->
+
+{% set source = page.meta.source_url | default(page.edit_url, true) %}
+{% if source %}
+  {% if "content.action.edit" in features %}
+    <a href="{{ source }}" title="{{ lang.t('action.edit') }}" class="md-content__button md-icon" rel="edit">
+      {% set icon = config.theme.icon.edit or "material/file-edit-outline" %}
+      {% include ".icons/" ~ icon ~ ".svg" %}
+    </a>
+  {% endif %}
+  {% if "content.action.view" in features %}
+    <a href="{{ source | replace('/edit/', '/blob/') }}" title="{{ lang.t('action.view') }}" class="md-content__button md-icon">
+      {% set icon = config.theme.icon.view or "material/file-eye-outline" %}
+      {% include ".icons/" ~ icon ~ ".svg" %}
+    </a>
+  {% endif %}
+{% endif %}
+"""
+
 #: The curriculum page's boxes, made to remember. Nothing leaves the browser:
 #: there is no account to keep this in and no server to send it to, which is
 #: the same promise the rest of the course makes.
@@ -232,6 +255,14 @@ PROGRESS = """\
 }());
 """
 
+#: Where a reader is sent to correct a page. The build appends the real source
+#: path, which is not the path the page is published at.
+EDIT = "https://github.com/Amey-Thakur/AI-ENGINEERING/edit/main/"
+
+#: Pages whose markdown is itself generated. Editing the page would be undone
+#: by the next build, so the button offers the program that writes it.
+SOURCE_OVERRIDES = {"curriculum.md": "tools/build_curriculum.py"}
+
 #: The homepage's own title. Without it the page is called "Start here",
 #: which says nothing to anybody who meets it in a list of search results.
 LANDING_TITLE = "AI Engineering: build it yourself, measure everything"
@@ -308,6 +339,7 @@ theme:
     - search.share
     - content.code.copy
     - content.action.edit
+    - content.action.view
   palette:
     # Material's own two schemes, retinted to slate, paper and Python blue in
     # assets/palette.css. Extending them rather than inventing a scheme name
@@ -1173,7 +1205,11 @@ def main() -> int:
         # pages arrive at a search engine looking like the same page.
         written = WRITTEN_DESCRIPTIONS.get(target)
         front = [f"description: "
-                 f"{json.dumps(written or describe(raw, SUMMARY))}"]
+                 f"{json.dumps(written or describe(raw, SUMMARY))}",
+                 # The file this page was built from, so the edit button
+                 # offers the lesson rather than a new, empty index.md.
+                 f"source_url: "
+                 f"{json.dumps(EDIT + SOURCE_OVERRIDES.get(target, source))}"]
 
         if target == "index.md":
             front.append(f"title: {json.dumps(LANDING_TITLE)}")
@@ -1201,6 +1237,10 @@ def main() -> int:
             .replace("__GLOSSARY__", glossary_data()))
     (overrides / "main.html").write_text(head, encoding="utf-8",
                                          newline="\n")
+    partials = overrides / "partials"
+    partials.mkdir(exist_ok=True)
+    (partials / "actions.html").write_text(ACTIONS, encoding="utf-8",
+                                           newline="\n")
 
     # A crawler looks for both of these at the root and neither existed.
     (DOCS / "robots.txt").write_text(ROBOTS, encoding="utf-8", newline="\n")
