@@ -75,10 +75,21 @@ GUTTER = 80
 COLUMN = (SIZE[0] - MARGIN * 2 - GUTTER) // 2
 MIDDLE = SIZE[0] // 2
 
-#: The lockup, in the proportions the card and the README header use.
-MARK_H = 60
-MARK_GAP = 20
+#: The lockup's proportions: the mark's height and the gap to the name, both
+#: as a fraction of the name's own size. The size itself is not fixed here.
+#: It is solved for, so the lockup comes out the same width as the title
+#: underneath it however that title is set.
+MARK_RATIO = 60 / 54
+GAP_RATIO = 20 / 54
+
+#: Where the search for that size starts, and how far either side of the
+#: title's width the result may land.
 NAME_SIZE = 54
+WIDTH_WITHIN = 6
+
+#: The title, kept here because the lockup is measured against it.
+TITLE = "Record of completion"
+TITLE_SIZE = 70
 
 #: Every anchor on the page, measured rather than nudged. check_layout holds
 #: the document to the first and last of them.
@@ -120,29 +131,53 @@ def rendered(text: str, face: ImageFont.FreeTypeFont,
     return layer.crop(box) if box else layer
 
 
-def lockup_on(card: Image.Image, top: int, centred: bool = False) -> int:
-    """The mark and the name as one block. Returns the height it took.
+def lockup_parts(size: int) -> tuple[Image.Image, Image.Image, int]:
+    """The mark and the name at one size, and the width they make.
 
-    Drawn with build_mark rather than redrawn here, so the record cannot
-    drift away from the mark the rest of the repository uses. The name sits
-    on the mark's own bottom edge, which is what stops the letters looking as
-    though they float beside it.
+    Drawn with build_mark rather than redrawn here, so the record
+    cannot drift away from the mark the rest of the repository uses.
     """
-    height = MARK_H * SCALE
+    height = round(size * MARK_RATIO) * SCALE
     mark = build_mark.cropped_to_ink(
         build_mark.prompt(height * 6, height * 5, INK, ACCENT))
-    mark = mark.resize((round(mark.width * height / mark.height), height),
-                       Image.LANCZOS)
-    name = rendered("AI Engineering", font("black", NAME_SIZE), INK)
-    gap = MARK_GAP * SCALE
-    span = mark.width + gap + name.width
-    start = (round(MIDDLE * SCALE - span / 2) if centred else MARGIN * SCALE)
+    mark = mark.resize(
+        (round(mark.width * height / mark.height), height), Image.LANCZOS)
+    name = rendered("AI Engineering", font("black", size), INK)
+    gap = round(size * GAP_RATIO) * SCALE
+
+    return mark, name, mark.width + gap + name.width
+
+
+def lockup_size(target: int) -> int:
+    """The name size whose lockup comes out `target` wide.
+
+    Text width is close enough to linear in the point size to estimate
+    the answer and then walk the last pixel or two, which is quicker and
+    steadier than solving it.
+    """
+    _, _, width = lockup_parts(NAME_SIZE)
+    size = max(8, round(NAME_SIZE * target / width))
+    best, best_gap = size, None
+
+    for size in range(max(8, size - 6), size + 7):
+        _, _, width = lockup_parts(size)
+        gap = abs(width - target)
+
+        if best_gap is None or gap < best_gap:
+            best, best_gap = size, gap
+
+    return best
+
+
+def lockup_on(card: Image.Image, top: int, target: int) -> int:
+    """The mark and the name, centred, as wide as the title below."""
+    mark, name, width = lockup_parts(lockup_size(target))
+    start = round(MIDDLE * SCALE - width / 2)
     base = top * SCALE + max(mark.height, name.height)
     card.paste(mark, (start, base - mark.height), mark)
-    card.paste(name, (start + mark.width + gap, base - name.height), name)
+    card.paste(name, (start + width - name.width, base - name.height), name)
 
     return max(mark.height, name.height)
-
 
 def commit() -> str:
     """The commit the course was at when the checks were run."""
@@ -300,10 +335,9 @@ def draw(name: str, at: str, when: str, passed: int, total: int,
     pen.rectangle([56 * SCALE, 56 * SCALE, (SIZE[0] - 56) * SCALE,
                    (SIZE[1] - 56) * SCALE], outline=RULE, width=2 * SCALE)
 
-    lockup_on(card, TOP, centred=True)
-
-    centred(card, "Record of completion", font("serif bold", 70), INK,
-            TITLE_Y)
+    # The title is measured first, because the lockup is sized to match it.
+    title = centred(card, TITLE, font("serif bold", TITLE_SIZE), INK, TITLE_Y)
+    lockup_on(card, TOP, title.width)
 
     pen.rectangle([(MIDDLE - RULE_W // 2) * SCALE, RULE_Y * SCALE,
                    (MIDDLE + RULE_W // 2) * SCALE, (RULE_Y + 5) * SCALE],
@@ -439,7 +473,9 @@ def check_layout(card: Image.Image) -> None:
 
     # Every line that is meant to be centred has to actually be centred, which
     # is the whole claim the layout makes.
-    for name, top, bottom in (("the lockup", TOP, TOP + MARK_H),
+    # The lockup's height follows from the size solved for, so its band runs
+    # from the top of the content down to just above the title.
+    for name, top, bottom in (("the lockup", TOP, TITLE_Y - 16),
                               ("the title", TITLE_Y, TITLE_Y + 80),
                               ("the accent rule", RULE_Y, RULE_Y + 5),
                               ("the holder's name", HOLDER_Y, HOLDER_Y + 100),
@@ -457,6 +493,24 @@ def check_layout(card: Image.Image) -> None:
         if abs(centre - width / 2) > OFF_CENTRE:
             problems.append(f"{name} is centred on {centre:.1f}, "
                             f"not {width / 2}")
+
+    # The lockup and the title are a pair, and a pair that does not share a
+    # width reads as a label above a heading.
+    def width_of(top: int, bottom: int) -> int | None:
+        edges = [x for x in range(inset, width - inset)
+                 if any(pixels[x, y] < INKED
+                        for y in range(top, min(bottom, height - 1) + 1))]
+
+        return edges[-1] - edges[0] + 1 if edges else None
+
+    lockup_width = width_of(TOP, TITLE_Y - 16)
+    title_width = width_of(TITLE_Y, TITLE_Y + TITLE_SIZE + 20)
+
+    if lockup_width and title_width:
+        if abs(lockup_width - title_width) > WIDTH_WITHIN:
+            problems.append(f"the lockup is {lockup_width}px wide and the "
+                            f"title {title_width}px, which is more than "
+                            f"{WIDTH_WITHIN}px apart")
 
     # The seal is the only green on the page, and it has to be there.
     patch = card.convert("RGB").crop(
