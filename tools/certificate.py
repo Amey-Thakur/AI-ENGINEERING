@@ -56,7 +56,8 @@ BACKGROUND = (0xFA, 0xFB, 0xFC)
 INK = (0x22, 0x30, 0x3C)
 DIM = (0x5B, 0x6B, 0x78)
 FAINT = (0x87, 0x94, 0xA0)
-ACCENT = (0x37, 0x76, 0xAB)
+#: The cursor's blue, taken from the mark so the two cannot drift.
+ACCENT = build_mark.CURSOR
 RULE = (0xD7, 0xDD, 0xE3)
 
 #: Written into every record, so a file from some other tool is not read as

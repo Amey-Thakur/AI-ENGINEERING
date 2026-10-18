@@ -275,7 +275,7 @@ This course is made available under the **MIT License**. See the [LICENSE](LICEN
 > **Summary**: Use it, fork it, teach from it, translate it, run a paid
 > workshop on it. Attribution is appreciated and not required.
 
-Copyright © 2026 Amey Thakur
+Copyright © Amey Thakur
 
 ---
 
@@ -289,7 +289,7 @@ This is the course I wanted when I started and could not find: one that installs
 
 ### Acknowledgments
 
-**Period**: 2026  
+**Started**: 2026  
 **Built with**: The Python standard library, and nothing else
 
 Grateful acknowledgment to the **Python core developers**, whose standard library is the reason this course can promise that nothing in it will be withdrawn. A batteries-included library maintained for decades is a public good, and material built only on it inherits that durability for nothing.

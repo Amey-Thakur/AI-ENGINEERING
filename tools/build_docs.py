@@ -582,7 +582,7 @@ repo_url: https://github.com/Amey-Thakur/AI-ENGINEERING
 repo_name: Amey-Thakur/AI-ENGINEERING
 edit_uri: edit/main/
 copyright: >-
-  Copyright &copy; 2026 <strong>Amey Thakur</strong> &nbsp;&middot;&nbsp;
+  Copyright &copy; <strong>Amey Thakur</strong> &nbsp;&middot;&nbsp;
   <a href="https://github.com/Amey-Thakur/AI-ENGINEERING/blob/main/LICENSE">MIT</a>
   &nbsp;&middot;&nbsp; Built with the Python standard library, and nothing else
 
@@ -697,8 +697,8 @@ PALETTE = """\
   --md-primary-bg-color:           #FAFBFC;
   --md-primary-bg-color--light:    #D7DDE3;
 
-  --md-accent-fg-color:            #3776AB;
-  --md-accent-fg-color--transparent: #3776AB14;
+  --md-accent-fg-color:            #2F81F7;
+  --md-accent-fg-color--transparent: #2F81F714;
   --md-accent-bg-color:            #FAFBFC;
 
   --md-default-bg-color:           #FAFBFC;
@@ -710,7 +710,7 @@ PALETTE = """\
   /* The typeset reads its own variables, which is why setting only the
      default colours above left the body text untouched. */
   --md-typeset-color:              #22303C;
-  --md-typeset-a-color:            #2A6494;
+  --md-typeset-a-color:            #1F6FD8;
 
   --md-code-bg-color:              #F1F4F7;
   --md-code-fg-color:              #22303C;
@@ -734,8 +734,8 @@ PALETTE = """\
   --md-primary-bg-color:           #E6ECF2;
   --md-primary-bg-color--light:    #9AA8B4;
 
-  --md-accent-fg-color:            #6BA6DE;
-  --md-accent-fg-color--transparent: #6BA6DE1F;
+  --md-accent-fg-color:            #6CB0FF;
+  --md-accent-fg-color--transparent: #6CB0FF1F;
   --md-accent-bg-color:            #11181E;
 
   --md-default-bg-color:           #161E26;
@@ -745,7 +745,7 @@ PALETTE = """\
   --md-default-fg-color--lightest: #2C3845;
 
   --md-typeset-color:              #E6ECF2;
-  --md-typeset-a-color:            #6BA6DE;
+  --md-typeset-a-color:            #6CB0FF;
 
   --md-code-bg-color:              #1B242E;
   --md-code-fg-color:              #E6ECF2;
@@ -914,7 +914,7 @@ form[data-md-component="palette"] > label.md-header__button svg {
   width: 0;
   height: 100%;
   border-radius: 0.3rem;
-  background: var(--md-primary-fg-color);
+  background: var(--md-accent-fg-color);
   transition: width 0.25s ease;
 }
 
@@ -924,7 +924,7 @@ form[data-md-component="palette"] > label.md-header__button svg {
   padding: 0.25rem 0.7rem;
   font-size: 0.68rem;
   font-weight: 700;
-  color: var(--md-primary-fg-color);
+  color: var(--md-typeset-a-color);
   cursor: pointer;
   background: transparent;
   border: 1px solid var(--md-default-fg-color--lightest);
@@ -932,7 +932,7 @@ form[data-md-component="palette"] > label.md-header__button svg {
 }
 
 .progress-reset:hover {
-  border-color: var(--md-primary-fg-color);
+  border-color: var(--md-accent-fg-color);
 }
 
 .md-content .task-list-item {
@@ -989,7 +989,7 @@ form[data-md-component="palette"] > label.md-header__button svg {
 .verify-drop:hover,
 .verify-drop:focus-visible,
 .verify-drop.is-over {
-  border-color: var(--md-primary-fg-color);
+  border-color: var(--md-accent-fg-color);
   outline: none;
 }
 
@@ -1005,7 +1005,7 @@ form[data-md-component="palette"] > label.md-header__button svg {
 .verify-pick {
   padding: 0;
   font: inherit;
-  color: var(--md-primary-fg-color);
+  color: var(--md-typeset-a-color);
   text-decoration: underline;
   cursor: pointer;
   background: none;
@@ -1051,7 +1051,7 @@ form[data-md-component="palette"] > label.md-header__button svg {
 }
 
 .verify-grid input:focus {
-  border-color: var(--md-primary-fg-color);
+  border-color: var(--md-accent-fg-color);
   outline: none;
 }
 
@@ -1059,9 +1059,9 @@ form[data-md-component="palette"] > label.md-header__button svg {
   padding: 0.4rem 1rem;
   font-size: 0.72rem;
   font-weight: 700;
-  color: var(--md-primary-bg-color);
+  color: var(--md-default-bg-color);
   cursor: pointer;
-  background: var(--md-primary-fg-color);
+  background: var(--md-accent-fg-color);
   border: 0;
   border-radius: 0.2rem;
 }

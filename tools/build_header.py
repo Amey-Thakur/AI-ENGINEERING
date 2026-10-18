@@ -129,7 +129,7 @@ def main() -> int:
     pen.rounded_rectangle(
         [(mark_x + x0) * SS, (mark_y + y0) * SS,
          (mark_x + x1) * SS, (mark_y + y1) * SS],
-        radius=round(shape["radius"] * SS), fill=build_mark.PYTHON)
+        radius=round(shape["radius"] * SS), fill=build_mark.CURSOR)
 
     for layer, (x, y) in ((plan["word"], plan["word_at"]),
                           (plan["strap"], plan["strap_at"])):
@@ -169,7 +169,7 @@ def main() -> int:
             stroke-linejoin="round"/>
   <rect class="cursor" x="{mark_x + x0:.2f}" y="{mark_y + y0:.2f}"
         width="{x1 - x0:.2f}" height="{y1 - y0:.2f}"
-        rx="{shape['radius']}" fill="{build_mark.ink(build_mark.PYTHON)}"/>
+        rx="{shape['radius']}" fill="{build_mark.ink(build_mark.CURSOR)}"/>
   <image x="{word_x:.2f}" y="{word_y:.2f}"
          width="{plan['word'].width / SS:.2f}"
          height="{plan['word'].height / SS:.2f}"

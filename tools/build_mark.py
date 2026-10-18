@@ -54,7 +54,9 @@ FLAT = lesson.ROOT / ".github" / "assets" / "mark-flat.png"
 SS = 4
 
 SLATE = (0x2F, 0x3E, 0x4A)
-PYTHON = (0x37, 0x76, 0xAB)
+#: The cursor, and the only blue on any of the artwork. Checked against both
+#: grounds it sits on: 3.6 to 1 on paper, 3.0 to 1 on the slate plate.
+CURSOR = (0x2F, 0x81, 0xF7)
 PAPER = (0xFA, 0xFB, 0xFC)
 
 RADIUS = 42
@@ -218,11 +220,11 @@ def cropped_to_ink(card: Image.Image) -> Image.Image:
 def main() -> int:
     SQUARE.parent.mkdir(parents=True, exist_ok=True)
 
-    plated = prompt(192, 192, PAPER, PYTHON, SLATE, RADIUS).resize(
+    plated = prompt(192, 192, PAPER, CURSOR, SLATE, RADIUS).resize(
         (192, 192), Image.LANCZOS)
     plated.save(SQUARE, optimize=True)
 
-    SQUARE_SVG.write_text(svg(192, 192, PAPER, PYTHON, SLATE, RADIUS),
+    SQUARE_SVG.write_text(svg(192, 192, PAPER, CURSOR, SLATE, RADIUS),
                           encoding="utf-8", newline="\n")
 
     # The title bar is slate, so its mark is drawn in paper on nothing. The
@@ -232,7 +234,7 @@ def main() -> int:
     right = shape["cursor"][2]
     top = shape["chevron"][0][1] - shape["stroke"] / 2
     bottom = shape["cursor"][3]
-    bare = svg(142, 96, PAPER, PYTHON)
+    bare = svg(142, 96, PAPER, CURSOR)
     bare = bare.replace(
         'viewBox="0 0 142 96"\n     width="142" height="96"',
         f'viewBox="{left:.2f} {top:.2f} {right - left:.2f} '
@@ -244,7 +246,7 @@ def main() -> int:
     favicon.save(FAVICON, optimize=True)
 
     # Drawn large and trimmed, so the ink fills the band the card gives it.
-    big = cropped_to_ink(prompt(320, 280, SLATE, PYTHON))
+    big = cropped_to_ink(prompt(320, 280, SLATE, CURSOR))
     flat = big.resize(
         (round(big.width * FLAT_INK_HEIGHT / big.height), FLAT_INK_HEIGHT),
         Image.LANCZOS)
