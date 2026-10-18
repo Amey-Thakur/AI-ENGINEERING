@@ -93,25 +93,25 @@ TITLE_SIZE = 70
 
 #: Every anchor on the page, measured rather than nudged. check_layout holds
 #: the document to the first and last of them.
-TOP = 126
-TITLE_Y = 228
-RULE_Y, RULE_W = 334, 140
-LEAD_Y = 372
-HOLDER_Y = 414
-CLAIM_Y = 548
-ASIDE_Y = 594
-SPLIT_Y = 652
-HEADS_Y = 690
-ROWS_Y = 734
+TOP = 114
+TITLE_Y = 240
+RULE_Y, RULE_W = 346, 140
+LEAD_Y = 384
+HOLDER_Y = 426
+CLAIM_Y = 560
+ASIDE_Y = 606
+SPLIT_Y = 664
+HEADS_Y = 702
+ROWS_Y = 746
 ROW_STEP = 46
 PHASE_STEP = 33
-SEAL_Y = 952
-CLOSE_Y = 1114
-ACTION_Y = 1146
-COMMAND_Y = 1184
+SEAL_Y = 964
+CLOSE_Y = 1126
+ACTION_Y = 1158
+COMMAND_Y = 1196
 COMMAND_STEP = 32
-SIGN_Y = 1134
-FOOT_Y = 1270
+SIGN_Y = 1146
+FOOT_Y = 1282
 
 def font(role: str, size: int) -> ImageFont.FreeTypeFont:
     """A font for a role, at the size the card is drawn at."""
