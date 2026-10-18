@@ -1204,7 +1204,9 @@ OVERRIDE = """\
   <meta name="twitter:image:alt" content="AI Engineering. Learn to build AI systems by building them.">
   <meta name="author" content="Amey Thakur">
   <link rel="author" href="https://github.com/Amey-Thakur">
-  {% if page.ancestors %}
+  {# Every page but the front one gets a trail, including the few that sit
+     directly under it and so have no ancestors of their own. #}
+  {% if page.canonical_url != config.site_url %}
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"{{ config.site_name }}","item":"{{ config.site_url }}"}{% for parent in page.ancestors | reverse %}{% if parent.title %},{"@type":"ListItem","position":{{ loop.index + 1 }},"name":"{{ parent.title | e }}"{% if parent.canonical_url is defined and parent.canonical_url %},"item":"{{ parent.canonical_url }}"{% endif %}}{% endif %}{% endfor %},{"@type":"ListItem","position":{{ (page.ancestors | length) + 2 }},"name":"{{ page.title | e }}","item":"{{ page.canonical_url }}"}]}</script>
   {% endif %}
   {% if page.canonical_url == config.site_url %}__COURSE__{% endif %}
