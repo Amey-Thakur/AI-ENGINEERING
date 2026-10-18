@@ -38,6 +38,7 @@ import subprocess
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
+from PIL.PngImagePlugin import PngInfo
 
 import build_mark
 import lesson
@@ -58,14 +59,47 @@ FAINT = (0x87, 0x94, 0xA0)
 ACCENT = (0x37, 0x76, 0xAB)
 RULE = (0xD7, 0xDD, 0xE3)
 
-MARGIN = 160
+#: Written into every record, so a file from some other tool is not read as
+#: one of these. tools/verify_certificate.py checks for it.
+MARKER = "AI Engineering record of completion"
 
-#: The lockup, in the same proportions the card and the README header use:
-#: the mark, a gap, then the name set on the mark's own bottom edge.
-MARK_H = 64
-MARK_GAP = 22
-NAME_SIZE = 58
+#: House green, from the launch kit's colour reference. The only green on the
+#: document, and it appears once, on the seal.
+SEAL = (0x2E, 0xA0, 0x43)
 
+#: One centre line, two columns of equal width either side of it, which is the
+#: same discipline the social card is held to.
+MARGIN = 150
+GUTTER = 80
+COLUMN = (SIZE[0] - MARGIN * 2 - GUTTER) // 2
+MIDDLE = SIZE[0] // 2
+
+#: The lockup, in the proportions the card and the README header use.
+MARK_H = 60
+MARK_GAP = 20
+NAME_SIZE = 54
+
+#: Every anchor on the page, measured rather than nudged. check_layout holds
+#: the document to the first and last of them.
+TOP = 126
+TITLE_Y = 228
+RULE_Y, RULE_W = 334, 140
+LEAD_Y = 372
+HOLDER_Y = 414
+CLAIM_Y = 548
+ASIDE_Y = 594
+SPLIT_Y = 652
+HEADS_Y = 690
+ROWS_Y = 734
+ROW_STEP = 46
+PHASE_STEP = 33
+SEAL_Y = 952
+CLOSE_Y = 1114
+ACTION_Y = 1146
+COMMAND_Y = 1184
+COMMAND_STEP = 32
+SIGN_Y = 1134
+FOOT_Y = 1270
 
 def font(role: str, size: int) -> ImageFont.FreeTypeFont:
     """A font for a role, at the size the card is drawn at."""
@@ -85,11 +119,13 @@ def rendered(text: str, face: ImageFont.FreeTypeFont,
     return layer.crop(box) if box else layer
 
 
-def lockup_on(card: Image.Image, at: tuple[int, int]) -> int:
+def lockup_on(card: Image.Image, top: int, centred: bool = False) -> int:
     """The mark and the name as one block. Returns the height it took.
 
     Drawn with build_mark rather than redrawn here, so the record cannot
-    drift away from the mark the rest of the repository uses.
+    drift away from the mark the rest of the repository uses. The name sits
+    on the mark's own bottom edge, which is what stops the letters looking as
+    though they float beside it.
     """
     height = MARK_H * SCALE
     mark = build_mark.cropped_to_ink(
@@ -97,10 +133,12 @@ def lockup_on(card: Image.Image, at: tuple[int, int]) -> int:
     mark = mark.resize((round(mark.width * height / mark.height), height),
                        Image.LANCZOS)
     name = rendered("AI Engineering", font("black", NAME_SIZE), INK)
-    base = at[1] + max(mark.height, name.height)
-    card.paste(mark, (at[0], base - mark.height), mark)
-    card.paste(name, (at[0] + mark.width + MARK_GAP * SCALE,
-                      base - name.height), name)
+    gap = MARK_GAP * SCALE
+    span = mark.width + gap + name.width
+    start = (round(MIDDLE * SCALE - span / 2) if centred else MARGIN * SCALE)
+    base = top * SCALE + max(mark.height, name.height)
+    card.paste(mark, (start, base - mark.height), mark)
+    card.paste(name, (start + mark.width + gap, base - name.height), name)
 
     return max(mark.height, name.height)
 
@@ -201,6 +239,53 @@ def signature_on(card: Image.Image, at: tuple[int, int], width: int) -> int:
     return height
 
 
+def centred(card: Image.Image, text: str, face: ImageFont.FreeTypeFont,
+            fill: tuple[int, int, int], top: int) -> Image.Image:
+    """One line, centred on the page's own centre line.
+
+    Centred on the ink it actually produced rather than on the box the
+    renderer predicts, because the two differ by a pixel or two and the
+    layout check measures ink.
+    """
+    patch = rendered(text, face, fill)
+    card.paste(patch, (round(MIDDLE * SCALE - patch.width / 2), top * SCALE),
+               patch)
+
+    return patch
+
+
+def seal_on(card: Image.Image, pen: ImageDraw.ImageDraw, at: tuple[int, int],
+            passed: int, total: int) -> None:
+    """A tick, and the one claim this document actually makes.
+
+    Not a badge of authenticity: anybody can draw a tick. It marks that every
+    check in the course passed, which is the thing the record asserts and the
+    thing the verifier recomputes.
+    """
+    size = 46
+    left, top = at
+    box = [left * SCALE, top * SCALE, (left + size) * SCALE,
+           (top + size) * SCALE]
+    pen.ellipse(box, fill=SEAL)
+
+    # The tick, drawn rather than set in a font, so it cannot go missing on a
+    # machine whose fonts resolve differently.
+    stroke = max(2, round(size * 0.11))
+    points = [(left + size * 0.27, top + size * 0.52),
+              (left + size * 0.43, top + size * 0.68),
+              (left + size * 0.74, top + size * 0.33)]
+    pen.line([(x * SCALE, y * SCALE) for x, y in points],
+             fill=BACKGROUND, width=stroke * SCALE, joint="curve")
+
+    beside = left + size + 18
+    pen.text((beside * SCALE, (top + 4) * SCALE),
+             f"All {total} checks passed",
+             font=font("sans bold", 25), fill=INK)
+    pen.text((beside * SCALE, (top + 26) * SCALE),
+             "on the holder's own machine",
+             font=font("serif", 21), fill=DIM)
+
+
 def draw(name: str, at: str, when: str, passed: int, total: int,
          number: str) -> Image.Image:
     card = Image.new("RGB", (SIZE[0] * SCALE, SIZE[1] * SCALE), BACKGROUND)
@@ -208,32 +293,35 @@ def draw(name: str, at: str, when: str, passed: int, total: int,
 
     left = MARGIN * SCALE
     right = (SIZE[0] - MARGIN) * SCALE
+    column_two = MARGIN + COLUMN + GUTTER
 
     # A hairline frame, so it reads as a document rather than a screenshot.
     pen.rectangle([56 * SCALE, 56 * SCALE, (SIZE[0] - 56) * SCALE,
                    (SIZE[1] - 56) * SCALE], outline=RULE, width=2 * SCALE)
 
-    lockup_on(card, (left, 148 * SCALE))
+    lockup_on(card, TOP, centred=True)
 
-    pen.text((left, 266 * SCALE), "Record of completion",
-             font=font("serif bold", 82), fill=INK)
+    centred(card, "Record of completion", font("serif bold", 70), INK,
+            TITLE_Y)
 
-    pen.line([left, 396 * SCALE, right, 396 * SCALE], fill=RULE,
+    pen.rectangle([(MIDDLE - RULE_W // 2) * SCALE, RULE_Y * SCALE,
+                   (MIDDLE + RULE_W // 2) * SCALE, (RULE_Y + 5) * SCALE],
+                  fill=ACCENT)
+
+    centred(card, "This records that", font("serif", 28), DIM, LEAD_Y)
+    centred(card, name, font("serif bold", 84), ACCENT, HOLDER_Y)
+    centred(card, f"ran every check in this course and passed all {total} "
+                  f"of them.", font("serif", 32), INK, CLAIM_Y)
+    centred(card, "It records that this happened. It does not claim anything "
+                  "further.", font("serif", 24), DIM, ASIDE_Y)
+
+    pen.line([left, SPLIT_Y * SCALE, right, SPLIT_Y * SCALE], fill=RULE,
              width=2 * SCALE)
 
-    pen.text((left, 436 * SCALE), "This records that",
-             font=font("serif", 32), fill=DIM)
-
-    pen.text((left, 490 * SCALE), name, font=font("serif bold", 78),
-             fill=ACCENT)
-
-    pen.text((left, 612 * SCALE),
-             f"ran every check in this course and passed all {total} of them.",
-             font=font("serif", 34), fill=INK)
-    pen.text((left, 662 * SCALE),
-             "It records that this happened. It does not claim anything "
-             "further.",
-             font=font("serif", 28), fill=DIM)
+    pen.text((left, HEADS_Y * SCALE), "THE RECORD",
+             font=font("sans bold", 23), fill=DIM)
+    pen.text((column_two * SCALE, HEADS_Y * SCALE), "WHAT IT COVERED",
+             font=font("sans bold", 23), fill=DIM)
 
     # The receipt. Monospaced, because every line of it is checkable.
     rows = [
@@ -242,77 +330,64 @@ def draw(name: str, at: str, when: str, passed: int, total: int,
         ("date", when),
         ("credential", number),
     ]
+    top = ROWS_Y
 
-    top = 760
     for label, value in rows:
         pen.text((left, top * SCALE), label,
-                 font=font("mono", 26), fill=FAINT)
-        pen.text((left + 240 * SCALE, top * SCALE), value,
-                 font=font("mono", 26), fill=INK)
-        top += 44
+                 font=font("mono", 25), fill=FAINT)
+        pen.text((left + 200 * SCALE, top * SCALE), value,
+                 font=font("mono", 25), fill=INK)
+        top += ROW_STEP
 
-    pen.line([left, 966 * SCALE, left + 760 * SCALE, 966 * SCALE], fill=RULE,
-             width=2 * SCALE)
+    seal_on(card, pen, (MARGIN, SEAL_Y), passed, total)
 
     # What the holder actually did, which is the substance of the document.
-    column = 1060
     listed = phases()
     counts = {count for _, _, count in listed}
-
-    # A column of identical numbers says nothing, so say it once instead. If
-    # the phases ever differ in length the column comes back on its own.
     even = len(counts) == 1
-    heading = "What this covered"
+    row = ROWS_Y
 
-    if even:
-        heading += f", {len(listed)} phases of {counts.pop()} lessons"
-
-    pen.text((column * SCALE, 436 * SCALE), heading,
-             font=font("sans bold", 26), fill=DIM)
-
-    row = 492
-    for number, title, count in listed:
-        pen.text((column * SCALE, row * SCALE), number,
-                 font=font("mono", 22), fill=FAINT)
-        pen.text(((column + 40) * SCALE, (row - 3) * SCALE), title,
-                 font=font("serif", 27), fill=INK)
+    for index, title, count in listed:
+        pen.text((column_two * SCALE, row * SCALE), index,
+                 font=font("mono", 21), fill=FAINT)
+        pen.text(((column_two + 38) * SCALE, (row - 3) * SCALE), title,
+                 font=font("serif", 26), fill=INK)
 
         if not even:
             pen.text((right, row * SCALE), f"{count}",
-                     font=font("mono", 22), fill=FAINT, anchor="ra")
+                     font=font("mono", 21), fill=FAINT, anchor="ra")
 
-        row += 42
+        row += PHASE_STEP
 
-    pen.text((left, 1000 * SCALE), "Verify it without asking anybody",
-             font=font("sans bold", 26), fill=INK)
-    pen.text((left, 1042 * SCALE),
-             f"git clone https://github.com/Amey-Thakur/AI-ENGINEERING && "
-             f"cd AI-ENGINEERING",
-             font=font("mono", 20), fill=DIM)
-    pen.text((left, 1074 * SCALE),
-             f"git checkout {at[:12]} && python tools/run_lessons.py",
-             font=font("mono", 20), fill=DIM)
-
-    # A footer band, so the document closes on a line rather than trailing
-    # off. Its bottom margin matches the space above the lockup.
-    pen.line([left, 1196 * SCALE, right, 1196 * SCALE], fill=RULE,
+    pen.line([left, CLOSE_Y * SCALE, right, CLOSE_Y * SCALE], fill=RULE,
              width=2 * SCALE)
-    pen.text((left, 1226 * SCALE), "github.com/Amey-Thakur/AI-ENGINEERING",
-             font=font("mono", 24), fill=FAINT)
-    pen.text((right, 1226 * SCALE),
-             "MIT licence  ·  issued by the repository, not by a provider",
-             font=font("mono", 24), fill=FAINT, anchor="ra")
 
-    # The signature, bottom right, above its own rule.
-    block = 400
+    pen.text((left, ACTION_Y * SCALE), "Verify it without asking anybody",
+             font=font("sans bold", 24), fill=INK)
+    pen.text((left, COMMAND_Y * SCALE),
+             "git clone https://github.com/Amey-Thakur/AI-ENGINEERING",
+             font=font("mono", 21), fill=DIM)
+    pen.text((left, (COMMAND_Y + COMMAND_STEP) * SCALE),
+             f"git checkout {at[:12]} && python tools/verify_certificate.py",
+             font=font("mono", 21), fill=DIM)
+
+    # The signature, set against the right margin so it closes the column it
+    # sits under rather than floating between the two.
+    block = 300
     edge = SIZE[0] - MARGIN - block
-    height = signature_on(card, (edge * SCALE, 960 * SCALE), block * SCALE)
+    height = signature_on(card, (edge * SCALE, SIGN_Y * SCALE), block * SCALE)
+    base = SIGN_Y + (height // SCALE)
 
-    base = 960 + (height // SCALE) + 4
-    pen.text((edge * SCALE, (base + 16) * SCALE), "Amey Thakur",
-             font=font("serif bold", 30), fill=INK)
-    pen.text((edge * SCALE, (base + 60) * SCALE),
-             "Author, AI Engineering", font=font("serif", 24), fill=DIM)
+    # Centred under the signature rather than pushed to the margin, so the
+    # name sits square beneath the hand that wrote it.
+    under = (edge + block // 2) * SCALE
+    pen.text((under, (base + 6) * SCALE), "Amey Thakur",
+             font=font("serif bold", 26), fill=INK, anchor="ma")
+    pen.text((under, (base + 42) * SCALE), "Author, AI Engineering",
+             font=font("serif", 20), fill=DIM, anchor="ma")
+
+    centred(card, "MIT licence  \u00b7  issued by the repository, not by a "
+                  "provider", font("mono", 20), FAINT, FOOT_Y)
 
     finished = card.resize(SIZE, Image.LANCZOS)
     check_layout(finished)
@@ -320,31 +395,25 @@ def draw(name: str, at: str, when: str, passed: int, total: int,
     return finished
 
 
-
-#: Where the content begins and ends inside the frame, measured on the drawn
-#: pixels. The record is a document somebody prints, so these are asserted
-#: rather than assumed.
-FRAME_INSET = 56
-CONTENT_TOP = 148
-FOOTER_BASELINE = 1226
+#: A pixel darker than this counts as ink. Paper is 0xFA.
+INKED = 235
 
 #: The two margins inside the frame should agree to within this, or the page
 #: reads as top-heavy however carefully each element was placed.
 MARGINS_WITHIN = 24
 
-#: A pixel darker than this counts as ink. Paper is 0xFA.
-INKED = 235
+#: How far a centred line may sit off the page's centre before it reads as
+#: crooked. Two pixels, the same slack the social card allows.
+OFF_CENTRE = 2.5
 
 
 def check_layout(card: Image.Image) -> None:
-    """Refuse to save a record that has drifted off its geometry."""
+    """Refuse to save a record that has drifted off its own geometry."""
     grey = card.convert("L")
     width, height = grey.size
     pixels = grey.load()
-    # Inside the frame on all four sides: its own lines are not content, and
-    # the two vertical ones would otherwise mark every row as inked.
-    inset = FRAME_INSET + 60
-    rows = [y for y in range(FRAME_INSET + 20, height - FRAME_INSET - 20)
+    inset = MARGIN - 20
+    rows = [y for y in range(58 + 20, height - 58 - 20)
             if any(pixels[x, y] < INKED
                    for x in range(inset, width - inset, 2))]
     problems = []
@@ -353,33 +422,49 @@ def check_layout(card: Image.Image) -> None:
         raise SystemExit("the record came out blank")
 
     first, last = min(rows), max(rows)
-    inner_top = FRAME_INSET + 2
-    inner_bottom = height - FRAME_INSET - 2
+    above = first - 58
+    below = (height - 58) - last
 
-    if abs(first - CONTENT_TOP) > 2:
-        problems.append(f"the content starts at {first}, not {CONTENT_TOP}")
-
-    above = first - inner_top
-    below = inner_bottom - last
+    if abs(first - TOP) > 2:
+        problems.append(f"the content starts at {first}, not {TOP}")
 
     if abs(above - below) > MARGINS_WITHIN:
         problems.append(f"{above}px above the content and {below}px below it, "
                         f"which is more than {MARGINS_WITHIN}px apart")
 
-    if last < FOOTER_BASELINE:
+    if last < FOOT_Y:
         problems.append(f"the content ends at {last}, above the footer at "
-                        f"{FOOTER_BASELINE}, so the footer did not draw")
+                        f"{FOOT_Y}, so the footer did not draw")
 
-    # The lockup is the only blue in the top band, and it has to be there or
-    # the document does not look as though this repository issued it.
+    # Every line that is meant to be centred has to actually be centred, which
+    # is the whole claim the layout makes.
+    for name, top, bottom in (("the lockup", TOP, TOP + MARK_H),
+                              ("the title", TITLE_Y, TITLE_Y + 80),
+                              ("the accent rule", RULE_Y, RULE_Y + 5),
+                              ("the holder's name", HOLDER_Y, HOLDER_Y + 100),
+                              ("the footer", FOOT_Y, FOOT_Y + 26)):
+        edges = [x for x in range(width)
+                 if any(pixels[x, y] < INKED
+                        for y in range(top, min(bottom, height - 1) + 1))]
+
+        if not edges:
+            problems.append(f"{name} did not draw")
+            continue
+
+        centre = (edges[0] + edges[-1] + 1) / 2
+
+        if abs(centre - width / 2) > OFF_CENTRE:
+            problems.append(f"{name} is centred on {centre:.1f}, "
+                            f"not {width / 2}")
+
+    # The seal is the only green on the page, and it has to be there.
     patch = card.convert("RGB").crop(
-        (FRAME_INSET, CONTENT_TOP - 8, width // 2, CONTENT_TOP + 140))
-    blue = sum(1 for red, green, blue_ in patch.getdata()
-               if blue_ > red + 24 and blue_ > 90)
+        (MARGIN - 10, SEAL_Y - 6, MARGIN + 60, SEAL_Y + 56))
+    green = sum(1 for red, grn, blue in patch.getdata()
+                if grn > red + 28 and grn > blue + 28)
 
-    if blue < 200:
-        problems.append(f"only {blue} accent pixels in the lockup band, so "
-                        f"the mark is missing or has lost its cursor")
+    if green < 400:
+        problems.append(f"only {green} seal pixels, so the tick is missing")
 
     if problems:
         raise SystemExit("the record drifted off its geometry:\n  "
@@ -435,12 +520,29 @@ def main() -> int:
         lesson.ROOT / ".work" / f"record-of-completion.png")
     out.parent.mkdir(parents=True, exist_ok=True)
 
-    draw(name, at, when, passed, total, number).save(out, optimize=True)
+    # The fields go into the file as well as onto it, so the record can be
+    # checked by a program rather than only read by a person.
+    # tools/verify_certificate.py reads these back and recomputes the number.
+    fields = PngInfo()
+    fields.add_text("issued-by", MARKER)
+    fields.add_text("name", name)
+    fields.add_text("commit", at)
+    fields.add_text("date", when)
+    fields.add_text("passed", str(passed))
+    fields.add_text("total", str(total))
+    fields.add_text("credential", number)
+    fields.add_text("verify", "python tools/verify_certificate.py "
+                              + out.name)
+
+    draw(name, at, when, passed, total, number).save(out, optimize=True,
+                                                     pnginfo=fields)
 
     print(f"PASS  {passed} of {total} lessons")
     print(f"      {out}")
     print(f"      {SIZE[0]}x{SIZE[1]}, {out.stat().st_size // 1024} KB")
     print(f"      credential {number}, at commit {at[:12]}, dated {when}")
+    print()
+    print(f"      check it with:  python tools/verify_certificate.py {out}")
 
     return 0
 

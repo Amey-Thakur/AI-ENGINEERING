@@ -1,6 +1,6 @@
 <div align="center">
 
-<a href="https://github.com/Amey-Thakur/AI-ENGINEERING" title="AI Engineering"><img src="assets/ai-engineering-header.svg" alt="AI Engineering, a course that runs offline with no dependencies" width="700"/></a>
+<a href="https://amey-thakur.github.io/AI-ENGINEERING/" title="AI Engineering: read the course"><img src="assets/ai-engineering-header.svg" alt="AI Engineering, a course that runs offline with no dependencies" width="700"/></a>
 
 # AI Engineering
 
@@ -106,6 +106,27 @@ python tools/progress.py                       how far you have got
 
 Skip [phase 0](phases/00-your-machine/) if you already have a terminal, Python and Git. Everybody else should start there, because the rest of the course assumes you can run a file and nothing more than that.
 
+<br>
+
+### Should you do this?
+
+Most people who use these systems cannot say what any part of them does. That is not their fault. Every tutorial hands you a library, the library does the interesting part, and you are left fluent in the names and empty on the mechanisms. When the library moves, and it will, you begin again.
+
+Here you write the interesting part and you measure it. What you keep is not a framework to relearn next year. It is an understanding of what the pieces do, and that does not expire.
+
+I built this for myself, because I looked for it and it was not there. I write and publish research in this field, and I wanted material I could hand to somebody without a caveat attached. Nothing in it is for sale, there is no account, and no lesson touches the network.
+
+You do not have to take any of that on trust. The [guarantees](#guarantees) are programs, not promises: every number on every page is regenerated from the code beside it and checked on Linux, macOS and Windows on each change. Where the course's own results fail to hold up, it says so and leaves them in. [Phase 7](phases/07-measuring-whether-any-of-it-works/) turns its tests on the earlier phases and finds some of their results indistinguishable from a coin toss.
+
+| What stops people | What is actually true |
+|:--|:--|
+| *I am not good at maths.* | Phase 2 derives backpropagation with arithmetic you already have, then checks it by nudging a weight to see whether the answer moves. No calculus you have not met, and nothing taken on faith. |
+| *My laptop is old and slow.* | Every lesson runs in plain Python on data small enough to read in full. Most finish in seconds, and the two that do not say what they cost before you start them. |
+| *I cannot pay for a course.* | There is nothing to pay for, no account to open and no key to buy. |
+| *My internet is unreliable.* | Clone it once. Lessons run with the network closed, and a program enforces that rather than a promise. |
+| *I will start and not finish.* | Fifty lessons of about forty minutes. [The curriculum](CURRICULUM.md) ticks them off and remembers where you stopped. |
+| *I have never used a terminal.* | [Phase 0 lesson 1](phases/00-your-machine/01-the-terminal/) opens one and explains why it is still here. That is the assumed starting point. |
+
 ---
 
 ## The Course
@@ -185,6 +206,14 @@ python tools/check_glossary.py     the glossary still points at the course
 
 ## Record of Completion
 
+<div align="center">
+
+<a href="https://amey-thakur.github.io/AI-ENGINEERING/verify/" title="How to verify a record"><img src=".github/record-of-completion.png" alt="Record of completion: all fifty lessons passed, with the commit, the date and a credential number" width="760"/></a>
+
+</div>
+
+<br>
+
 When you finish there is a record, and it is deliberately not a certificate of competence.
 
 ```bash
@@ -199,6 +228,8 @@ It runs every lesson first and refuses to draw anything if one fails. There is n
 | The commit they passed at | That anybody assessed you |
 | The date, and a credential number derived from those | Anything a reader has to take on trust |
 
+Anybody handed one can check it: `python tools/verify_certificate.py record.png`, or drop the file on the [verifier](https://amey-thakur.github.io/AI-ENGINEERING/verify/), which recomputes the credential in the browser. [What that does and does not prove](VERIFY.md) is written out in full.
+
 You can also run it from your own fork's Actions tab with [`certificate.yml`](.github/workflows/certificate.yml), which runs the course on a clean machine and attaches the result. That version is worth more than the local one, because the log is public, timestamped, and not editable by the person it is about.
 
 ---
@@ -207,6 +238,8 @@ You can also run it from your own fork's Actions tab with [`certificate.yml`](.g
 
 | | |
 |:--|:--|
+| [**Curriculum**](CURRICULUM.md) | All fifty lessons in order, with what you do in each. On the website the boxes tick off and remember where you stopped. |
+| [**Verify a record**](VERIFY.md) | How to check a record of completion, and what each check establishes. Three ways, all offline, and a plain statement of what the credential cannot prove. |
 | [**Glossary**](GLOSSARY.md) | The course teaches ideas before their names, and in places never uses the standard name at all. This maps what a lesson calls something onto what the field calls it, with a link to the lesson where you built it. |
 | [**Questions**](FAQ.md) | Why there is no PyTorch, where transformers are, whether this is enough to get a job, and why the course keeps reporting that its own lessons were wrong. |
 | [**Contributing**](.github/CONTRIBUTING.md) | The contract a lesson has to meet. |

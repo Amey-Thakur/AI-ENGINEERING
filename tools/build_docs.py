@@ -53,6 +53,7 @@ TREE = f"{REPO}/tree/main"
 TOP = {
     "README.md": "index.md",
     "CURRICULUM.md": "curriculum.md",
+    "VERIFY.md": "verify.md",
     "GLOSSARY.md": "glossary.md",
     "FAQ.md": "faq.md",
     ".github/CONTRIBUTING.md": "contributing.md",
@@ -77,6 +78,9 @@ WRITTEN_DESCRIPTIONS = {
     "faq.md": "What this course is, what it leaves out, how long it takes, "
               "and why it installs nothing. Fifty lessons, ten phases, the "
               "Python standard library and no network.",
+    "verify.md": "How to check a record of completion from this course, "
+                 "and what each check establishes. Three ways, none of them "
+                 "asking anybody's permission, all of them offline.",
     "curriculum.md": "All fifty lessons of the course on one page, in order, "
                      "with what you do in each. Ten phases, about "
                      "thirty-seven hours, and nothing installed at any point.",
@@ -116,6 +120,273 @@ ACTIONS = """\
     </a>
   {% endif %}
 {% endif %}
+"""
+
+#: The verify page's checker. The derivation is public and written out on the
+#: page beside it, so this is only doing in the browser what the page says any
+#: reader could do by hand.
+VERIFIER = """\
+/* Written by tools/build_docs.py. Edit that file instead of this one. */
+
+(function () {
+  "use strict";
+
+  var FIELDS = ["name", "commit", "date", "passed", "total", "credential"];
+  var MARKER = "AI Engineering record of completion";
+
+  function textChunks(buffer) {
+    /* A png is a signature then a run of chunks. The fields a record carries
+       live in the tEXt ones, so walk to them and read the pairs out. */
+    var view = new DataView(buffer);
+    var bytes = new Uint8Array(buffer);
+    var signature = [137, 80, 78, 71, 13, 10, 26, 10];
+
+    for (var i = 0; i < signature.length; i++) {
+      if (bytes[i] !== signature[i]) {
+        return null;
+      }
+    }
+
+    var found = {};
+    var at = 8;
+
+    while (at + 8 <= bytes.length) {
+      var length = view.getUint32(at);
+      var kind = String.fromCharCode(bytes[at + 4], bytes[at + 5],
+                                     bytes[at + 6], bytes[at + 7]);
+
+      if (kind === "tEXt") {
+        var body = bytes.subarray(at + 8, at + 8 + length);
+        var split = body.indexOf(0);
+
+        if (split > -1) {
+          var key = "";
+
+          for (var k = 0; k < split; k++) {
+            key += String.fromCharCode(body[k]);
+          }
+
+          found[key] = new TextDecoder("utf-8")
+            .decode(body.subarray(split + 1));
+        }
+      }
+
+      if (kind === "IEND") {
+        break;
+      }
+
+      at += 12 + length;
+    }
+
+    return found;
+  }
+
+  async function credential(name, commit, passed, total) {
+    var seed = name + "|" + commit + "|" + passed + "/" + total;
+    var digest = await crypto.subtle.digest(
+      "SHA-256", new TextEncoder().encode(seed));
+    var hex = Array.prototype.map
+      .call(new Uint8Array(digest), function (byte) {
+        return byte.toString(16).padStart(2, "0");
+      })
+      .join("")
+      .slice(0, 12)
+      .toUpperCase();
+
+    return [hex.slice(0, 4), hex.slice(4, 8), hex.slice(8, 12)].join("-");
+  }
+
+  function build(host) {
+    host.textContent = "";
+    host.insertAdjacentHTML("beforeend", [
+      '<div class="verify">',
+      '  <div class="verify-drop" id="verify-drop" tabindex="0" role="button">',
+      '    <strong>Drop a record here</strong>',
+      '    <span>or <button type="button" class="verify-pick" id="verify-pick">choose the file</button>. It is read in this browser and never uploaded.</span>',
+      '    <input type="file" id="verify-file" accept="image/png" hidden>',
+      '  </div>',
+      '  <details class="verify-manual">',
+      '    <summary>Type the fields instead</summary>',
+      '    <div class="verify-grid">',
+      '      <label>Name<input type="text" id="verify-name" autocomplete="off" spellcheck="false"></label>',
+      '      <label>Commit<input type="text" id="verify-commit" autocomplete="off" spellcheck="false"></label>',
+      '      <label>Passed<input type="number" id="verify-passed" value="50" min="0"></label>',
+      '      <label>Total<input type="number" id="verify-total" value="50" min="0"></label>',
+      '      <label>Credential<input type="text" id="verify-credential" autocomplete="off" spellcheck="false" placeholder="ABCD-EF01-2345"></label>',
+      '    </div>',
+      '    <button type="button" class="verify-go" id="verify-go">Check it</button>',
+      '  </details>',
+      '  <output class="verify-result" id="verify-result" aria-live="polite"></output>',
+      '</div>'
+    ].join(""));
+  }
+
+  function show(where, state, heading, lines) {
+    where.className = "verify-result is-" + state;
+    var rows = (lines || []).map(function (line) {
+      return "<li>" + line + "</li>";
+    }).join("");
+    where.innerHTML = '<p class="verify-verdict">' + heading + "</p>" +
+      (rows ? "<ul>" + rows + "</ul>" : "");
+  }
+
+  function escape(text) {
+    return String(text).replace(/[&<>"]/g, function (character) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[character];
+    });
+  }
+
+  async function judge(fields, where) {
+    var missing = FIELDS.filter(function (key) {
+      return !fields[key];
+    });
+
+    if (missing.length) {
+      show(where, "fail", "This record does not carry " +
+        missing.join(", ") + ".", [
+        "Records issued before those fields were written cannot be checked " +
+        "this way. Type the fields in below, or ask for it to be reissued."
+      ]);
+
+      return;
+    }
+
+    if (fields["issued-by"] && fields["issued-by"] !== MARKER) {
+      show(where, "fail", "That file was not issued by this course.", []);
+
+      return;
+    }
+
+    var expected = await credential(fields.name, fields.commit,
+                                    fields.passed, fields.total);
+    var claimed = String(fields.credential).trim().toUpperCase();
+    var detail = [
+      "<span>name</span><code>" + escape(fields.name) + "</code>",
+      "<span>commit</span><code>" + escape(fields.commit) + "</code>",
+      "<span>date</span><code>" + escape(fields.date || "not given") + "</code>",
+      "<span>score</span><code>" + escape(fields.passed) + " of " +
+        escape(fields.total) + "</code>",
+      "<span>credential</span><code>" + escape(claimed) + "</code>"
+    ];
+
+    if (claimed !== expected) {
+      show(where, "fail", "The credential does not match these fields.",
+        detail.concat([
+          "<span>recomputed</span><code>" + expected + "</code>",
+          "Something on this record has been changed since it was issued."
+        ]));
+
+      return;
+    }
+
+    if (fields.passed !== fields.total) {
+      show(where, "fail", "This record is not a complete pass.", detail);
+
+      return;
+    }
+
+    show(where, "pass", "The credential matches.", detail.concat([
+      "The name, commit and score have not been altered since the record " +
+      "was issued.",
+      "This does not prove the course was run. For that, run it at the " +
+      "commit above: <code>python tools/verify_certificate.py record.png " +
+      "--rerun</code>"
+    ]));
+  }
+
+  function setUp() {
+    var host = document.getElementById("verify-widget");
+
+    if (!host || host.dataset.ready === "yes") {
+      return;
+    }
+
+    if (!window.crypto || !crypto.subtle) {
+      host.textContent = "This browser does not offer SHA-256 to pages, so " +
+        "the check has to be done with the command line method below.";
+
+      return;
+    }
+
+    build(host);
+    host.dataset.ready = "yes";
+
+    var drop = document.getElementById("verify-drop");
+    var file = document.getElementById("verify-file");
+    var where = document.getElementById("verify-result");
+
+    function read(chosen) {
+      if (!chosen) {
+        return;
+      }
+
+      var reader = new FileReader();
+
+      reader.onload = function () {
+        var fields = textChunks(reader.result);
+
+        if (!fields) {
+          show(where, "fail", "That is not a png.", [
+            "A record is the png that tools/certificate.py wrote."
+          ]);
+
+          return;
+        }
+
+        judge(fields, where);
+      };
+
+      reader.readAsArrayBuffer(chosen);
+    }
+
+    document.getElementById("verify-pick").addEventListener("click",
+      function () {
+        file.click();
+      });
+    file.addEventListener("change", function () {
+      read(file.files[0]);
+    });
+    drop.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        file.click();
+      }
+    });
+    ["dragenter", "dragover"].forEach(function (name) {
+      drop.addEventListener(name, function (event) {
+        event.preventDefault();
+        drop.classList.add("is-over");
+      });
+    });
+    ["dragleave", "drop"].forEach(function (name) {
+      drop.addEventListener(name, function (event) {
+        event.preventDefault();
+        drop.classList.remove("is-over");
+      });
+    });
+    drop.addEventListener("drop", function (event) {
+      read(event.dataTransfer.files[0]);
+    });
+    document.getElementById("verify-go").addEventListener("click",
+      function () {
+        judge({
+          name: document.getElementById("verify-name").value.trim()
+            .replace(/\\s+/g, " "),
+          commit: document.getElementById("verify-commit").value.trim(),
+          date: "not given",
+          passed: document.getElementById("verify-passed").value.trim(),
+          total: document.getElementById("verify-total").value.trim(),
+          credential: document.getElementById("verify-credential").value
+        }, where);
+      });
+  }
+
+  if (window.document$ && window.document$.subscribe) {
+    window.document$.subscribe(setUp);
+  } else {
+    document.addEventListener("DOMContentLoaded", setUp);
+  }
+}());
 """
 
 #: The curriculum page's boxes, made to remember. Nothing leaves the browser:
@@ -255,6 +526,14 @@ PROGRESS = """\
 }());
 """
 
+#: Images the pages show that do not live under assets/. Copied in and
+#: repointed, so one file in the repository serves both GitHub and the
+#: site.
+CARRIED = {".github/record-of-completion.png": "assets/record-of-completion.png"}
+
+#: Spelled out, because an escape in a patched string is a thing that goes wrong.
+NEWLINE = chr(10)
+
 #: Where a reader is sent to correct a page. The build appends the real source
 #: path, which is not the path the page is published at.
 EDIT = "https://github.com/Amey-Thakur/AI-ENGINEERING/edit/main/"
@@ -365,6 +644,7 @@ extra_css:
 
 extra_javascript:
   - assets/progress.js
+  - assets/verify.js
 
 extra:
   social:
@@ -682,6 +962,188 @@ form[data-md-component="palette"] > label.md-header__button svg {
   .md-content .task-list-item {
     transition: none;
   }
+}
+
+/* The verify page's checker. Paper, slate and Python blue like everything
+   else, with one green for a pass and one red for a failure, which are the
+   launch kit's own status colours. */
+
+.verify {
+  margin: 1.4rem 0 1.8rem;
+}
+
+.verify-drop {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: center;
+  padding: 1.7rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  border: 2px dashed var(--md-default-fg-color--lighter);
+  border-radius: 0.3rem;
+  background: var(--md-code-bg-color);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.verify-drop:hover,
+.verify-drop:focus-visible,
+.verify-drop.is-over {
+  border-color: var(--md-primary-fg-color);
+  outline: none;
+}
+
+.verify-drop strong {
+  font-size: 0.86rem;
+}
+
+.verify-drop span {
+  font-size: 0.72rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.verify-pick {
+  padding: 0;
+  font: inherit;
+  color: var(--md-primary-fg-color);
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+.verify-manual {
+  margin-top: 0.9rem;
+  font-size: 0.74rem;
+}
+
+.verify-manual > summary {
+  cursor: pointer;
+  color: var(--md-default-fg-color--light);
+}
+
+.verify-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.7rem;
+  margin: 0.9rem 0;
+}
+
+.verify-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--md-default-fg-color--light);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.verify-grid input {
+  padding: 0.4rem 0.5rem;
+  font-family: var(--md-code-font-family);
+  font-size: 0.74rem;
+  color: var(--md-default-fg-color);
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--md-default-fg-color--lighter);
+  border-radius: 0.2rem;
+}
+
+.verify-grid input:focus {
+  border-color: var(--md-primary-fg-color);
+  outline: none;
+}
+
+.verify-go {
+  padding: 0.4rem 1rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--md-primary-bg-color);
+  cursor: pointer;
+  background: var(--md-primary-fg-color);
+  border: 0;
+  border-radius: 0.2rem;
+}
+
+.verify-result {
+  display: block;
+  margin-top: 1.1rem;
+}
+
+.verify-result:empty {
+  display: none;
+}
+
+.verify-result .verify-verdict {
+  margin: 0 0 0.5rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.verify-result.is-pass {
+  padding: 0.9rem 1rem;
+  border-left: 3px solid #2EA043;
+  border-radius: 0 0.2rem 0.2rem 0;
+  background: var(--md-code-bg-color);
+}
+
+.verify-result.is-fail {
+  padding: 0.9rem 1rem;
+  border-left: 3px solid #CF222E;
+  border-radius: 0 0.2rem 0.2rem 0;
+  background: var(--md-code-bg-color);
+}
+
+.verify-result.is-pass .verify-verdict {
+  color: #2EA043;
+}
+
+.verify-result.is-fail .verify-verdict {
+  color: #CF222E;
+}
+
+.verify-result ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.verify-result li {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 0.2rem 0.6rem;
+  padding: 0.16rem 0;
+  font-size: 0.74rem;
+}
+
+.verify-result li:not(:has(span)) {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.verify-result li span {
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--md-default-fg-color--light);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.verify-result li code {
+  overflow-wrap: anywhere;
+  font-size: 0.72rem;
+  background: none;
+  padding: 0;
+}
+
+/* A table that is a header row and a separator with nothing under it. GitHub
+   draws the header alone; Python-Markdown adds one empty cell below it, which
+   shows as a stray band. The markdown is right, so the cell is hidden. */
+
+.md-typeset table:not([class]) tbody tr:only-child > td:only-child:empty {
+  display: none;
 }
 
 .md-copyright {
@@ -1100,6 +1562,33 @@ def published() -> dict[str, str]:
     return where
 
 
+
+#: A heading indented by a space or three, which GitHub reads as a
+#: heading and Python-Markdown reads as the text of a paragraph.
+INDENTED = re.compile(r"^[ \t]{1,3}(#{1,6} )", re.M)
+
+
+def unindent(text: str) -> str:
+    """Headings flush to the margin, each with a blank line in front.
+
+    Two shapes break on the site and not on GitHub: a heading indented
+    inside a centred block, and a heading on the line directly after
+    something else. Both come out as paragraph text with the hashes
+    shown. This repairs them on the way into docs/, so the markdown in
+    the repository stays exactly as GitHub wants it.
+    """
+    lines = INDENTED.sub(r"\1", text).split(NEWLINE)
+    out: list[str] = []
+
+    for line in lines:
+        if (line.startswith("#") and out and out[-1].strip()
+                and not out[-1].startswith("#")):
+            out.append("")
+
+        out.append(line)
+
+    return NEWLINE.join(out)
+
 def rewrite(text: str, source: str, where: dict[str, str]) -> str:
     """Point every link at where the site actually publishes the target.
 
@@ -1146,6 +1635,7 @@ def nav(where: dict[str, str]) -> str:
     lines = ["nav:",
              "  - Start here: index.md",
              "  - Curriculum: curriculum.md",
+             "  - Verify a record: verify.md",
              "  - The course:"]
 
     for directory in sorted((lesson.ROOT / "phases").glob("*")):
@@ -1198,8 +1688,11 @@ def main() -> int:
         landing = DOCS / target
         landing.parent.mkdir(parents=True, exist_ok=True)
         raw = origin.read_text(encoding="utf-8")
-        body = rewrite(raw, source, where)
+        body = unindent(rewrite(raw, source, where))
         body = body.replace(CENTRED, OPTED_IN)
+
+        for carried, served in CARRIED.items():
+            body = body.replace(carried, served)
 
         # Its own description, taken from its own opening, so that no two
         # pages arrive at a search engine looking like the same page.
@@ -1222,9 +1715,17 @@ def main() -> int:
                                                  newline="\n")
     (DOCS / "assets" / "progress.js").write_text(PROGRESS, encoding="utf-8",
                                                  newline="\n")
+    (DOCS / "assets" / "verify.js").write_text(VERIFIER, encoding="utf-8",
+                                               newline="\n")
 
     # The card a shared link shows. The same file GitHub serves, so a link to
     # the site and a link to the repository look alike.
+    for carried in CARRIED:
+        origin = lesson.ROOT / carried
+
+        if origin.exists():
+            shutil.copyfile(origin, DOCS / CARRIED[carried])
+
     card = lesson.ROOT / ".github" / "social-preview.png"
 
     if card.exists():
