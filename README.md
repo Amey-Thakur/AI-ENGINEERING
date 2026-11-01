@@ -79,6 +79,8 @@ python tools/run_lessons.py phases/00-your-machine/01-the-terminal
 
 If that last line fails because you do not have Python, or because you have never opened a terminal, that is expected, and it is exactly what [lesson 1](phases/00-your-machine/01-the-terminal/) is for.
 
+Or borrow a machine that already has one. **[Open it in a codespace](https://codespaces.new/Amey-Thakur/AI-ENGINEERING)** and the first lesson runs in a browser tab, on anything, in about a minute. The container supplies the interpreter and nothing else: every lesson still imports only the standard library, and [`check_imports.py`](tools/check_imports.py) proves it on every change.
+
 > [!TIP]
 > The whole course is also readable in a browser at
 > **[amey-thakur.github.io/AI-ENGINEERING](https://amey-thakur.github.io/AI-ENGINEERING/)**, with a sidebar

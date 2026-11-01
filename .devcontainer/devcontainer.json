@@ -1,0 +1,47 @@
+// File: .devcontainer/devcontainer.json
+// Author: Amey Thakur
+// Repository: https://github.com/Amey-Thakur/AI-ENGINEERING
+// License: MIT
+//
+// A machine with Python on it, for a reader who has not got one.
+//
+// The course's first promise is that it installs nothing, and this does not
+// weaken it: the container provides the interpreter, and every lesson still
+// imports only the standard library, which tools/check_imports.py enforces on
+// every change. Nothing here is a dependency of the course. It is a borrowed
+// computer.
+//
+// It exists because the README names two things that stop people, and this
+// removes both: never having opened a terminal, and not being able to install
+// Python on the machine they have. Open the repository in a codespace and
+// lesson 1 runs in about a minute, in a browser tab, on anything.
+{
+  "name": "AI Engineering",
+
+  // The image carries Python and nothing else the course needs. The course
+  // claims Python 3.10 or later and CI proves that on 3.10; this is newer on
+  // purpose, so a reader meets the version they would install today.
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+
+  // Print where the reader has got to, which for a new codespace is the
+  // beginning. No install step, because there is nothing to install.
+  "postCreateCommand": "python tools/progress.py",
+
+  "customizations": {
+    "vscode": {
+      // The editor's own Python support. This is tooling for the person, not
+      // a dependency of any lesson.
+      "extensions": [
+        "ms-python.python"
+      ],
+      "settings": {
+        "editor.rulers": [
+          79
+        ],
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+        "python.terminal.activateEnvironment": false
+      }
+    }
+  }
+}
