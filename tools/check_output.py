@@ -29,6 +29,22 @@ The rule this places on a lesson is that its output must be the same every
 time. No clock, no unseeded randomness, no machine-specific path. A lesson that
 cannot meet that is a lesson printing something it should be deriving.
 
+A page outside the lessons may quote part of that output, which the root README
+does in order to show one result in full. Such a block names the script by its
+path from the repository root:
+
+    <!-- excerpt: phases/.../solve.py -->
+    ```text
+    ...
+    ```
+    <!-- end excerpt -->
+
+and must be a verbatim, contiguous slice of what that script prints. It is
+compared against a live run rather than against the lesson page, so a number
+cannot reach the front page without having been produced on the way there.
+There is no --fix for an excerpt, because only the author knows which slice of
+the output was meant.
+
 Usage:
     python tools/check_output.py           check every lesson
     python tools/check_output.py --fix     rewrite the blocks from real output
@@ -56,6 +72,15 @@ BLOCK = re.compile(
     re.DOTALL,
 )
 
+EXCERPT = re.compile(
+    r"<!-- excerpt: (?P<script>[\w./-]+) -->\r?\n```(?:\w+)?\r?\n"
+    r"(?P<body>.*?)"
+    r"```\r?\n<!-- end excerpt -->",
+    re.DOTALL,
+)
+
+QUOTING = sorted(ROOT.glob("*.md"))
+
 
 def produced(directory: Path, script: str, env: dict[str, str]) -> str:
     """What the lesson actually prints, normalised for line endings only."""
@@ -75,6 +100,40 @@ def produced(directory: Path, script: str, env: dict[str, str]) -> str:
         )
 
     return finished.stdout.replace("\r\n", "\n").strip("\n")
+
+
+def excerpts(env: dict[str, str]) -> tuple[int, list[str]]:
+    """Check that every quoted slice is part of what the named script prints."""
+    checked = 0
+    wrong: list[str] = []
+
+    for page in QUOTING:
+        text = io.open(page, encoding="utf-8", newline="").read()
+
+        for match in EXCERPT.finditer(text):
+            checked += 1
+            script = ROOT / match.group("script")
+            shown = match.group("body").replace("\r\n", "\n").strip("\n")
+            real = produced(script.parent, script.name, env)
+
+            if shown in real:
+                continue
+
+            wrong.append(page.name)
+            print(f"FAIL  {page.name}: quotes output {match.group('script')} does not print")
+
+            # A whole-output diff would read as though the quote were meant to
+            # be longer, so say which line is wrong instead.
+            printed = real.splitlines()
+            missing = [line for line in shown.splitlines() if line not in printed]
+            if missing:
+                print("      this quoted line is not in the real output:")
+                print("        " + missing[0])
+            else:
+                print("      every quoted line appears, but not as one unbroken run")
+            print(f"      run: python {match.group('script')}")
+
+    return checked, wrong
 
 
 def main() -> int:
@@ -127,9 +186,13 @@ def main() -> int:
         if arguments.fix and rewritten != text:
             io.open(page, "w", encoding="utf-8", newline="").write(rewritten)
 
+    quoted, wrong = excerpts(env)
+
     print()
     print(f"{checked - len(stale)} of {checked} output blocks match")
-    return 1 if stale else 0
+    if quoted:
+        print(f"{quoted - len(wrong)} of {quoted} quoted excerpts are real output")
+    return 1 if stale or wrong else 0
 
 
 if __name__ == "__main__":

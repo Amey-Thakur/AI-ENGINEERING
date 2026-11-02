@@ -175,6 +175,7 @@ Not a toy that works because the data was chosen to make it work. These are resu
 | Deleting the entire retrieval half of your agent | Costs seven questions of forty-eight, and chance produces that gap 83% of the time |
 | Losing the whole corpus in production | Accuracy falls 15%, false statements fall to zero, and no ordinary alarm fires |
 | Putting a secret in the corpus | A question about next quarter's budget returns an API key |
+| An attention head against an even share that cannot look at anything | The even share reaches **15 of 20** where the head reaches 16, and the signal turns out to be a single vector |
 
 > [!IMPORTANT]
 > Read that table again and notice how many of the results are negative. That
@@ -191,7 +192,7 @@ You do not have to take any of these on trust. Each one is a program in [`tools/
 | Guarantee | How it is kept |
 |:----------|:---------------|
 | **Every lesson runs.** | Every solution and every check is executed on Linux, macOS and Windows on each change, and again every night. |
-| **Every number shown is generated.** | Output printed in a lesson is compared against what the code actually prints. A figure is never typed by hand. |
+| **Every number shown is generated.** | Output printed in a lesson, and any of it quoted on this page, is compared against what the code actually prints. A figure is never typed by hand. |
 | **Nothing can be taken away.** | Only the Python standard library is used, anywhere in the course. This is checked, not promised. |
 | **Nothing is fetched.** | Lessons run with the network closed. A lesson that reaches for it fails on the push that introduced it. |
 | **The same answer every time.** | Each solution runs under three different string hash seeds and must print the same thing. A number that moves between runs is caught here. |
@@ -203,6 +204,48 @@ python tools/check_imports.py      nothing outside the standard library
 python tools/check_determinism.py  the same output on every run
 python tools/check_glossary.py     the glossary still points at the course
 ```
+
+---
+
+## One Result in Full
+
+The table above is a summary. This is one of its rows as the program prints it, from [lesson 3 of phase 9](phases/09-attention-and-the-block/03-it-works-without-looking/). Attention is the mechanism inside every large language model. For each word it scores every other word, turns the scores into weights, and reads back a blend of what it found. Those weights get published as heatmaps and read as an account of what the model looked at.
+
+<!-- excerpt: phases/09-attention-and-the-block/03-it-works-without-looking/solve.py -->
+```text
+40 sentences to train on, 20 held back. Chance is 10 of 20.
+
+  what                                 trained on   held back
+  the attention head                   38 of 40    16 of 20
+  an even share, trained that way      34 of 40    15 of 20
+  the head, weights evened at test     33 of 40    15 of 20
+
+Does it need the weights? An even share, with no query and no key anywhere in it,
+reaches 15 of 20 where the head reaches 16. The learned weights are worth 1.
+
+Does the trained head use them? Evening its own weights at test time costs it
+1 of 20. It had barely been relying on them.
+
+So where is the signal? Silence one position's value at a time:
+
+  silenced                             trained on   held back
+  position 0                             38 of 40    15 of 20
+  position 1                             20 of 40    10 of 20  <- the subject
+  position 2                             38 of 40    16 of 20
+  position 3                             38 of 40    15 of 20
+  position 4                             36 of 40    15 of 20
+  position 5                             36 of 40    16 of 20
+
+Silencing the subject's value takes it to 10 of 20, which is chance.
+Silencing any other position leaves it at 15 or better.
+```
+<!-- end excerpt -->
+
+Nothing there is a claim about attention in general. It is one small head on one small task, and the intervals in the lesson are wide enough that 16 and 15 are not a difference. What carries over is not the numbers but the method: the only way anyone found out where the signal was came from removing one part at a time and reading what happened.
+
+Attention weights tell you how a blend was mixed. They do not tell you which ingredient mattered, because a loud ingredient matters at any ratio above zero. If you want to know what a component contributes, take it out, leave everything else alone, and read the number.
+
+That block is not typed by hand. [`check_output.py`](tools/check_output.py) runs the lesson and fails the build if what is shown here stops being a verbatim slice of what the code prints.
 
 ---
 
