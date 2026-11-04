@@ -46,8 +46,10 @@ SIZE = (1000, 260)
 #: clean.
 SS = 3
 
-#: Slate plate, paper type, Python blue cursor. The same three values the mark
-#: and the card use, so the repository's artwork reads as one system.
+#: Slate plate, paper type, and a dimmed grey for the strapline. The same values
+#: the mark and the card use, so the repository's artwork reads as one system.
+#: The cursor's blue is not repeated here: it comes from build_mark.CURSOR,
+#: which is the single place it is defined.
 GROUND = (0x2F, 0x3E, 0x4A)
 INK = (0xFA, 0xFB, 0xFC)
 DIM = (0xAE, 0xBA, 0xC4)

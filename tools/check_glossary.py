@@ -37,7 +37,7 @@ GLOSSARY = lesson.ROOT / "GLOSSARY.md"
 LINK = re.compile(r"\[[^\]]+\]\((phases/[^)#]+)\)")
 
 #: Lessons a glossary is not expected to have a row for. Phase 0 teaches a
-#: terminal and a text editor, and two of its lessons introduce no idea that
+#: terminal and a text editor, and one of its lessons introduces no idea that
 #: needs translating into anything.
 UNTRANSLATED = {
     "phases/00-your-machine/03-your-first-program",
