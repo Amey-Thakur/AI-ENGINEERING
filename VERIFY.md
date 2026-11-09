@@ -33,7 +33,7 @@ The credential is not a secret and not a lookup key. There is no database behind
 credential = SHA-256( "name|commit|passed/total" )  →  first 12 hex characters, uppercased, in groups of four
 ```
 
-So `Amey Thakur`, at commit `a2a3360a1370916c84b0a603440e21db79d84c50`, with `50/50`, always gives the same number, and changing any character of any field gives a different one.
+So `Amey Thakur`, at commit `9bea36ea7e26cc0933a69ba09c2ad0921c290539`, with `50/50`, always gives the same number, and changing any character of any field gives a different one.
 
 <br>
 
@@ -62,10 +62,10 @@ python tools/verify_certificate.py record-of-completion.png
 ```text
   on the record
     name          Amey Thakur
-    commit        a2a3360a1370916c84b0a603440e21db79d84c50
-    date          2026-10-17
+    commit        9bea36ea7e26cc0933a69ba09c2ad0921c290539
+    date          2026-11-09
     score         50 of 50
-    credential    F930-4DEE-F037
+    credential    BEEB-9ABD-68B2
 
 PASS  the credential matches the name, commit and score on the record
       which means those three have not been altered since it was issued
@@ -76,8 +76,8 @@ If you only have a photograph or a printout, type the fields instead:
 
 ```bash
 python tools/verify_certificate.py --name "Amey Thakur" \
-  --commit a2a3360a1370916c84b0a603440e21db79d84c50 \
-  --passed 50 --total 50 --credential F930-4DEE-F037
+  --commit 9bea36ea7e26cc0933a69ba09c2ad0921c290539 \
+  --passed 50 --total 50 --credential BEEB-9ABD-68B2
 ```
 
 <br>
