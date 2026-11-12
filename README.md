@@ -196,6 +196,7 @@ You do not have to take any of these on trust. Each one is a program in [`tools/
 | **Nothing can be taken away.** | Only the Python standard library is used, anywhere in the course. This is checked, not promised. |
 | **Nothing is fetched.** | Lessons run with the network closed. A lesson that reaches for it fails on the push that introduced it. |
 | **The same answer every time.** | Each solution runs under three different string hash seeds and must print the same thing. A number that moves between runs is caught here. |
+| **Every link still points at something.** | Each path and heading linked anywhere in the course is resolved against the repository, so renaming a lesson or retitling a section cannot leave a dead link behind. |
 
 ```bash
 python tools/run_lessons.py        every lesson still works
@@ -203,6 +204,8 @@ python tools/check_output.py       shown output matches real output
 python tools/check_imports.py      nothing outside the standard library
 python tools/check_determinism.py  the same output on every run
 python tools/check_glossary.py     the glossary still points at the course
+python tools/check_links.py        every link resolves to a real path or heading
+python tools/build_curriculum.py --check   the curriculum still lists every lesson
 ```
 
 ---
