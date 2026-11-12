@@ -48,6 +48,12 @@ SIZE = (1280, 720)
 
 ACCENT = social_preview.ACCENT
 SLATE = next(p for p in social_preview.PALETTES if p.name == "slate")
+PAPER = next(p for p in social_preview.PALETTES if p.name == "paper")
+
+#: Where each ground is written. The dark card is the one a feed post
+#: carries; the light one is for a page that is already white, such as the
+#: newsletter, where a dark block would read as a hole in the page.
+GROUNDS = {"slate": "", "paper": "light"}
 
 OUT = lesson.ROOT / ".github" / "cards"
 
@@ -195,23 +201,23 @@ def place_right(card, text, role, size, fill, right, top):
     return patch
 
 
-def signature(card: Image.Image, kicker: str) -> None:
+def signature(card: Image.Image, kicker: str, palette=SLATE) -> None:
     """The mark and the name at the left gutter, the lesson at the right,
     sharing one baseline."""
     mark = build_mark.cropped_to_ink(
-        build_mark.prompt(MARK_H * 6, MARK_H * 5, SLATE.ink, ACCENT))
+        build_mark.prompt(MARK_H * 6, MARK_H * 5, palette.ink, ACCENT))
     mark = mark.resize(
         (round(mark.width * MARK_H / mark.height), MARK_H), Image.LANCZOS)
     card.paste(mark, (MARGIN, HEAD_TOP), mark)
 
     base = HEAD_TOP + mark.height
     name = social_preview.rendered(social_preview.NAME,
-                                   typeface.of("black", NAME_SIZE), SLATE.ink)
+                                   typeface.of("black", NAME_SIZE), palette.ink)
     card.paste(name, (MARGIN + mark.width + MARK_GAP, base - name.height),
                name)
 
     tag = social_preview.rendered(kicker, typeface.of("mono", KICKER_SIZE),
-                                  SLATE.dim)
+                                  palette.dim)
     card.paste(tag, (RIGHT - tag.width, base - tag.height - 4), tag)
 
 
@@ -227,15 +233,15 @@ def portrait(height: int) -> Image.Image:
     return face.resize((height, height), Image.LANCZOS)
 
 
-def footer(card: Image.Image) -> None:
+def footer(card: Image.Image, palette=SLATE) -> None:
     """Who made it on the left, where it lives on the right, both sitting on
     one baseline so the card closes level."""
     face = portrait(FOOT_FACE)
     name = social_preview.rendered(AUTHOR, typeface.of("sans", FOOT_SIZE),
-                                   SLATE.pale)
-    mark = glyphs.github(FOOT_MARK, SLATE.dim)
+                                   palette.pale)
+    mark = glyphs.github(FOOT_MARK, palette.dim)
     where = social_preview.rendered(REPOSITORY, typeface.of("sans", FOOT_SIZE),
-                                    SLATE.dim)
+                                    palette.dim)
     base = FOOT_Y + max(face.height, mark.height, name.height, where.height)
 
     card.paste(face, (MARGIN, base - face.height), face)
@@ -247,7 +253,7 @@ def footer(card: Image.Image) -> None:
     card.paste(where, (left + mark.width + 10, base - where.height - 4), where)
 
 
-def chart(card: Image.Image, spec: Card) -> None:
+def chart(card: Image.Image, spec: Card, palette=SLATE) -> None:
     """The rows, drawn large and resampled so the ends stay round."""
     layer = Image.new("RGBA", (SIZE[0] * SS, SIZE[1] * SS), (0, 0, 0, 0))
     pen = ImageDraw.Draw(layer)
@@ -260,7 +266,7 @@ def chart(card: Image.Image, spec: Card) -> None:
         top = (ROW_Y + index * ROW_STEP + 2) * SS
         pen.rounded_rectangle(
             [TRACK_LEFT * SS, top, TRACK_RIGHT * SS, top + TRACK_H * SS],
-            radius=radius, fill=SLATE.edge + (255,))
+            radius=radius, fill=palette.edge + (255,))
 
         filled = round(span * row.fraction) * SS
         if filled > 0:
@@ -268,7 +274,7 @@ def chart(card: Image.Image, spec: Card) -> None:
                 [TRACK_LEFT * SS, top, TRACK_LEFT * SS + filled,
                  top + TRACK_H * SS],
                 radius=radius,
-                fill=(ACCENT if row.accent else SLATE.ink) + (255,))
+                fill=(ACCENT if row.accent else palette.ink) + (255,))
 
     if spec.reference:
         fraction, _ = spec.reference
@@ -276,45 +282,45 @@ def chart(card: Image.Image, spec: Card) -> None:
         first = (ROW_Y + 2) * SS
         last = (ROW_Y + (len(spec.rows) - 1) * ROW_STEP + 2 + TRACK_H) * SS
         pen.line([at, first - 14 * SS, at, last + 6 * SS],
-                 fill=SLATE.pale + (255,), width=2 * SS)
+                 fill=palette.pale + (255,), width=2 * SS)
 
     card.paste(layer.resize(SIZE, Image.LANCZOS), (0, 0),
                layer.resize(SIZE, Image.LANCZOS))
 
     for index, row in enumerate(spec.rows):
         top = ROW_Y + index * ROW_STEP
-        place(card, row.label, "sans", LABEL_SIZE, SLATE.pale, MARGIN, top)
+        place(card, row.label, "sans", LABEL_SIZE, palette.pale, MARGIN, top)
         place_right(card, row.value, "mono", VALUE_SIZE,
-                    ACCENT if row.accent else SLATE.ink, RIGHT, top - 4)
+                    ACCENT if row.accent else palette.ink, RIGHT, top - 4)
 
     if spec.reference:
         fraction, caption = spec.reference
         at = TRACK_LEFT + span * fraction
         patch = social_preview.rendered(
-            caption, typeface.of("sans", 19), SLATE.pale)
+            caption, typeface.of("sans", 19), palette.pale)
         card.paste(patch, (round(at - patch.width / 2), ROW_Y - 36), patch)
 
 
-def draw(spec: Card) -> Image.Image:
-    card = Image.new("RGB", SIZE, SLATE.ground)
+def draw(spec: Card, palette=SLATE) -> Image.Image:
+    card = Image.new("RGB", SIZE, palette.ground)
     pen = ImageDraw.Draw(card)
 
-    signature(card, spec.kicker)
-    pen.line([MARGIN, RULE_Y, RIGHT, RULE_Y], fill=SLATE.edge, width=2)
+    signature(card, spec.kicker, palette)
+    pen.line([MARGIN, RULE_Y, RIGHT, RULE_Y], fill=palette.edge, width=2)
 
-    head = place(card, spec.headline, "black", HEADLINE_SIZE, SLATE.ink,
+    head = place(card, spec.headline, "black", HEADLINE_SIZE, palette.ink,
                  MARGIN, HEADLINE_Y)
     if spec.standfirst:
-        place(card, spec.standfirst, "sans", STANDFIRST_SIZE, SLATE.pale,
+        place(card, spec.standfirst, "sans", STANDFIRST_SIZE, palette.pale,
               MARGIN, STANDFIRST_Y)
 
-    chart(card, spec)
+    chart(card, spec, palette)
 
-    place(card, spec.takeaway, "sans", TAKEAWAY_SIZE, SLATE.ink,
+    place(card, spec.takeaway, "sans", TAKEAWAY_SIZE, palette.ink,
           MARGIN, TAKEAWAY_Y)
-    pen.line([MARGIN, FOOT_RULE_Y, RIGHT, FOOT_RULE_Y], fill=SLATE.edge,
+    pen.line([MARGIN, FOOT_RULE_Y, RIGHT, FOOT_RULE_Y], fill=palette.edge,
              width=2)
-    footer(card)
+    footer(card, palette)
 
     if head.width > RIGHT - MARGIN:
         raise SystemExit(f"{spec.slug}: the headline overruns the gutter")
@@ -333,15 +339,23 @@ def main() -> int:
             print(f"  {spec.slug}  {spec.kicker}")
         return 0
 
-    OUT.mkdir(parents=True, exist_ok=True)
-    for spec in CARDS:
-        path = OUT / f"{spec.slug}.png"
-        draw(spec).save(path, "PNG", optimize=True)
-        print(f"  {path.relative_to(lesson.ROOT).as_posix()}  "
-              f"{SIZE[0]}x{SIZE[1]}, {path.stat().st_size // 1024} KB")
+    written = 0
+
+    for name, folder in GROUNDS.items():
+        palette = SLATE if name == "slate" else PAPER
+        where = OUT / folder if folder else OUT
+        where.mkdir(parents=True, exist_ok=True)
+
+        for spec in CARDS:
+            path = where / f"{spec.slug}.png"
+            draw(spec, palette).save(path, "PNG", optimize=True)
+            written += 1
+            print(f"  {path.relative_to(lesson.ROOT).as_posix()}  "
+                  f"{SIZE[0]}x{SIZE[1]}, {path.stat().st_size // 1024} KB")
 
     print()
-    print(f"{len(CARDS)} card(s), accent {build_mark.ink(ACCENT)}")
+    print(f"{written} card(s) on {len(GROUNDS)} grounds, "
+          f"accent {build_mark.ink(ACCENT)}")
     return 0
 
 
