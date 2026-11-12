@@ -44,7 +44,7 @@ ACCENT = post_cards.ACCENT
 MARGIN = post_cards.MARGIN
 RIGHT = post_cards.RIGHT
 
-OUT = lesson.ROOT / ".github" / "posters"
+OUT = lesson.ROOT / "assets" / "posters"
 
 HEADLINE_Y = 188
 HEADLINE_SIZE = 56

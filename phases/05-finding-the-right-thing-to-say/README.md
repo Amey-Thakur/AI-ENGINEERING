@@ -2,7 +2,7 @@
 
 **Five lessons. About four hours. Still nothing installed.**
 
-![Poster for Phase 5. Finding the right thing to say. Five lessons. About four hours. Still nothing installed. The five lessons: It has read it and cannot recall it, Finding it by the words, Finding it by meaning, Measuring search properly, Retrieve, then answer.](../../.github/posters/phase-05.png)
+<img src="../../assets/posters/phase-05.png" alt="Poster for Phase 5. Finding the right thing to say. Five lessons. About four hours. Still nothing installed. The five lessons: It has read it and cannot recall it, Finding it by the words, Finding it by meaning, Measuring search properly, Retrieve, then answer." width="820"/>
 
 Phase 4 ended with a language model that beat counting by 12% and still could not tell you a single fact. This phase is about the difference between those two things, and about the idea that fixes it: stop asking the model to remember, and go and look it up.
 

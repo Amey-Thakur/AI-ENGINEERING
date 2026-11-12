@@ -2,7 +2,7 @@
 
 **Five lessons. About two hours. Nothing installed beforehand.**
 
-![Poster for Phase 0. Your machine. Five lessons. About two hours. Nothing installed beforehand. The five lessons: The terminal, Files and paths, Your first program, An isolated environment, Git and your copy.](../../.github/posters/phase-00.png)
+<img src="../../assets/posters/phase-00.png" alt="Poster for Phase 0. Your machine. Five lessons. About two hours. Nothing installed beforehand. The five lessons: The terminal, Files and paths, Your first program, An isolated environment, Git and your copy." width="820"/>
 
 Every other course assumes this phase. It tells you to open a terminal, clone a repository and install a package, and if you have never done those things you are already lost on page one, in a way that feels like your fault and is not.
 

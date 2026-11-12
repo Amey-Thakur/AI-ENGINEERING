@@ -2,7 +2,7 @@
 
 **Five lessons. About four hours. Still nothing installed.**
 
-![Poster for Phase 6. Tools and agents. Five lessons. About four hours. Still nothing installed. The five lessons: What a model cannot do, Choosing the tool, When it chooses wrong, A loop that can stop, Measuring an agent.](../../.github/posters/phase-06.png)
+<img src="../../assets/posters/phase-06.png" alt="Poster for Phase 6. Tools and agents. Five lessons. About four hours. Still nothing installed. The five lessons: What a model cannot do, Choosing the tool, When it chooses wrong, A loop that can stop, Measuring an agent." width="820"/>
 
 Phase 5 ended with a system that could find a sentence in a corpus and a warning that every component you add can subtract. This phase is about the moment a system stops producing text and starts deciding to do something: calling a function, choosing between functions, refusing, giving up, and costing money while it happens.
 

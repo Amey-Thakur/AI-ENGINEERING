@@ -529,13 +529,10 @@ PROGRESS = """\
 #: Images the pages show that do not live under assets/. Copied in and
 #: repointed, so one file in the repository serves both GitHub and the
 #: site.
+#: The phase posters are not here. They live under assets/, which is the
+#: directory this build publishes, so a page can point at one with an ordinary
+#: relative path that is correct in the repository and on the site alike.
 CARRIED = {".github/record-of-completion.png": "assets/record-of-completion.png"}
-
-#: Each phase page opens with its own poster, carried the same way. Read from
-#: the folder rather than listed here, so drawing a poster for a new phase is
-#: enough to have it served.
-for _poster in sorted((lesson.ROOT / ".github" / "posters").glob("phase-*.png")):
-    CARRIED[f".github/posters/{_poster.name}"] = f"assets/posters/{_poster.name}"
 
 #: Spelled out, because an escape in a patched string is a thing that goes wrong.
 NEWLINE = chr(10)

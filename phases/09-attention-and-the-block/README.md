@@ -2,7 +2,7 @@
 
 **Five lessons. About four hours. Still nothing installed.**
 
-![Poster for Phase 9. Attention, and the block. Five lessons. About four hours. Still nothing installed. The five lessons: The thing a bigram cannot see, Looking at every word at once, It works without looking, Where a word sits, The block.](../../.github/posters/phase-09.png)
+<img src="../../assets/posters/phase-09.png" alt="Poster for Phase 9. Attention, and the block. Five lessons. About four hours. Still nothing installed. The five lessons: The thing a bigram cannot see, Looking at every word at once, It works without looking, Where a word sits, The block." width="820"/>
 
 Phase 4 built a model that predicts the next word from the one before it, and phase 8 shipped a system with that model inside it. This phase is about the limit that sits underneath all of it: a word that decides the answer can be further away than the model can see, and widening the window runs into the vocabulary wall from the other direction.
 

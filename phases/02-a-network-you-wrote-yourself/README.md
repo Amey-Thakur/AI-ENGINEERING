@@ -2,7 +2,7 @@
 
 **Five lessons. About four hours. Still nothing installed.**
 
-![Poster for Phase 2. A network you wrote yourself. Five lessons. About four hours. Still nothing installed. The five lessons: The thing one line cannot do, A second layer, How wrong, and in which direction, Backpropagation, Train it on the messages.](../../.github/posters/phase-02.png)
+<img src="../../assets/posters/phase-02.png" alt="Poster for Phase 2. A network you wrote yourself. Five lessons. About four hours. Still nothing installed. The five lessons: The thing one line cannot do, A second layer, How wrong, and in which direction, Backpropagation, Train it on the messages." width="820"/>
 
 Phase 1 ended with a model that was wrong and certain, and a sentence to sit with: the feature could not see the difference, and no amount of the same feature ever will.
 

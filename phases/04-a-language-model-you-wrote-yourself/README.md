@@ -2,7 +2,7 @@
 
 **Five lessons. About five hours. Still nothing installed.**
 
-![Poster for Phase 4. A language model you wrote yourself. Five lessons. About five hours. Still nothing installed. The five lessons: Predicting the next word, Never say never, Making it talk, A model that generalises, What it knows.](../../.github/posters/phase-04.png)
+<img src="../../assets/posters/phase-04.png" alt="Poster for Phase 4. A language model you wrote yourself. Five lessons. About five hours. Still nothing installed. The five lessons: Predicting the next word, Never say never, Making it talk, A model that generalises, What it knows." width="820"/>
 
 Phase 3 ended with a representation that was good and a result that was bad, because averaging word vectors threw away the order the task depended on. This phase makes order the thing the model is built around.
 

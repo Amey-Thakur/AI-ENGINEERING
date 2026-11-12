@@ -2,7 +2,7 @@
 
 **Five lessons. About four hours. Nothing installed.**
 
-![Poster for Phase 1. Teach it to tell two things apart. Five lessons. About four hours. Nothing installed. The five lessons: Words into numbers, A rule by hand, Let it learn, Tell the truth, When it breaks.](../../.github/posters/phase-01.png)
+<img src="../../assets/posters/phase-01.png" alt="Poster for Phase 1. Teach it to tell two things apart. Five lessons. About four hours. Nothing installed. The five lessons: Words into numbers, A rule by hand, Let it learn, Tell the truth, When it breaks." width="820"/>
 
 By the end of this phase you will have written something that learns. Not downloaded, not called over an API, not configured. Written, by you, in plain Python, on sixty messages that live in this folder.
 
