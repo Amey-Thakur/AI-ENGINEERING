@@ -2,6 +2,8 @@
 
 **Five lessons. About three hours. Still nothing installed.**
 
+![Poster for Phase 7. Measuring whether any of it works. Five lessons. About three hours. Still nothing installed. The five lessons: The number has error bars, Is the difference real?, The baseline you forgot, The test set you keep looking at, A test you can actually run.](../../.github/posters/phase-07.png)
+
 Phase 6 finished with an agent, a scorecard and an open question about which of two versions was better. This phase answers it, and on the way it turns the same instruments on the previous six phases and finds that several of their headline numbers establish very little.
 
 Nothing new is built here. Every measurement is made on systems this course already has, which is the only way to find out whether they work.

@@ -2,6 +2,8 @@
 
 **Five lessons. About five hours. Still nothing installed.**
 
+![Poster for Phase 4. A language model you wrote yourself. Five lessons. About five hours. Still nothing installed. The five lessons: Predicting the next word, Never say never, Making it talk, A model that generalises, What it knows.](../../.github/posters/phase-04.png)
+
 Phase 3 ended with a representation that was good and a result that was bad, because averaging word vectors threw away the order the task depended on. This phase makes order the thing the model is built around.
 
 By the end you will have written a language model twice: once by counting, and once by learning. The second beats the first, and it is the first time in this course that anything learned has beaten the simpler thing it was measured against.

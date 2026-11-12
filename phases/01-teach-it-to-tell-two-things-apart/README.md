@@ -2,6 +2,8 @@
 
 **Five lessons. About four hours. Nothing installed.**
 
+![Poster for Phase 1. Teach it to tell two things apart. Five lessons. About four hours. Nothing installed. The five lessons: Words into numbers, A rule by hand, Let it learn, Tell the truth, When it breaks.](../../.github/posters/phase-01.png)
+
 By the end of this phase you will have written something that learns. Not downloaded, not called over an API, not configured. Written, by you, in plain Python, on sixty messages that live in this folder.
 
 Telling two things apart is the smallest problem in the field that is still a real one. Everything larger is this with more of it: more classes, more data, more layers. The questions that decide whether it works are the same questions, and they are all asked in this phase.

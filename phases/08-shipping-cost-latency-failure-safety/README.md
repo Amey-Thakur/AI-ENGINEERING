@@ -2,6 +2,8 @@
 
 **Five lessons. About three hours. Still nothing installed.**
 
+![Poster for Phase 8. Shipping: cost, latency, failure, safety. Five lessons. About three hours. Still nothing installed. The five lessons: Counting the work, When the corpus grows, When something fails, What it must not say, The thing you ship.](../../.github/posters/phase-08.png)
+
 Phase 7 established what the system does and does not do. This phase is about everything else that decides whether it survives contact with a user: what it costs, what happens when the corpus is a thousand times bigger, what happens when a piece of it stops working, and what happens when somebody indexes a folder they should not have.
 
 The last lesson is the course's deliverable: not a model and not a score, but the page you hand to somebody else.

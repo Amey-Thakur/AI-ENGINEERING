@@ -2,6 +2,8 @@
 
 **Five lessons. About two hours. Nothing installed beforehand.**
 
+![Poster for Phase 0. Your machine. Five lessons. About two hours. Nothing installed beforehand. The five lessons: The terminal, Files and paths, Your first program, An isolated environment, Git and your copy.](../../.github/posters/phase-00.png)
+
 Every other course assumes this phase. It tells you to open a terminal, clone a repository and install a package, and if you have never done those things you are already lost on page one, in a way that feels like your fault and is not.
 
 Nothing here is about AI. All of it is what the rest of the course, and the rest of the field, silently expects you to have.

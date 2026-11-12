@@ -2,6 +2,8 @@
 
 **Five lessons. About four hours. Still nothing installed.**
 
+![Poster for Phase 6. Tools and agents. Five lessons. About four hours. Still nothing installed. The five lessons: What a model cannot do, Choosing the tool, When it chooses wrong, A loop that can stop, Measuring an agent.](../../.github/posters/phase-06.png)
+
 Phase 5 ended with a system that could find a sentence in a corpus and a warning that every component you add can subtract. This phase is about the moment a system stops producing text and starts deciding to do something: calling a function, choosing between functions, refusing, giving up, and costing money while it happens.
 
 Nothing here is a simplified version of an agent. A loop that calls a tool, reads the result, decides whether to go again and can terminate three ways **is** an agent, and every framework built on that shape leaves the shape alone.

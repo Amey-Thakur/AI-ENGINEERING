@@ -2,6 +2,8 @@
 
 **Five lessons. About four hours. Still nothing installed.**
 
+![Poster for Phase 3. Words that know what they mean. Five lessons. About four hours. Still nothing installed. The five lessons: The vocabulary wall, The company a word keeps, Surprise is the signal, Fewer numbers that say more, Does it help?.](../../.github/posters/phase-03.png)
+
 Phases 1 and 2 both ended pointing at the same thing. The held back messages were full of words the model had never seen, and nothing about knowing *server* told it anything about *database*. Capacity did not fix it, because the problem was never capacity.
 
 This phase changes what a word *is*.

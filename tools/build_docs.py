@@ -531,6 +531,12 @@ PROGRESS = """\
 #: site.
 CARRIED = {".github/record-of-completion.png": "assets/record-of-completion.png"}
 
+#: Each phase page opens with its own poster, carried the same way. Read from
+#: the folder rather than listed here, so drawing a poster for a new phase is
+#: enough to have it served.
+for _poster in sorted((lesson.ROOT / ".github" / "posters").glob("phase-*.png")):
+    CARRIED[f".github/posters/{_poster.name}"] = f"assets/posters/{_poster.name}"
+
 #: Spelled out, because an escape in a patched string is a thing that goes wrong.
 NEWLINE = chr(10)
 
@@ -1726,7 +1732,9 @@ def main() -> int:
         origin = lesson.ROOT / carried
 
         if origin.exists():
-            shutil.copyfile(origin, DOCS / CARRIED[carried])
+            served = DOCS / CARRIED[carried]
+            served.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(origin, served)
 
     card = lesson.ROOT / ".github" / "social-preview.png"
 
